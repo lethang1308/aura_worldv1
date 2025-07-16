@@ -79,18 +79,23 @@
                                         <p class="text-muted mt-1 mb-4">New to our platform? Sign up now! It only takes a minute</p>
 
                                         <div>
-                                             <form action="https://techzaa.in/larkon/admin/index.html" class="authentication-form">
+                                             <form method="POST" action="{{ route('register') }}">
+                                                  @csrf
                                                   <div class="mb-3">
                                                        <label class="form-label" for="example-name">Name</label>
-                                                       <input type="name" id="example-name" name="example-name" class="form-control" placeholder="Enter your name">
+                                                       <input type="text" name="name" id="example-name" class="form-control" placeholder="Enter your name">
                                                   </div>
                                                   <div class="mb-3">
                                                        <label class="form-label" for="example-email">Email</label>
-                                                       <input type="email" id="example-email" name="example-email" class="form-control bg-" placeholder="Enter your email">
+                                                       <input type="email" name="email" id="example-email" class="form-control bg-" placeholder="Enter your email">
                                                   </div>
                                                   <div class="mb-3">                                                      
                                                        <label class="form-label" for="example-password">Password</label>
-                                                       <input type="text" id="example-password" class="form-control" placeholder="Enter your password">
+                                                       <input type="password" name="password" id="example-password" class="form-control" placeholder="Enter your password">
+                                                  </div>
+                                                  <div class="mb-3">
+                                                       <label class="form-label" for="example-password-confirm">Confirm Password</label>
+                                                       <input type="password" name="password_confirmation" id="example-password-confirm" class="form-control" placeholder="Confirm your password">
                                                   </div>
                                                   <div class="mb-3">
                                                        <div class="form-check">

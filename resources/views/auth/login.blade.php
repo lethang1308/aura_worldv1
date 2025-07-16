@@ -35,7 +35,8 @@
                                 <p class="text-muted mt-1 mb-4">Enter your email and password to access the admin panel.</p>
 
                                 <div class="mb-5">
-                                    <form action="auth/check-login.php" method="POST" class="authentication-form">
+                                    <form action="{{ route('login') }}" method="POST" class="authentication-form">
+                                        @csrf
                                         <div class="mb-3">
                                             <label class="form-label" for="example-email">Email</label>
                                             <input type="email" id="example-email" name="email" class="form-control" placeholder="Enter your email" required>

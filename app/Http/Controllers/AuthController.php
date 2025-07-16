@@ -37,7 +37,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('dashboard'); // sau khi đăng ký thì chuyển vào trang chính
+        return redirect()->route('admin');
     }
 
     // Hiển thị form đăng nhập
@@ -52,7 +52,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard');
+            return redirect()->route('admin');
         }
 
         return back()->withErrors([
