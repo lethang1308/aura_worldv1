@@ -12,9 +12,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/adminn',function(){
-    return view('admins.layouts.default');
-});
+Route::get('/admin',function(){
+})->name('admin');
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
