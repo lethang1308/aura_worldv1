@@ -36,14 +36,6 @@
                                             <img src="{{ asset('admin/assets/images/product/p-14.png') }}" alt=""
                                                 class="img-fluid bg-light rounded">
                                         </div>
-                                        <!-- <a class="carousel-control-prev rounded" href="#carouselExampleFade" role="button" data-bs-slide="prev">
-                                                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                   <span class="visually-hidden">Previous</span>
-                                              </a>
-                                              <a class="carousel-control-next rounded" href="#carouselExampleFade" role="button" data-bs-slide="next">
-                                                   <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                   <span class="visually-hidden">Next</span>
-                                              </a> -->
                                     </div>
                                     <div class="carousel-indicators m-0 mt-2 d-lg-flex d-none position-static h-100">
                                         <button type="button" data-bs-target="#carouselExampleFade"
@@ -65,7 +57,7 @@
                                                 alt="swiper-indicator-img">
                                         </button>
                                         <button type="button" data-bs-target="#carouselExampleFade"
-                                            data-bs-slide-to="3" aria-label="Slide 3"
+                                            data-bs-slide-to="3" aria-label="Slide 4"
                                             class="w-auto h-auto rounded bg-light">
                                             <img src="{{ asset('admin/assets/images/product/p-14.png') }}" class="d-block avatar-xl"
                                                 alt="swiper-indicator-img">
@@ -120,6 +112,11 @@
                                 </div>
                                 <h4 class="text-dark fw-medium">Description :</h4>
                                 <p class="text-muted">{{ $product->description ?? 'No description available.' }}</p>
+                                
+                                <div class="mt-4">
+                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning me-2">Edit Product</a>
+                                    <a href="{{ route('products.index') }}" class="btn btn-secondary">Back to List</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -133,12 +130,16 @@
                             <div class="card-body">
                                 <div class="">
                                     <ul class="d-flex flex-column gap-2 list-unstyled fs-14 text-muted mb-0">
-                                        <li><span class="fw-medium text-dark">Product Dimensions</span><span
-                                                class="mx-2">:</span>53.3 x 40.6 x 6.4 cm; 500 Grams</li>
-                                        <li><span class="fw-medium text-dark">Category</span><span
-                                                class="mx-2">:</span>{{ $product->category->name ?? 'N/A' }}</li>
+                                        <li><span class="fw-medium text-dark">Product ID</span><span
+                                                class="mx-2">:</span>{{ $product->id }}</li>
+                                        <li><span class="fw-medium text-dark">Category ID</span><span
+                                                class="mx-2">:</span>{{ $product->category_id }}</li>
                                         <li><span class="fw-medium text-dark">Price</span><span
                                                 class="mx-2">:</span>${{ $product->base_price }}</li>
+                                        <li><span class="fw-medium text-dark">Created</span><span
+                                                class="mx-2">:</span>{{ $product->created_at->format('M d, Y') }}</li>
+                                        <li><span class="fw-medium text-dark">Updated</span><span
+                                                class="mx-2">:</span>{{ $product->updated_at->format('M d, Y') }}</li>
                                     </ul>
                                 </div>
                             </div>

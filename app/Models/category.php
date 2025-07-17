@@ -36,6 +36,11 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_category_id');
     }
 
+    public function parentCategory()
+{
+    return $this->belongsTo(Category::class, 'parent_category_id');
+}
+
     /**
      * Get all products in this category.
      */
