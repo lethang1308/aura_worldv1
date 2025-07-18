@@ -34,6 +34,23 @@
                                 <h2 class="fw-bold fs-24">Sign In</h2>
                                 <p class="text-muted mt-1 mb-4">Enter your email and password to access the admin panel.</p>
 
+                                {{-- Hiển thị lỗi --}}
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div class="mb-5">
                                     <form action="{{ route('login') }}" method="POST" class="authentication-form">
                                         @csrf
