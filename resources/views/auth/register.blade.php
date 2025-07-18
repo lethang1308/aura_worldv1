@@ -92,6 +92,23 @@
                                 </p>
 
                                 <div>
+                                    {{-- Hiển thị lỗi tổng quát --}}
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger">
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
+
                                     <form method="POST" action="{{ route('register') }}">
                                         @csrf
 
@@ -99,28 +116,42 @@
                                         <div class="mb-3">
                                             <label class="form-label" for="example-name">Name</label>
                                             <input type="text" name="name" id="example-name" class="form-control"
-                                                placeholder="Enter your name" required>
+                                                placeholder="Enter your name" required value="{{ old('name') }}">
+                                            @error('name')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
 
                                         {{-- Email --}}
                                         <div class="mb-3">
                                             <label class="form-label" for="example-email">Email</label>
                                             <input type="email" name="email" id="example-email" class="form-control"
-                                                placeholder="Enter your email" required>
+                                                placeholder="Enter your email" required value="{{ old('email') }}">
+                                            @error('email')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
 
-                                        {{-- ✅ Phone --}}
+                                        {{-- Phone --}}
                                         <div class="mb-3">
                                             <label class="form-label" for="example-phone">Phone Number</label>
                                             <input type="tel" name="phone" id="example-phone" class="form-control"
-                                                placeholder="Enter your phone number" required>
+                                                placeholder="Enter your phone number" required
+                                                value="{{ old('phone') }}">
+                                            @error('phone')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
 
-                                        {{-- ✅ Address --}}
+                                        {{-- Address --}}
                                         <div class="mb-3">
                                             <label class="form-label" for="example-address">Address</label>
                                             <input type="text" name="address" id="example-address"
-                                                class="form-control" placeholder="Enter your address" required>
+                                                class="form-control" placeholder="Enter your address" required
+                                                value="{{ old('address') }}">
+                                            @error('address')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
 
                                         {{-- Password --}}
@@ -128,6 +159,9 @@
                                             <label class="form-label" for="example-password">Password</label>
                                             <input type="password" name="password" id="example-password"
                                                 class="form-control" placeholder="Enter your password" required>
+                                            @error('password')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
 
                                         {{-- Confirm Password --}}
@@ -154,15 +188,6 @@
                                             <button class="btn btn-soft-primary" type="submit">Sign Up</button>
                                         </div>
                                     </form>
-
-                                    <p class="mt-3 fw-semibold no-span">OR sign with</p>
-
-                                    <div class="d-grid gap-2">
-                                        <a href="javascript:void(0);" class="btn btn-soft-dark"><i
-                                                class="bx bxl-google fs-20 me-1"></i> Sign Up with Google</a>
-                                        <a href="javascript:void(0);" class="btn btn-soft-primary"><i
-                                                class="bx bxl-facebook fs-20 me-1"></i> Sign Up with Facebook</a>
-                                    </div>
                                 </div>
 
                                 <p class="mt-auto text-danger text-center">I already have an account <a

@@ -33,7 +33,7 @@ class AuthController extends Controller
             'phone'    => $request->phone,
             'address'  => $request->address,
             'role_id'  => 2, // mặc định người dùng
-            'is_active'=> 1,
+            'is_active' => 1,
         ]);
 
         Auth::login($user);
@@ -50,6 +50,16 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+
+        // Lấy user theo email
+        $user = User::where('email', $credentials['email'])->first();
+
+        // Kiểm tra user tồn tại và active
+        if (!$user || !$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt.',
+            ]);
+        }
 
         if (Auth::attempt($credentials)) {
             return redirect()->route('admin');
