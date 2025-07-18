@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -10,13 +11,15 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\AttributeValueController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/adminn',function(){
-        return view('admins.layouts.default');
+Route::get('/adminn', function () {
+    return view('admins.layouts.default');
 })->name('admin');
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -54,3 +57,22 @@ Route::get('/customers', [CustomerController::class, 'index'])->name('customers.
 Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
 Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+// Attribute routes
+Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes.index');
+Route::get('/attributes/create', [AttributeController::class, 'create'])->name('attributes.create');
+Route::post('/attributes', [AttributeController::class, 'store'])->name('attributes.store');
+Route::get('/attributes/{id}/edit', [AttributeController::class, 'edit'])->name('attributes.edit');
+Route::put('/attributes/{id}', [AttributeController::class, 'update'])->name('attributes.update');
+Route::delete('/attributes/{id}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
+
+// Attribute Value routes
+Route::get('/attributevalues', [AttributeValueController::class, 'index'])->name('attributeValues.list');
+Route::get('/attributevalues/create', [AttributeValueController::class, 'create'])->name('attributeValues.create');
+Route::post('/attributevalues', [AttributeValueController::class, 'store'])->name('attributeValues.store');
+Route::get('/attributevalues/{id}/edit', [AttributeValueController::class, 'edit'])->name('attributeValues.edit');
+Route::put('/attributevalues/{id}', [AttributeValueController::class, 'update'])->name('attributeValues.update');
+Route::delete('/attributevalues/{id}', [AttributeValueController::class, 'destroy'])->name('attributeValues.destroy');
+
+// Admin route
+Route::get('/', [AdminController::class, 'index'])->name('admin.list');

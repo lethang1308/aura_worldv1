@@ -9,7 +9,7 @@
                         <div class="card">
                             <div class="d-flex card-header justify-content-between align-items-center">
                                 <div>
-                                    <h4 class="card-title">All Customers List</h4>
+                                    <h4 class="card-title">All Admins List</h4>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -28,22 +28,21 @@
                                             <th>Status</th>
                                             <th>Created At</th>
                                             <th>Updated At</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($customers as $customer)
+                                        @forelse($admins as $admin)
                                             <tr>
                                                 <td>
                                                     <div class="form-check">
                                                         <input type="checkbox" class="form-check-input"
-                                                            id="check{{ $customer->id }}">
+                                                            id="check{{ $admin->id }}">
                                                     </div>
                                                 </td>
-                                                <td>{{ $customer->name }}</td>
-                                                <td>{{ $customer->email }}</td>
-                                                <td>{{ $customer->phone ?? 'User để trống' }}</td>
-                                                <td>{{ $customer->address ?? 'User để trống' }}</td>
+                                                <td>{{ $admin->name }}</td>
+                                                <td>{{ $admin->email }}</td>
+                                                <td>{{ $admin->phone ?? 'Admin để trống' }}</td>
+                                                <td>{{ $admin->address ?? 'Admin để trống' }}</td>
                                                 <td>
                                                     @if ($customer->is_active)
                                                         <span class="badge bg-success">Active</span>
@@ -57,29 +56,10 @@
                                                 <td>
                                                     {{ $customer->updated_at ? $customer->updated_at->format('d/m/Y H:i') : 'N/A' }}
                                                 </td>
-
-                                                <td>
-                                                    <div class="d-flex gap-2">
-                                                        <a href="{{ route('customers.edit', $customer->id) }}"
-                                                            class="btn btn-soft-primary btn-sm">
-                                                            <iconify-icon icon="solar:pen-2-broken"
-                                                                class="align-middle fs-18"></iconify-icon>
-                                                        </a>
-                                                        <form action="{{ route('customers.destroy', $customer->id) }}"
-                                                            method="POST" onsubmit="return confirm('Are you sure?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-soft-danger btn-sm">
-                                                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken"
-                                                                    class="align-middle fs-18"></iconify-icon>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center">No customers found.</td>
+                                                <td colspan="7" class="text-center">No admins found.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -88,7 +68,7 @@
 
                             <div class="card-footer border-top">
                                 <div class="d-flex justify-content-end">
-                                    {{ $customers->links() }}
+                                    {{ $admins->links() }}
                                 </div>
                             </div>
                         </div>
