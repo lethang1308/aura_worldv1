@@ -49,12 +49,15 @@
                                                 </th>
                                                 <th>Categories</th>
                                                 <th>ID</th>
-                                                <th>Parent Category
+                                                <th>Parent Category</th>
                                                 <th>Description</th>
                                                 <th>Status</th>
+                                                <th>Created At</th>
+                                                <th>Updated At</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             @foreach ($categories as $category)
                                                 <tr>
@@ -100,8 +103,14 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex gap-2 align-items-center">
+                                                        {{ $category->created_at ? $category->created_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    </td>
 
+                                                    <td>
+                                                        <div class="d-flex gap-2 align-items-center">
                                                             <!-- Nút Sửa -->
                                                             <a href="{{ route('categories.edit', $category->id) }}"
                                                                 class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2"
@@ -109,7 +118,7 @@
                                                                 <iconify-icon icon="solar:pen-2-broken"
                                                                     class="align-middle fs-18"></iconify-icon>
                                                             </a>
-                                                            
+
                                                             <!-- Nút Xoá -->
                                                             <form action="{{ route('categories.destroy', $category->id) }}"
                                                                 method="POST"

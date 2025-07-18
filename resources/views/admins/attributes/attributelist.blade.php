@@ -48,6 +48,8 @@
                                                 <th>ID</th>
                                                 <th>Name</th>
                                                 <th>Value</th>
+                                                <th>Created At</th>
+                                                <th>Updated At</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -74,14 +76,20 @@
                                                         @endif
                                                     </td>
                                                     <td>
+                                                        {{ $attribute->created_at ? $attribute->created_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $attribute->updated_at ? $attribute->updated_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    </td>
+
+                                                    <td>
                                                         <div class="d-flex gap-2">
                                                             <a href="{{ route('attributes.edit', $attribute->id) }}"
                                                                 class="btn btn-soft-primary btn-sm">
                                                                 <iconify-icon icon="solar:pen-2-broken"
                                                                     class="align-middle fs-18"></iconify-icon>
                                                             </a>
-                                                            <form
-                                                                action="{{ route('attributes.destroy', $attribute->id) }}"
+                                                            <form action="{{ route('attributes.destroy', $attribute->id) }}"
                                                                 method="POST"
                                                                 onsubmit="return confirm('Xoá thuộc tính này?')">
                                                                 @csrf

@@ -160,25 +160,20 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link menu-arrow" href="#sidebarAttributes"
-                                        data-bs-toggle="collapse" role="button" aria-expanded="false"
-                                        aria-controls="sidebarAttributes">
+                                    <a class="nav-link menu-arrow" href="#sidebarInvoice" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarInvoice">
                                         <span class="nav-icon">
-                                            <iconify-icon
-                                                icon="solar:confetti-minimalistic-bold-duotone"></iconify-icon>
+                                            <iconify-icon icon="solar:bill-list-bold-duotone"></iconify-icon>
                                         </span>
                                         <span class="nav-text"> Variants </span>
                                     </a>
-                                    <div class="collapse" id="sidebarAttributes">
+                                    <div class="collapse" id="sidebarInvoice">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="attributes-list.html">List</a>
+                                                <a class="sub-nav-link" href="invoice-list.html">List</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="attributes-edit.html">Edit</a>
-                                            </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="attributes-add.html">Create</a>
+                                                <a class="sub-nav-link" href="invoice-add.html">Create</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -199,6 +194,24 @@
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
                                                     href="{{ route('customers.index') }}">List</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link menu-arrow" href="#sidebarRoles" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarRoles">
+                                        <span class="nav-icon">
+                                            <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
+                                        </span>
+                                        <span class="nav-text"> Admins </span>
+                                    </a>
+                                    <div class="collapse" id="sidebarRoles">
+                                        <ul class="nav sub-navbar-nav">
+
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('admin.list') }}">List</a>
                                             </li>
                                         </ul>
                                     </div>

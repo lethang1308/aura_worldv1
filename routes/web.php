@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -65,9 +66,13 @@ Route::get('/attributes/{id}/edit', [AttributeController::class, 'edit'])->name(
 Route::put('/attributes/{id}', [AttributeController::class, 'update'])->name('attributes.update');
 Route::delete('/attributes/{id}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
 
-Route::get('/', [AttributeValueController::class, 'index'])->name('attributeValues.list');
-Route::get('/create', [AttributeValueController::class, 'create'])->name('attributeValues.create');
-Route::post('/', [AttributeValueController::class, 'store'])->name('attributeValues.store');
-Route::get('/{id}/edit', [AttributeValueController::class, 'edit'])->name('attributeValues.edit');
-Route::put('/{id}', [AttributeValueController::class, 'update'])->name('attributeValues.update');
-Route::delete('/{id}', [AttributeValueController::class, 'destroy'])->name('attributeValues.destroy');
+// Attribute Value routes
+Route::get('/attributevalues', [AttributeValueController::class, 'index'])->name('attributeValues.list');
+Route::get('/attributevalues/create', [AttributeValueController::class, 'create'])->name('attributeValues.create');
+Route::post('/attributevalues', [AttributeValueController::class, 'store'])->name('attributeValues.store');
+Route::get('/attributevalues/{id}/edit', [AttributeValueController::class, 'edit'])->name('attributeValues.edit');
+Route::put('/attributevalues/{id}', [AttributeValueController::class, 'update'])->name('attributeValues.update');
+Route::delete('/attributevalues/{id}', [AttributeValueController::class, 'destroy'])->name('attributeValues.destroy');
+
+// Admin route
+Route::get('/', [AdminController::class, 'index'])->name('admin.list');
