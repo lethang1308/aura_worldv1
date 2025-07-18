@@ -57,8 +57,24 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $customer = User::where('role_id', 2)->findOrFail($id);
+        $customer->is_active = 0;
+        $customer->save();
         $customer->delete();
-
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+    }
+
+    public function restore($id)
+    {
+        $customer = User::withTrashed()->where('role_id', 2)->findOrFail($id);
+        $customer->restore();
+        $customer->is_active = 1;
+        $customer->save();
+        return redirect()->route('customers.index')->with('success', 'Customer restored successfully.');
+    }
+
+    public function trash()
+    {
+        $customers = User::onlyTrashed()->where('role_id', 2)->paginate(10);
+        return view('admins.customers.customerlist', compact('customers'))->with('trash', true);
     }
 }

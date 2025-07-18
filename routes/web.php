@@ -51,12 +51,16 @@ Route::post('/categories', [CategoryController::class, 'store'])->name('categori
 Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::patch('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
+Route::get('/categories/trash', [CategoryController::class, 'trash'])->name('categories.trash');
 
 // Customer routes
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
 Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+Route::patch('/customers/{id}/restore', [CustomerController::class, 'restore'])->name('customers.restore');
+Route::get('/customers/trash', [CustomerController::class, 'trash'])->name('customers.trash');
 
 // Attribute routes
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes.index');
@@ -65,6 +69,8 @@ Route::post('/attributes', [AttributeController::class, 'store'])->name('attribu
 Route::get('/attributes/{id}/edit', [AttributeController::class, 'edit'])->name('attributes.edit');
 Route::put('/attributes/{id}', [AttributeController::class, 'update'])->name('attributes.update');
 Route::delete('/attributes/{id}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
+Route::patch('/attributes/{id}/restore', [AttributeController::class, 'restore'])->name('attributes.restore');
+Route::get('/attributes/trash', [AttributeController::class, 'trash'])->name('attributes.trash');
 
 // Attribute Value routes
 Route::get('/attributevalues', [AttributeValueController::class, 'index'])->name('attributeValues.list');
@@ -73,6 +79,8 @@ Route::post('/attributevalues', [AttributeValueController::class, 'store'])->nam
 Route::get('/attributevalues/{id}/edit', [AttributeValueController::class, 'edit'])->name('attributeValues.edit');
 Route::put('/attributevalues/{id}', [AttributeValueController::class, 'update'])->name('attributeValues.update');
 Route::delete('/attributevalues/{id}', [AttributeValueController::class, 'destroy'])->name('attributeValues.destroy');
+Route::patch('/attributevalues/{id}/restore', [AttributeValueController::class, 'restore'])->name('attributeValues.restore');
+Route::get('/attributevalues/trash', [AttributeValueController::class, 'trash'])->name('attributeValues.trash');
 
 // Admin route
 Route::get('/', [AdminController::class, 'index'])->name('admin.list');

@@ -79,19 +79,24 @@ class AttributeController extends Controller
     // 6. Xoá thuộc tính
     public function destroy($id)
     {
-        // 1. Tìm attribute theo ID
         $attribute = Attribute::findOrFail($id);
-
-        // 2. Xoá các giá trị liên quan nếu có quan hệ (nếu thiết kế như vậy)
-        // Giả sử quan hệ là: $attribute->attributeValues()
         if ($attribute->attributeValues()->exists()) {
             $attribute->attributeValues()->delete();
         }
-
-        // 3. Xoá attribute
         $attribute->delete();
+        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được xóa thành công!');
+    }
 
-        // 4. Redirect về danh sách với thông báo
-        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được xoá thành công!');
+    public function restore($id)
+    {
+        $attribute = Attribute::withTrashed()->findOrFail($id);
+        $attribute->restore();
+        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được khôi phục thành công!');
+    }
+
+    public function trash()
+    {
+        $attributes = Attribute::onlyTrashed()->get();
+        return view('admins.attributes.attributelist', compact('attributes'))->with('trash', true);
     }
 }

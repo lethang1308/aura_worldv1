@@ -19,19 +19,12 @@
                                 <div>
                                     <h4 class="card-title">All Attribute List</h4>
                                 </div>
-                                <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle btn btn-sm btn-outline-light rounded"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        This Month
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <!-- item-->
-                                        <a href="#!" class="dropdown-item">Download</a>
-                                        <!-- item-->
-                                        <a href="#!" class="dropdown-item">Export</a>
-                                        <!-- item-->
-                                        <a href="#!" class="dropdown-item">Import</a>
-                                    </div>
+                                <div>
+                                    @if (!isset($trash) || !$trash)
+                                        <a href="{{ route('attributes.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
+                                    @else
+                                        <a href="{{ route('attributes.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
+                                    @endif
                                 </div>
                             </div>
                             <div>
@@ -54,7 +47,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($attributes as $attribute)
+                                            @forelse ($attributes as $attribute)
                                                 <tr>
                                                     <td>
                                                         <div class="form-check">
@@ -84,26 +77,44 @@
 
                                                     <td>
                                                         <div class="d-flex gap-2">
-                                                            <a href="{{ route('attributes.edit', $attribute->id) }}"
-                                                                class="btn btn-soft-primary btn-sm">
-                                                                <iconify-icon icon="solar:pen-2-broken"
-                                                                    class="align-middle fs-18"></iconify-icon>
-                                                            </a>
-                                                            <form action="{{ route('attributes.destroy', $attribute->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Xoá thuộc tính này?')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-soft-danger btn-sm">
-                                                                    <iconify-icon
-                                                                        icon="solar:trash-bin-minimalistic-2-broken"
+                                                            @if (!isset($trash) || !$trash)
+                                                                <a href="{{ route('attributes.edit', $attribute->id) }}"
+                                                                    class="btn btn-soft-primary btn-sm">
+                                                                    <iconify-icon icon="solar:pen-2-broken"
                                                                         class="align-middle fs-18"></iconify-icon>
-                                                                </button>
-                                                            </form>
+                                                                </a>
+                                                                <form action="{{ route('attributes.destroy', $attribute->id) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Xoá thuộc tính này?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-soft-danger btn-sm">
+                                                                        <iconify-icon
+                                                                            icon="solar:trash-bin-minimalistic-2-broken"
+                                                                            class="align-middle fs-18"></iconify-icon>
+                                                                    </button>
+                                                                </form>
+                                                            @else
+                                                                <form action="{{ route('attributes.restore', $attribute->id) }}" method="POST" style="display:inline-block">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-success btn-sm">Khôi phục</button>
+                                                                </form>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">
+                                                        @if (isset($trash) && $trash)
+                                                            Không có thuộc tính nào trong thùng rác.
+                                                        @else
+                                                            Không có thuộc tính nào.
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforelse
                                         </tbody>
 
                                     </table>

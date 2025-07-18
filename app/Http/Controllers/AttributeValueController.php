@@ -56,7 +56,19 @@ class AttributeValueController extends Controller
     {
         $value = AttributeValue::findOrFail($id);
         $value->delete();
+        return redirect()->route('attributeValues.list')->with('success', 'Đã xóa thành công!');
+    }
 
-        return redirect()->route('attributeValues.list')->with('success', 'Đã xoá thành công!');
+    public function restore($id)
+    {
+        $value = AttributeValue::withTrashed()->findOrFail($id);
+        $value->restore();
+        return redirect()->route('attributeValues.list')->with('success', 'Đã khôi phục thành công!');
+    }
+
+    public function trash()
+    {
+        $attributeValues = AttributeValue::onlyTrashed()->get();
+        return view('admins.attributevalues.attributevaluelist', compact('attributeValues'))->with('trash', true);
     }
 }

@@ -16,10 +16,14 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center gap-1">
                                 <h4 class="card-title flex-grow-1">All Categories List</h4>
-
-                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary">
-                                    Add Category
-                                </a>
+                                <div>
+                                    @if (!isset($trash) || !$trash)
+                                        <a href="{{ route('categories.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
+                                    @else
+                                        <a href="{{ route('categories.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
+                                    @endif
+                                </div>
+                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary">Add Category</a>
 
                                 <div class="dropdown">
                                     <a href="#" class="dropdown-toggle btn btn-sm btn-outline-light"
@@ -59,7 +63,7 @@
                                         </thead>
 
                                         <tbody>
-                                            @foreach ($categories as $category)
+                                            @forelse ($categories as $category)
                                                 <tr>
                                                     <td>
                                                         <div class="form-check">
@@ -111,32 +115,38 @@
 
                                                     <td>
                                                         <div class="d-flex gap-2 align-items-center">
-                                                            <!-- Nút Sửa -->
-                                                            <a href="{{ route('categories.edit', $category->id) }}"
-                                                                class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2"
-                                                                style="height: 32px; width: 32px;">
-                                                                <iconify-icon icon="solar:pen-2-broken"
-                                                                    class="align-middle fs-18"></iconify-icon>
-                                                            </a>
-
-                                                            <!-- Nút Xoá -->
-                                                            <form action="{{ route('categories.destroy', $category->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Bạn có chắc muốn xoá danh mục này không?');">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1"
-                                                                    style="height: 32px; width: 32px;">
-                                                                    <iconify-icon
-                                                                        icon="solar:trash-bin-minimalistic-2-broken"
-                                                                        class="align-middle fs-18"></iconify-icon>
-                                                                </button>
-                                                            </form>
+                                                            @if (!isset($trash) || !$trash)
+                                                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2" style="height: 32px; width: 32px;">
+                                                                    <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                                </a>
+                                                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá danh mục này không?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;">
+                                                                        <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                                    </button>
+                                                                </form>
+                                                            @else
+                                                                <form action="{{ route('categories.restore', $category->id) }}" method="POST" style="display:inline-block">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-success btn-sm">Khôi phục</button>
+                                                                </form>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            @empty
+                                                <tr>
+                                                    <td colspan="9" class="text-center">
+                                                        @if (isset($trash) && $trash)
+                                                            Không có danh mục nào trong thùng rác.
+                                                        @else
+                                                            Không có danh mục nào.
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>

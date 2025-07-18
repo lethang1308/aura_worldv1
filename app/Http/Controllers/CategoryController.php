@@ -90,14 +90,27 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
-
-        // Nếu là danh mục cha và có danh mục con, thì không cho xóa
         if ($category->children()->count() > 0) {
             return redirect()->back()->with('error', 'Không thể xóa danh mục cha đang có danh mục con!');
         }
-
+        $category->status = 'inactive';
+        $category->save();
         $category->delete();
-
         return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
+    }
+
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+        $category->restore();
+        $category->status = 'active';
+        $category->save();
+        return redirect()->route('categories.index')->with('success', 'Khôi phục danh mục thành công!');
+    }
+
+    public function trash()
+    {
+        $categories = Category::onlyTrashed()->get();
+        return view('admins.categories.categorylist', compact('categories'))->with('trash', true);
     }
 }

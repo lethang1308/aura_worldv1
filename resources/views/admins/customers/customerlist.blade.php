@@ -11,6 +11,13 @@
                                 <div>
                                     <h4 class="card-title">All Customers List</h4>
                                 </div>
+                                <div>
+                                    @if (!isset($trash) || !$trash)
+                                        <a href="{{ route('customers.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
+                                    @else
+                                        <a href="{{ route('customers.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
+                                    @endif
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table align-middle mb-0 table-hover table-centered">
@@ -60,26 +67,40 @@
 
                                                 <td>
                                                     <div class="d-flex gap-2">
-                                                        <a href="{{ route('customers.edit', $customer->id) }}"
-                                                            class="btn btn-soft-primary btn-sm">
-                                                            <iconify-icon icon="solar:pen-2-broken"
-                                                                class="align-middle fs-18"></iconify-icon>
-                                                        </a>
-                                                        <form action="{{ route('customers.destroy', $customer->id) }}"
-                                                            method="POST" onsubmit="return confirm('Are you sure?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-soft-danger btn-sm">
-                                                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken"
+                                                        @if (!isset($trash) || !$trash)
+                                                            <a href="{{ route('customers.edit', $customer->id) }}"
+                                                                class="btn btn-soft-primary btn-sm">
+                                                                <iconify-icon icon="solar:pen-2-broken"
                                                                     class="align-middle fs-18"></iconify-icon>
-                                                            </button>
-                                                        </form>
+                                                            </a>
+                                                            <form action="{{ route('customers.destroy', $customer->id) }}"
+                                                                method="POST" onsubmit="return confirm('Are you sure?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-soft-danger btn-sm">
+                                                                    <iconify-icon icon="solar:trash-bin-minimalistic-2-broken"
+                                                                        class="align-middle fs-18"></iconify-icon>
+                                                                </button>
+                                                            </form>
+                                                        @else
+                                                            <form action="{{ route('customers.restore', $customer->id) }}" method="POST" style="display:inline-block">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit" class="btn btn-success btn-sm">Khôi phục</button>
+                                                            </form>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center">No customers found.</td>
+                                                <td colspan="7" class="text-center">
+                                                    @if (isset($trash) && $trash)
+                                                        Không có khách hàng nào trong thùng rác.
+                                                    @else
+                                                        No customers found.
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
