@@ -14,6 +14,8 @@ class AttributeValue extends Model
 
     protected $fillable = ['attribute_id', 'value'];
 
+    protected $dates = ['deleted_at'];
+
     public function attribute()
     {
         return $this->belongsTo(Attribute::class);

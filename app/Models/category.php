@@ -20,6 +20,7 @@ class Category extends Model
         'status',
     ];
 
+    protected $dates = ['deleted_at'];
 
     /**
      * Get the parent category of this category.

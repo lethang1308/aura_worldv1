@@ -15,6 +15,7 @@ class Attribute extends Model
     protected $table = 'attributes';
     // khóa chính
     protected $primaryKey = 'id';
+    protected $dates = ['deleted_at'];
     public function attributeValues()
     {
         return $this->hasMany(AttributeValue::class);

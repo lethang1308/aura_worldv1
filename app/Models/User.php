@@ -28,6 +28,7 @@ class User extends Authenticatable
         'is_active',
     ];
     protected $table = 'users';
+    protected $dates = ['deleted_at'];
     /**
      * The attributes that should be hidden for serialization.
      *
