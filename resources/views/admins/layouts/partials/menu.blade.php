@@ -6,7 +6,7 @@
               <img src="{{ asset('admin/assets/images/logo-dark.png') }}" class="logo-lg" alt="logo dark">
          </a>
 
-         <a href="index-2.html" class="logo-light">
+         <a href="index-2.html" class="logo-light mt-3">
          <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
          <img src="{{ asset('admin/assets/images/logo-light.png') }}" class="logo-lg" alt="logo light">
          </a>
@@ -41,19 +41,10 @@
                    <div class="collapse" id="sidebarProducts">
                         <ul class="nav sub-navbar-nav">
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="product-list.html">List</a>
+                                  <a class="sub-nav-link" href="{{ route('products.index') }}">List</a>
                              </li>
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="product-grid.html">Grid</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="product-details.html">Details</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="product-edit.html">Edit</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="product-add.html">Create</a>
+                                  <a class="sub-nav-link" href="{{ route('products.create') }}">Create</a>
                              </li>
                         </ul>
                    </div>
@@ -69,33 +60,10 @@
                    <div class="collapse" id="sidebarCategory">
                         <ul class="nav sub-navbar-nav">
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="category-list.html">List</a>
+                                  <a class="sub-nav-link" href="{{ route('categories.index') }}">List</a>
                              </li>                         
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="category-edit.html">Edit</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="category-add.html">Create</a>
-                             </li>
-                        </ul>
-                   </div>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link menu-arrow" href="#sidebarInventory" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarInventory">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:box-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Inventory </span>
-                   </a>
-                   <div class="collapse" id="sidebarInventory">
-                        <ul class="nav sub-navbar-nav">
-
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="inventory-warehouse.html">Warehouse</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="inventory-received-orders.html">Received Orders</a>
+                                  <a class="sub-nav-link" href="{{ route('categories.create') }}">Create</a>
                              </li>
                         </ul>
                    </div>
@@ -172,48 +140,6 @@
               </li>
 
               <li class="nav-item">
-                   <a class="nav-link menu-arrow" href="#sidebarInvoice" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarInvoice">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:bill-list-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Invoices </span>
-                   </a>
-                   <div class="collapse" id="sidebarInvoice">
-                        <ul class="nav sub-navbar-nav">
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="invoice-list.html">List</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="invoice-details.html">Details</a>
-                             </li>                            
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="invoice-add.html">Create</a>
-                             </li>
-                        </ul>
-                   </div>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="settings.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:settings-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Settings </span>
-                   </a>
-              </li>
-
-              <li class="menu-title mt-2">Users</li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="pages-profile.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Profile </span>
-                   </a>
-              </li>
-
-              <li class="nav-item">
                    <a class="nav-link menu-arrow" href="#sidebarRoles" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarRoles">
                         <span class="nav-icon">
                              <iconify-icon icon="solar:user-speak-rounded-bold-duotone"></iconify-icon>
@@ -238,15 +164,6 @@
               </li>
 
               <li class="nav-item">
-                   <a class="nav-link" href="pages-permissions.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:checklist-minimalistic-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Permissions </span>
-                   </a>
-              </li>
-
-              <li class="nav-item">
                    <a class="nav-link menu-arrow" href="#sidebarCustomers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarCustomers">
                         <span class="nav-icon">
                              <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
@@ -257,35 +174,7 @@
                         <ul class="nav sub-navbar-nav">
 
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="customer-list.html">List</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="customer-detail.html">Details</a>
-                             </li>
-                        </ul>
-                   </div>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link menu-arrow" href="#sidebarSellers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSellers">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Sellers </span>
-                   </a>
-                   <div class="collapse" id="sidebarSellers">
-                        <ul class="nav sub-navbar-nav">
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="seller-list.html">List</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="seller-details.html">Details</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="seller-edit.html">Edit</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="seller-add.html">Create</a>
+                                  <a class="sub-nav-link" href="{{ route('customers.index') }}">List</a>
                              </li>
                         </ul>
                    </div>
@@ -318,44 +207,6 @@
                              <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
                         </span>
                         <span class="nav-text"> Reviews </span>
-                   </a>
-              </li>
-
-              <li class="menu-title mt-2">Other Apps</li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="apps-chat.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:chat-round-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Chat </span>
-                   </a>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="apps-email.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:mailbox-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Email </span>
-                   </a>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="apps-calendar.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Calendar </span>
-                   </a>
-              </li>
-
-              <li class="nav-item">
-                   <a class="nav-link" href="apps-todo.html">
-                        <span class="nav-icon">
-                             <iconify-icon icon="solar:checklist-bold-duotone"></iconify-icon>
-                        </span>
-                        <span class="nav-text"> Todo </span>
                    </a>
               </li>
 

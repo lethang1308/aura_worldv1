@@ -1,4 +1,4 @@
-<style type="text/css" data-href="lib\style.css">.star-rating {
+.star-rating {
   width: 0;
   position: relative;
   display: inline-block;
@@ -630,4 +630,4 @@
 
 .apexcharts-rangebar-goals-markers{
   pointer-events: none
-}</style>
+}
