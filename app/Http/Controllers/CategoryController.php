@@ -40,7 +40,7 @@ class CategoryController extends Controller
             'category_name' => 'required|string|max:255',
             'parent_category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'status' => 'required|in:active,deactive',
+            'status' => 'required|in:0,1',
         ]);
 
         // Tạo danh mục mới
@@ -72,7 +72,7 @@ class CategoryController extends Controller
             'category_name' => 'required|string|max:255',
             'parent_category_id' => 'nullable|exists:categories,id|not_in:' . $id,
             'description' => 'nullable|string',
-            'status' => 'required|in:active,deactive',
+            'status' => 'required|in:0,1',
         ]);
 
         $category = Category::findOrFail($id);

@@ -49,8 +49,8 @@
                                 <div class="col-lg-6">
                                     <label for="status" class="form-label">Trạng thái</label>
                                     <select name="status" id="status" class="form-select" required>
-                                        <option value="active" {{ old('status', $category->status) == 'active' ? 'selected' : '' }}>Hoạt động</option>
-                                        <option value="deactive" {{ old('status', $category->status) == 'deactive' ? 'selected' : '' }}>Không hoạt động</option>
+                                        <option value="1" {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Hoạt động</option>
+                                        <option value="0" {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Không hoạt động</option>
                                     </select>
                                 </div>
 

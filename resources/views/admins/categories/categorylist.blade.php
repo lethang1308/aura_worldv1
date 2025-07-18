@@ -91,9 +91,9 @@
                                                         </p>
                                                     </td>
                                                     <td>
-                                                        @if ($category->status === 'active')
+                                                        @if ($category->status === '1')
                                                             <span class="badge bg-success">Đang hoạt động</span>
-                                                        @elseif($category->status === 'deactive')
+                                                        @elseif($category->status === '0')
                                                             <span class="badge bg-danger">Ngừng hoạt động</span>
                                                         @else
                                                             <span class="badge bg-secondary">Không xác định</span>

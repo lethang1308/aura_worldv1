@@ -6,7 +6,7 @@
               <img src="{{ asset('admin/assets/images/logo-dark.png') }}" class="logo-lg" alt="logo dark">
          </a>
 
-         <a href="index-2.html" class="logo-light">
+         <a href="index-2.html" class="logo-light mt-3">
          <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
          <img src="{{ asset('admin/assets/images/logo-light.png') }}" class="logo-lg" alt="logo light">
          </a>
@@ -174,10 +174,7 @@
                         <ul class="nav sub-navbar-nav">
 
                              <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="customer-list.html">List</a>
-                             </li>
-                             <li class="sub-nav-item">
-                                  <a class="sub-nav-link" href="customer-detail.html">Details</a>
+                                  <a class="sub-nav-link" href="{{ route('customers.index') }}">List</a>
                              </li>
                         </ul>
                    </div>
