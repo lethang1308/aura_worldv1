@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -81,6 +82,12 @@ Route::put('/attributevalues/{id}', [AttributeValueController::class, 'update'])
 Route::delete('/attributevalues/{id}', [AttributeValueController::class, 'destroy'])->name('attributeValues.destroy');
 Route::patch('/attributevalues/{id}/restore', [AttributeValueController::class, 'restore'])->name('attributeValues.restore');
 Route::get('/attributevalues/trash', [AttributeValueController::class, 'trash'])->name('attributeValues.trash');
+
+// Forgot password
+Route::get('/password/forgot', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 // Admin route
 Route::get('/', [AdminController::class, 'index'])->name('admin.list');
