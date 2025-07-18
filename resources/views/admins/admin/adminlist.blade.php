@@ -44,17 +44,17 @@
                                                 <td>{{ $admin->phone ?? 'Admin để trống' }}</td>
                                                 <td>{{ $admin->address ?? 'Admin để trống' }}</td>
                                                 <td>
-                                                    @if ($customer->is_active)
+                                                    @if ($admin->is_active)
                                                         <span class="badge bg-success">Active</span>
                                                     @else
                                                         <span class="badge bg-danger">Inactive</span>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    {{ $customer->created_at ? $customer->created_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    {{ $admin->created_at ? $admin->created_at->format('d/m/Y H:i') : 'N/A' }}
                                                 </td>
                                                 <td>
-                                                    {{ $customer->updated_at ? $customer->updated_at->format('d/m/Y H:i') : 'N/A' }}
+                                                    {{ $admin->updated_at ? $admin->updated_at->format('d/m/Y H:i') : 'N/A' }}
                                                 </td>
                                             </tr>
                                         @empty
