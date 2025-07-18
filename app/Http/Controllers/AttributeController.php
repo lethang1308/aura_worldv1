@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Attribute;
+use Illuminate\Http\Request;
+
+class AttributeController extends Controller
+{
+    // 1. Danh sách thuộc tính
+    public function index()
+    {
+        // Lấy tất cả thuộc tính kèm theo các giá trị (dùng eager loading)
+        $attributes = Attribute::with('attributeValues')->latest()->get();
+
+        // Trả về view và truyền dữ liệu attributes
+        return view('admins.attributes.attributelist', compact('attributes'));
+    }
+
+    // 2. Hiển thị form tạo mới
+    public function create()
+    {
+        // Trả về view 'admin.attributes.create'
+        return view('admins.attributes.attributecreate');
+    }
+
+    // 3. Lưu thuộc tính mới
+    public function store(Request $request)
+    {
+        // Validate dữ liệu đầu vào
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        // Tạo mới thuộc tính
+        Attribute::create([
+            'name' => $request->name,
+        ]);
+
+        // Redirect về danh sách với thông báo thành công
+        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được tạo thành công!');
+    }
+
+    // 4. Hiển thị form chỉnh sửa thuộc tính
+    public function edit($id)
+    {
+        // Tìm attribute theo id (hoặc trả về 404 nếu không tồn tại)
+        $attribute = Attribute::findOrFail($id);
+
+        // Trả về view chỉnh sửa và truyền dữ liệu attribute vào
+        return view('admins.attributes.attributeedit', compact('attribute'));
+    }
+
+
+
+    // 5. Cập nhật thuộc tính
+    public function update(Request $request, $id)
+    {
+        // 1. Validate dữ liệu đầu vào
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        // 2. Tìm attribute theo ID
+        $attribute = Attribute::findOrFail($id);
+
+        // 3. Cập nhật thuộc tính
+        $attribute->update([
+            'name' => $request->name,
+        ]);
+
+        // 4. Redirect kèm thông báo
+        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được cập nhật thành công!');
+    }
+
+
+    // 6. Xoá thuộc tính
+    public function destroy($id)
+    {
+        // 1. Tìm attribute theo ID
+        $attribute = Attribute::findOrFail($id);
+
+        // 2. Xoá các giá trị liên quan nếu có quan hệ (nếu thiết kế như vậy)
+        // Giả sử quan hệ là: $attribute->attributeValues()
+        if ($attribute->attributeValues()->exists()) {
+            $attribute->attributeValues()->delete();
+        }
+
+        // 3. Xoá attribute
+        $attribute->delete();
+
+        // 4. Redirect về danh sách với thông báo
+        return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được xoá thành công!');
+    }
+}

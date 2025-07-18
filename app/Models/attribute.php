@@ -13,8 +13,8 @@ class Attribute extends Model
     // tên bảng
     protected $table = 'attributes';
     // khóa chính
-    protected $primarykey = 'id';
-    public function attributesValues()
+    protected $primaryKey = 'id';
+    public function attributeValues()
     {
         return $this->hasMany(AttributeValue::class);
     }
