@@ -11,6 +11,34 @@
 
             <!-- Start Container Fluid -->
             <div class="container-xxl">
+                {{-- Hiển thị thông báo thành công --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Hiển thị thông báo lỗi --}}
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                {{-- Hiển thị lỗi từ validator --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card">

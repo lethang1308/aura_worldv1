@@ -41,8 +41,8 @@
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Trạng thái</label>
                                     <select name="status" class="form-select" required>
-                                        <option value="active">Đang hoạt động</option>
-                                        <option value="deactive">Ngừng hoạt động</option>
+                                        <option value="1">Đang hoạt động</option>
+                                        <option value="0">Ngừng hoạt động</option>
                                     </select>
                                 </div>
 
