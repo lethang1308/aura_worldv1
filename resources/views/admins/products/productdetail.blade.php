@@ -79,6 +79,8 @@
                                     </div>
                                     <h2 class="fw-medium my-3">${{ $product->base_price }} <span class="fs-16"></span></h2>
 
+                                    <p><strong>Thương hiệu:</strong> {{ $product->brand->name ?? 'Không có' }}</p>
+
                                     <h4 class="text-dark fw-medium">Description :</h4>
                                     <p class="text-muted">{{ $product->description ?? 'No description available.' }}</p>
 

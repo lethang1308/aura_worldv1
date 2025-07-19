@@ -11,7 +11,7 @@ class ProductImageController extends Controller
 
     public function index()
     {
-        $images = \App\Models\ProductImage::with('product')->latest()->get();
+        $images = ProductImage::with('product')->latest()->paginate(8);
         return view('admins.images.imageslist', compact('images'));
     }
     public function destroy($id)

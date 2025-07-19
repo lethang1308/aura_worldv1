@@ -11,7 +11,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'category_id', 'base_price'];
+    protected $fillable = ['name', 'description', 'category_id', 'base_price', 'brand_id'];
 
     protected $table = 'products';
     protected $primaryKey = 'id';
@@ -35,6 +35,6 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->belongsTo(\App\Models\Brand::class, 'brand_id');
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 }

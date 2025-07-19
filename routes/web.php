@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductImageController;
 
 Route::get('/', function () {
@@ -85,10 +86,10 @@ Route::patch('/attributevalues/{id}/restore', [AttributeValueController::class, 
 Route::get('/attributevalues/trash', [AttributeValueController::class, 'trash'])->name('attributeValues.trash');
 
 // Forgot password
-Route::get('/password/forgot', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
-Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('/password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
+Route::get('/password/forgot', [ForgotPasswordController::class, 'showForgotForm'])->name('password.forgot');
+Route::post('/password/forgot', [ForgotPasswordController::class, 'handleForgotPassword'])->name('password.handleForgot');
+Route::get('/password/reset', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::put('/password/reset', [ForgotPasswordController::class, 'handleResetPassword'])->name('password.handleReset');
 
 // Admin route
 Route::get('/', [AdminController::class, 'index'])->name('admin.list');
@@ -98,11 +99,11 @@ Route::delete('/products/images/{id}', [ProductImageController::class, 'destroy'
 Route::get('/images', [ProductImageController::class, 'index'])->name('products.images.list');
 
 // Brand routes
-Route::get('/brands', [App\Http\Controllers\BrandController::class, 'index'])->name('brands.index');
-Route::get('/brands/create', [App\Http\Controllers\BrandController::class, 'create'])->name('brands.create');
-Route::post('/brands', [App\Http\Controllers\BrandController::class, 'store'])->name('brands.store');
-Route::get('/brands/{id}/edit', [App\Http\Controllers\BrandController::class, 'edit'])->name('brands.edit');
-Route::put('/brands/{id}', [App\Http\Controllers\BrandController::class, 'update'])->name('brands.update');
-Route::delete('/brands/{id}', [App\Http\Controllers\BrandController::class, 'destroy'])->name('brands.destroy');
-Route::patch('/brands/{id}/restore', [App\Http\Controllers\BrandController::class, 'restore'])->name('brands.restore');
-Route::get('/brands/trash', [App\Http\Controllers\BrandController::class, 'trash'])->name('brands.trash');
+Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
+Route::get('/brands/create', [BrandController::class, 'create'])->name('brands.create');
+Route::post('/brands', [BrandController::class, 'store'])->name('brands.store');
+Route::get('/brands/{id}/edit', [BrandController::class, 'edit'])->name('brands.edit');
+Route::put('/brands/{id}', [BrandController::class, 'update'])->name('brands.update');
+Route::delete('/brands/{id}', [BrandController::class, 'destroy'])->name('brands.destroy');
+Route::patch('/brands/{id}/restore', [BrandController::class, 'restore'])->name('brands.restore');
+Route::get('/brands/trash', [BrandController::class, 'trash'])->name('brands.trash');

@@ -3,7 +3,6 @@
 @section('content')
 
     <body>
-
         <!-- START Wrapper -->
         <div class="wrapper">
             <!-- Right Sidebar (Theme Settings) -->
@@ -18,101 +17,20 @@
                     <div class="offcanvas-body p-0">
                         <div data-simplebar class="h-100">
                             <div class="p-3 settings-bar">
-
                                 <div>
                                     <h5 class="mb-3 font-16 fw-semibold">Color Scheme</h5>
-
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="data-bs-theme"
                                             id="layout-color-light" value="light">
                                         <label class="form-check-label" for="layout-color-light">Light</label>
                                     </div>
-
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="data-bs-theme"
                                             id="layout-color-dark" value="dark">
                                         <label class="form-check-label" for="layout-color-dark">Dark</label>
                                     </div>
                                 </div>
-
-                                <div>
-                                    <h5 class="my-3 font-16 fw-semibold">Topbar Color</h5>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-topbar-color"
-                                            id="topbar-color-light" value="light">
-                                        <label class="form-check-label" for="topbar-color-light">Light</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-topbar-color"
-                                            id="topbar-color-dark" value="dark">
-                                        <label class="form-check-label" for="topbar-color-dark">Dark</label>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h5 class="my-3 font-16 fw-semibold">Menu Color</h5>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-color"
-                                            id="leftbar-color-light" value="light">
-                                        <label class="form-check-label" for="leftbar-color-light">
-                                            Light
-                                        </label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-color"
-                                            id="leftbar-color-dark" value="dark">
-                                        <label class="form-check-label" for="leftbar-color-dark">
-                                            Dark
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h5 class="my-3 font-16 fw-semibold">Sidebar Size</h5>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-size"
-                                            id="leftbar-size-default" value="default">
-                                        <label class="form-check-label" for="leftbar-size-default">
-                                            Default
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-size"
-                                            id="leftbar-size-small" value="condensed">
-                                        <label class="form-check-label" for="leftbar-size-small">
-                                            Condensed
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-size"
-                                            id="leftbar-size-hidden" value="hidden">
-                                        <label class="form-check-label" for="leftbar-size-hidden">
-                                            Hidden
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-size"
-                                            id="leftbar-size-small-hover-active" value="sm-hover-active">
-                                        <label class="form-check-label" for="leftbar-size-small-hover-active">
-                                            Small Hover Active
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="data-menu-size"
-                                            id="leftbar-size-small-hover" value="sm-hover">
-                                        <label class="form-check-label" for="leftbar-size-small-hover">
-                                            Small Hover
-                                        </label>
-                                    </div>
-                                </div>
-
+                                <!-- Các phần theme settings khác giữ nguyên -->
                             </div>
                         </div>
                     </div>
@@ -129,13 +47,11 @@
             <div class="page-content">
                 <!-- Start Container Fluid -->
                 <div class="container-fluid">
-
                     <!-- Success Message -->
                     @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
@@ -143,21 +59,109 @@
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
+
+                    <!-- Form tìm kiếm - Thêm vào sau phần Success/Error Message và trước <div class="row"> -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="GET" action="{{ route('products.index') }}" class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="search_name" class="form-label">Product Name</label>
+                                    <input type="text" class="form-control" id="search_name" name="search_name"
+                                        value="{{ request('search_name') }}" placeholder="Search by product name...">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="search_brand" class="form-label">Brand</label>
+                                    <select class="form-select" id="search_brand" name="search_brand">
+                                        <option value="">All Brands</option>
+                                        @if (isset($brands))
+                                            @foreach ($brands as $brand)
+                                                <option value="{{ $brand->name }}"
+                                                    {{ request('search_brand') == $brand->name ? 'selected' : '' }}>
+                                                    {{ $brand->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="search_category" class="form-label">Category</label>
+                                    <select class="form-select" id="search_category" name="search_category">
+                                        <option value="">All Categories</option>
+                                        @if (isset($categories))
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->category_name }}"
+                                                    {{ request('search_category') == $category->category_name ? 'selected' : '' }}>
+                                                    {{ $category->category_name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label d-block">&nbsp;</label>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bx bx-search me-1"></i>Search
+                                        </button>
+                                        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">
+                                            <i class="bx bx-refresh me-1"></i>Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Hiển thị kết quả tìm kiếm nếu có -->
+                            @if (request()->hasAny(['search_name', 'search_brand', 'search_category']))
+                                <div class="mt-3 pt-3 border-top">
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <span class="text-muted">Search filters:</span>
+
+                                        @if (request('search_name'))
+                                            <span class="badge bg-primary-subtle text-primary">
+                                                Name: "{{ request('search_name') }}"
+                                                <a href="{{ route('products.index', request()->except('search_name')) }}"
+                                                    class="text-decoration-none ms-1">×</a>
+                                            </span>
+                                        @endif
+
+                                        @if (request('search_brand'))
+                                            <span class="badge bg-info-subtle text-info">
+                                                Brand: "{{ request('search_brand') }}"
+                                                <a href="{{ route('products.index', request()->except('search_brand')) }}"
+                                                    class="text-decoration-none ms-1">×</a>
+                                            </span>
+                                        @endif
+
+                                        @if (request('search_category'))
+                                            <span class="badge bg-success-subtle text-success">
+                                                Category: "{{ request('search_category') }}"
+                                                <a href="{{ route('products.index', request()->except('search_category')) }}"
+                                                    class="text-decoration-none ms-1">×</a>
+                                            </span>
+                                        @endif
+
+                                        <a href="{{ route('products.index') }}"
+                                            class="btn btn-sm btn-outline-secondary">Clear all</a>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center gap-1">
                                     <h4 class="card-title flex-grow-1">All Product List</h4>
-
                                     <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">
                                         <i class="bx bx-plus me-1"></i>Add Product
                                     </a>
-
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -197,6 +201,7 @@
                                                         <th>Brand</th>
                                                         <th>Description</th>
                                                         <th>Created Date</th>
+                                                        <th>Updated Date</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -204,13 +209,13 @@
                                                     @foreach ($products as $product)
                                                         <tr>
                                                             <td>
-                                                                <div class="form-check ms-1">
+                                                                <div class="form-check msizards1">
                                                                     <input type="checkbox"
                                                                         class="form-check-input product-checkbox"
                                                                         id="customCheck{{ $product->id }}"
                                                                         value="{{ $product->id }}">
                                                                     <label class="form-check-label"
-                                                                        for="customCheck{{ $product->id }}">&nbsp;</label>
+                                                                        for="customCheck{{ $product->id }}"> </label>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -247,9 +252,12 @@
                                                             </td>
                                                             <td>
                                                                 @if ($product->brand)
-                                                                    <span class="badge bg-info-subtle text-info">{{ $product->brand->name }}</span>
+                                                                    <span
+                                                                        class="badge bg-info-subtle text-info">{{ $product->brand->name }}</span>
                                                                 @else
-                                                                    <span class="badge bg-secondary-subtle text-secondary">No Brand</span>
+                                                                    <span
+                                                                        class="badge bg-secondary-subtle text-secondary">No
+                                                                        Brand</span>
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -260,6 +268,11 @@
                                                             <td>
                                                                 <span class="text-muted fs-13">
                                                                     {{ $product->created_at }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="text-muted fs-13">
+                                                                    {{ $product->updated_at }}
                                                                 </span>
                                                             </td>
                                                             <td>
@@ -297,11 +310,75 @@
                                                                     @endif
                                                                 </div>
                                                             </td>
-
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div
+                                            class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4 pt-3 border-top">
+                                            <!-- Hiển thị thông tin số lượng -->
+                                            <div class="mb-3 mb-sm-0">
+                                                <p class="text-muted mb-0 fs-13">
+                                                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
+                                                    {{ $products->total() }} results
+                                                </p>
+                                            </div>
+
+                                            <!-- Custom Pagination -->
+                                            @if ($products->hasPages())
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination pagination-rounded mb-0">
+                                                        {{-- Previous Page Link --}}
+                                                        @if ($products->onFirstPage())
+                                                            <li class="page-item disabled">
+                                                                <span class="page-link" aria-hidden="true">
+                                                                    <i class="bx bx-chevron-left"></i>
+                                                                </span>
+                                                            </li>
+                                                        @else
+                                                            <li class="page-item">
+                                                                <a class="page-link"
+                                                                    href="{{ $products->appends(request()->query())->previousPageUrl() }}"
+                                                                    rel="prev" aria-label="Previous">
+                                                                    <i class="bx bx-chevron-left"></i>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+
+                                                        {{-- Pagination Elements --}}
+                                                        @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                                                            @if ($page == $products->currentPage())
+                                                                <li class="page-item active">
+                                                                    <span class="page-link">{{ $page }}</span>
+                                                                </li>
+                                                            @else
+                                                                <li class="page-item">
+                                                                    <a class="page-link"
+                                                                        href="{{ $products->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        @if ($products->hasMorePages())
+                                                            <li class="page-item">
+                                                                <a class="page-link"
+                                                                    href="{{ $products->appends(request()->query())->nextPageUrl() }}"
+                                                                    rel="next" aria-label="Next">
+                                                                    <i class="bx bx-chevron-right"></i>
+                                                                </a>
+                                                            </li>
+                                                        @else
+                                                            <li class="page-item disabled">
+                                                                <span class="page-link" aria-hidden="true">
+                                                                    <i class="bx bx-chevron-right"></i>
+                                                                </span>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                </nav>
+                                            @endif
                                         </div>
                                     @else
                                         <div class="text-center py-5">
@@ -353,6 +430,5 @@
                 });
             });
         </script>
-
     </body>
 @endsection

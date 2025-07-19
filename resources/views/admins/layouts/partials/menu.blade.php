@@ -57,7 +57,28 @@
                                                 <a class="sub-nav-link" href="{{ route('products.create') }}">Create</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('products.images.list') }}">Product Images</a>
+                                                <a class="sub-nav-link"
+                                                    href="{{ route('products.images.list') }}">Product Images</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link menu-arrow" href="#sidebarSellers" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarSellers">
+                                        <span class="nav-icon">
+                                            <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
+                                        </span>
+                                        <span class="nav-text"> Brands </span>
+                                    </a>
+                                    <div class="collapse" id="sidebarSellers">
+                                        <ul class="nav sub-navbar-nav">
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('brands.index') }}">List</a>
+                                            </li>
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('brands.create') }}">Create</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -74,7 +95,8 @@
                                     <div class="collapse" id="sidebarCategory">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('categories.index') }}">List</a>
+                                                <a class="sub-nav-link"
+                                                    href="{{ route('categories.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
