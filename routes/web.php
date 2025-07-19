@@ -96,3 +96,13 @@ Route::get('/', [AdminController::class, 'index'])->name('admin.list');
 // Product Image routes
 Route::delete('/products/images/{id}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');
 Route::get('/images', [ProductImageController::class, 'index'])->name('products.images.list');
+
+// Brand routes
+Route::get('/brands', [App\Http\Controllers\BrandController::class, 'index'])->name('brands.index');
+Route::get('/brands/create', [App\Http\Controllers\BrandController::class, 'create'])->name('brands.create');
+Route::post('/brands', [App\Http\Controllers\BrandController::class, 'store'])->name('brands.store');
+Route::get('/brands/{id}/edit', [App\Http\Controllers\BrandController::class, 'edit'])->name('brands.edit');
+Route::put('/brands/{id}', [App\Http\Controllers\BrandController::class, 'update'])->name('brands.update');
+Route::delete('/brands/{id}', [App\Http\Controllers\BrandController::class, 'destroy'])->name('brands.destroy');
+Route::patch('/brands/{id}/restore', [App\Http\Controllers\BrandController::class, 'restore'])->name('brands.restore');
+Route::get('/brands/trash', [App\Http\Controllers\BrandController::class, 'trash'])->name('brands.trash');

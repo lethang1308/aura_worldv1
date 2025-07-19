@@ -84,6 +84,22 @@
                                         </div>
                                     </div>
 
+                                    {{-- Brand --}}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="product-brand" class="form-label">Brand</label>
+                                            <select class="form-control" id="product-brand" name="brand_id">
+                                                <option value="">Choose a brand</option>
+                                                @foreach ($brands as $brand)
+                                                    <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('brand_id')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     {{-- Description --}}
                                     <div class="row">
                                         <div class="col-lg-12">

@@ -194,6 +194,7 @@
                                                         <th>Product Name</th>
                                                         <th>Price</th>
                                                         <th>Category</th>
+                                                        <th>Brand</th>
                                                         <th>Description</th>
                                                         <th>Created Date</th>
                                                         <th>Action</th>
@@ -242,6 +243,13 @@
                                                                     <span
                                                                         class="badge bg-secondary-subtle text-secondary">No
                                                                         Category</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($product->brand)
+                                                                    <span class="badge bg-info-subtle text-info">{{ $product->brand->name }}</span>
+                                                                @else
+                                                                    <span class="badge bg-secondary-subtle text-secondary">No Brand</span>
                                                                 @endif
                                                             </td>
                                                             <td>

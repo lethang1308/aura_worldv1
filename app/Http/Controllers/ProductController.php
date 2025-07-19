@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Brand;
 
 class ProductController extends Controller
 {
@@ -20,8 +21,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::has('parent')->get();
-
-        return view('admins.products.productcreate', compact('categories'));
+        $brands = Brand::where('status', 'active')->get();
+        return view('admins.products.productcreate', compact('categories', 'brands'));
     }
 
     // Hiển thị chi tiết sản phẩm
@@ -39,6 +40,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'base_price' => 'required|numeric',
+            'brand_id' => 'nullable|exists:brands,id',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -73,7 +75,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::has('parent')->get();
-        return view('admins.products.productedit', compact('product', 'categories'));
+        $brands = Brand::where('status', 'active')->get();
+        return view('admins.products.productedit', compact('product', 'categories', 'brands'));
     }
 
     // Cập nhật sản phẩm
@@ -84,6 +87,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|integer',
             'base_price' => 'required|numeric',
+            'brand_id' => 'nullable|exists:brands,id',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 

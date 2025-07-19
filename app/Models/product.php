@@ -32,4 +32,9 @@ class Product extends Model
     {
         return $this->hasOne(ProductImage::class)->where('is_featured', 1);
     }
+
+    public function brand()
+    {
+        return $this->belongsTo(\App\Models\Brand::class, 'brand_id');
+    }
 }
