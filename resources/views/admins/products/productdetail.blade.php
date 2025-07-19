@@ -79,7 +79,19 @@
                                     </div>
                                     <h2 class="fw-medium my-3">${{ $product->base_price }} <span class="fs-16"></span></h2>
 
-                                    <p><strong>Thương hiệu:</strong> {{ $product->brand->name ?? 'Không có' }}</p>
+                                    <!-- Product Info Section -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <p class="mb-2"><strong>Thương hiệu:</strong> 
+                                                <span class="badge bg-primary">{{ $product->brand->name ?? 'N/A' }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2"><strong>Danh mục:</strong> 
+                                                <span class="badge bg-info">{{ $product->category->category_name ?? 'N/A' }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
 
                                     <h4 class="text-dark fw-medium">Description :</h4>
                                     <p class="text-muted">{{ $product->description ?? 'No description available.' }}</p>
@@ -104,14 +116,21 @@
                                         <ul class="d-flex flex-column gap-2 list-unstyled fs-14 text-muted mb-0">
                                             <li><span class="fw-medium text-dark">Product ID</span><span
                                                     class="mx-2">:</span>{{ $product->id }}</li>
-                                            <li><span class="fw-medium text-dark">Category ID</span><span
-                                                    class="mx-2">:</span>{{ $product->category_id }}</li>
+                                            <li><span class="fw-medium text-dark">Category</span><span
+                                                    class="mx-2">:</span>{{ $product->category->category_name ?? 'Không có' }} 
+                                                    <small class="text-muted">(ID: {{ $product->category_id }})</small></li>
+                                            <li><span class="fw-medium text-dark">Brand</span><span
+                                                    class="mx-2">:</span>{{ $product->brand->name ?? 'Không có' }}
+                                                    @if($product->brand)
+                                                        <small class="text-muted">(ID: {{ $product->brand->id }})</small>
+                                                    @endif
+                                            </li>
                                             <li><span class="fw-medium text-dark">Price</span><span
                                                     class="mx-2">:</span>${{ $product->base_price }}</li>
                                             <li><span class="fw-medium text-dark">Created</span><span
-                                                    class="mx-2">:</span>{{ $product->created_at }}</li>
+                                                    class="mx-2">:</span>{{ $product->created_at->format('d/m/Y H:i') }}</li>
                                             <li><span class="fw-medium text-dark">Updated</span><span
-                                                    class="mx-2">:</span>{{ $product->updated_at }}</li>
+                                                    class="mx-2">:</span>{{ $product->updated_at->format('d/m/Y H:i') }}</li>
                                         </ul>
                                     </div>
                                 </div>
