@@ -56,6 +56,9 @@
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link" href="{{ route('products.create') }}">Create</a>
                                             </li>
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('products.images.list') }}">Product Images</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>

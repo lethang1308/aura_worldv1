@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
+use App\Http\Controllers\ProductImageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -84,3 +85,7 @@ Route::get('/attributevalues/trash', [AttributeValueController::class, 'trash'])
 
 // Admin route
 Route::get('/', [AdminController::class, 'index'])->name('admin.list');
+
+// Product Image routes
+Route::delete('/products/images/{id}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');
+Route::get('/images', [ProductImageController::class, 'index'])->name('products.images.list');
