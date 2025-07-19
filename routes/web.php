@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 Route::get('/', function () {
     return view('welcome');
