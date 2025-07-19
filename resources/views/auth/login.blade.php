@@ -59,7 +59,7 @@
                                             <input type="email" id="example-email" name="email" class="form-control" placeholder="Enter your email" required>
                                         </div>
                                         <div class="mb-3">
-                                            <a href="auth-password.html" class="float-end text-muted text-unline-dashed ms-1">Reset password</a>
+                                            <a href="{{ route('password.request') }}" class="float-end text-muted text-unline-dashed ms-1">Quên mật khẩu?</a>
                                             <label class="form-label" for="example-password">Password</label>
                                             <input type="password" id="example-password" name="password" class="form-control" placeholder="Enter your password" required>
                                         </div>
