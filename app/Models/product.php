@@ -21,10 +21,15 @@ class Product extends Model
     }
     public function images()
     {
-        return $this->hasMany(productsImage::class, "product_id");
+        return $this->hasMany(ProductImage::class, 'product_id');
     }
     public function variants()
     {
         return $this->hasMany(Variants::class, 'product_id');
+    }
+
+    public function featuredImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_featured', 1);
     }
 }
