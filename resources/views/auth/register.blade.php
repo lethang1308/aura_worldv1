@@ -1,7 +1,5 @@
 <html lang="en" class="h-100" data-bs-theme="light" data-topbar-color="light" data-menu-color="dark"
     data-menu-size="sm-hover-active">
-<!-- Mirrored from techzaa.in/larkon/admin/auth-signup.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 22 May 2025 16:25:54 GMT -->
-
 <head>
     <!-- Title Meta -->
     <meta charset="utf-8">
@@ -26,44 +24,6 @@
 
     <!-- Theme Config js (Require in all Page) -->
     <script src="{{ asset('admin/assets/js/config.js') }}"></script>
-    <style type="text/css" data-href="lib\style.css">
-        .star-rating {
-            width: 0;
-            position: relative;
-            display: inline-block;
-            background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDguOSIgaGVpZ2h0PSIxMDMuNiIgdmlld0JveD0iMCAwIDEwOC45IDEwMy42Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2UzZTZlNjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPnN0YXJfMDwvdGl0bGU+PGcgaWQ9IkxheWVyXzIiIGRhdGEtbmFtZT0iTGF5ZXIgMiI+PGcgaWQ9IkxheWVyXzEtMiIgZGF0YS1uYW1lPSJMYXllciAxIj48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iMTA4LjkgMzkuNiA3MS4zIDM0LjEgNTQuNCAwIDM3LjYgMzQuMSAwIDM5LjYgMjcuMiA2Ni4xIDIwLjggMTAzLjYgNTQuNCA4NS45IDg4LjEgMTAzLjYgODEuNyA2Ni4xIDEwOC45IDM5LjYiLz48L2c+PC9nPjwvc3ZnPg0K);
-            background-position: 0 0;
-            background-repeat: repeat-x;
-            cursor: pointer;
-        }
-
-        .star-rating .star-value {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            background: url('data:image/svg+xml;base64,PHN2Zw0KCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwOC45IiBoZWlnaHQ9IjEwMy42IiB2aWV3Qm94PSIwIDAgMTA4LjkgMTAzLjYiPg0KCTxkZWZzPg0KCQk8c3R5bGU+LmNscy0xe2ZpbGw6I2YxYzk0Nzt9PC9zdHlsZT4NCgk8L2RlZnM+DQoJPHRpdGxlPnN0YXIxPC90aXRsZT4NCgk8ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIj4NCgkJPGcgaWQ9IkxheWVyXzEtMiIgZGF0YS1uYW1lPSJMYXllciAxIj4NCgkJCTxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI1NC40IDAgNzEuMyAzNC4xIDEwOC45IDM5LjYgODEuNyA2Ni4xIDg4LjEgMTAzLjYgNTQuNCA4NS45IDIwLjggMTAzLjYgMjcuMiA2Ni4xIDAgMzkuNiAzNy42IDM0LjEgNTQuNCAwIi8+DQoJCTwvZz4NCgk8L2c+DQo8L3N2Zz4NCg==');
-            background-repeat: repeat-x;
-        }
-
-        .star-rating.disabled {
-            cursor: default;
-        }
-
-        .star-rating.is-busy {
-            cursor: wait;
-        }
-
-        .star-rating .star-value.rtl {
-            -moz-transform: scaleX(-1);
-            -o-transform: scaleX(-1);
-            -webkit-transform: scaleX(-1);
-            transform: scaleX(-1);
-            filter: FlipH;
-            -ms-filter: "FlipH";
-            right: 0;
-            left: auto;
-        }
-    </style>
 </head>
 
 <body class="h-100">
@@ -191,7 +151,7 @@
                                 </div>
 
                                 <p class="mt-auto text-danger text-center">I already have an account <a
-                                        href="auth-signin.html" class="text-dark fw-bold ms-1">Sign In</a></p>
+                                        href="{{ asset('login')}}" class="text-dark fw-bold ms-1">Sign In</a></p>
                             </div>
                         </div>
                     </div>
@@ -227,6 +187,5 @@
         <path id="SvgjsPath1004" d="M0 0 "></path>
     </svg>
 </body>
-<!-- Mirrored from techzaa.in/larkon/admin/auth-signup.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 22 May 2025 16:25:54 GMT -->
 
 </html>
