@@ -119,7 +119,7 @@ class CategoryController extends Controller
 
     public function trash()
     {
-        $categories = Category::onlyTrashed()->get();
+        $categories = Category::onlyTrashed()->paginate(10);
         return view('admins.categories.categorylist', compact('categories'))->with('trash', true);
     }
 }

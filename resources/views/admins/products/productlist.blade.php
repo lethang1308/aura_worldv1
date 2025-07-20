@@ -159,6 +159,13 @@
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center gap-1">
                                     <h4 class="card-title flex-grow-1">All Product List</h4>
+                                    <div>
+                                        @if (!isset($trash) || !$trash)
+                                            <a href="{{ route('products.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
+                                        @else
+                                            <a href="{{ route('products.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
+                                        @endif
+                                    </div>
                                     <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">
                                         <i class="bx bx-plus me-1"></i>Add Product
                                     </a>
@@ -299,7 +306,7 @@
                                                                             </button>
                                                                         </form>
                                                                     @else
-                                                                        <form action="" method="POST"
+                                                                        <form action="{{ route('products.restore', $product->id) }}" method="POST"
                                                                             style="display:inline-block">
                                                                             @csrf
                                                                             @method('PATCH')
@@ -320,17 +327,21 @@
                                             <!-- Hiển thị thông tin số lượng -->
                                             <div class="mb-3 mb-sm-0">
                                                 <p class="text-muted mb-0 fs-13">
-                                                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
-                                                    {{ $products->total() }} results
+                                                    @if(method_exists($products, 'firstItem'))
+                                                        Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
+                                                        {{ $products->total() }} results
+                                                    @else
+                                                        Showing {{ $products->count() }} results
+                                                    @endif
                                                 </p>
                                             </div>
 
                                             <!-- Custom Pagination -->
-                                            @if ($products->hasPages())
+                                            @if(method_exists($products, 'hasPages') && $products->hasPages())
                                                 <nav aria-label="Page navigation">
                                                     <ul class="pagination pagination-rounded mb-0">
                                                         {{-- Previous Page Link --}}
-                                                        @if ($products->onFirstPage())
+                                                        @if(method_exists($products, 'onFirstPage') && $products->onFirstPage())
                                                             <li class="page-item disabled">
                                                                 <span class="page-link" aria-hidden="true">
                                                                     <i class="bx bx-chevron-left"></i>
@@ -347,21 +358,23 @@
                                                         @endif
 
                                                         {{-- Pagination Elements --}}
-                                                        @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-                                                            @if ($page == $products->currentPage())
-                                                                <li class="page-item active">
-                                                                    <span class="page-link">{{ $page }}</span>
-                                                                </li>
-                                                            @else
-                                                                <li class="page-item">
-                                                                    <a class="page-link"
-                                                                        href="{{ $products->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                                </li>
-                                                            @endif
-                                                        @endforeach
+                                                        @if(method_exists($products, 'getUrlRange'))
+                                                            @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                                                                @if ($page == $products->currentPage())
+                                                                    <li class="page-item active">
+                                                                        <span class="page-link">{{ $page }}</span>
+                                                                    </li>
+                                                                @else
+                                                                    <li class="page-item">
+                                                                        <a class="page-link"
+                                                                            href="{{ $products->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                                    </li>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
 
                                                         {{-- Next Page Link --}}
-                                                        @if ($products->hasMorePages())
+                                                        @if(method_exists($products, 'hasMorePages') && $products->hasMorePages())
                                                             <li class="page-item">
                                                                 <a class="page-link"
                                                                     href="{{ $products->appends(request()->query())->nextPageUrl() }}"
@@ -385,11 +398,25 @@
                                             <div class="mb-3">
                                                 <i class="bx bx-package" style="font-size: 48px; color: #6c757d;"></i>
                                             </div>
-                                            <h5 class="text-muted">No Products Found</h5>
-                                            <p class="text-muted">There are no products in the system yet.</p>
-                                            <a href="{{ route('products.create') }}" class="btn btn-primary">
-                                                <i class="bx bx-plus me-1"></i>Add First Product
-                                            </a>
+                                            <h5 class="text-muted">
+                                                @if (isset($trash) && $trash)
+                                                    Không có sản phẩm nào trong thùng rác.
+                                                @else
+                                                    No Products Found
+                                                @endif
+                                            </h5>
+                                            <p class="text-muted">
+                                                @if (isset($trash) && $trash)
+                                                    Không có sản phẩm nào đã xóa.
+                                                @else
+                                                    There are no products in the system yet.
+                                                @endif
+                                            </p>
+                                            @if (!isset($trash) || !$trash)
+                                                <a href="{{ route('products.create') }}" class="btn btn-primary">
+                                                    <i class="bx bx-plus me-1"></i>Add First Product
+                                                </a>
+                                            @endif
                                         </div>
                                     @endif
                                 </div>

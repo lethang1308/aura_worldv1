@@ -98,7 +98,7 @@ class BrandController extends Controller
 
     public function trash()
     {
-        $brands = Brand::onlyTrashed()->get();
+        $brands = Brand::onlyTrashed()->paginate(10);
         return view('admins.brands.brandlist', compact('brands'))->with('trash', true);
     }
 }

@@ -47,6 +47,8 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::patch('/products/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
+Route::get('/products/trash', [ProductController::class, 'trash'])->name('products.trash');
 
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

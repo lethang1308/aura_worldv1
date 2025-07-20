@@ -241,17 +241,21 @@
                                         <!-- Hiển thị thông tin số lượng -->
                                         <div class="mb-3 mb-sm-0">
                                             <p class="text-muted mb-0 fs-13">
-                                                Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of
-                                                {{ $categories->total() }} results
+                                                @if(method_exists($categories, 'firstItem'))
+                                                    Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of
+                                                    {{ $categories->total() }} results
+                                                @else
+                                                    Showing {{ $categories->count() }} results
+                                                @endif
                                             </p>
                                         </div>
 
                                         <!-- Custom Pagination -->
-                                        @if ($categories->hasPages())
+                                        @if(method_exists($categories, 'hasPages') && $categories->hasPages())
                                             <nav aria-label="Page navigation">
                                                 <ul class="pagination pagination-rounded mb-0">
                                                     {{-- Previous Page Link --}}
-                                                    @if ($categories->onFirstPage())
+                                                    @if(method_exists($categories, 'onFirstPage') && $categories->onFirstPage())
                                                         <li class="page-item disabled">
                                                             <span class="page-link" aria-hidden="true">
                                                                 <i class="bx bx-chevron-left"></i>
@@ -268,21 +272,23 @@
                                                     @endif
 
                                                     {{-- Pagination Elements --}}
-                                                    @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
-                                                        @if ($page == $categories->currentPage())
-                                                            <li class="page-item active">
-                                                                <span class="page-link">{{ $page }}</span>
-                                                            </li>
-                                                        @else
-                                                            <li class="page-item">
-                                                                <a class="page-link"
-                                                                    href="{{ $categories->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
+                                                    @if(method_exists($categories, 'getUrlRange'))
+                                                        @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
+                                                            @if ($page == $categories->currentPage())
+                                                                <li class="page-item active">
+                                                                    <span class="page-link">{{ $page }}</span>
+                                                                </li>
+                                                            @else
+                                                                <li class="page-item">
+                                                                    <a class="page-link"
+                                                                        href="{{ $categories->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
 
                                                     {{-- Next Page Link --}}
-                                                    @if ($categories->hasMorePages())
+                                                    @if(method_exists($categories, 'hasMorePages') && $categories->hasMorePages())
                                                         <li class="page-item">
                                                             <a class="page-link"
                                                                 href="{{ $categories->appends(request()->query())->nextPageUrl() }}" rel="next"

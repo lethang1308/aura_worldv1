@@ -60,6 +60,13 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center gap-1">
                                 <h4 class="card-title flex-grow-1">All Brand List</h4>
+                                <div>
+                                    @if (!isset($trash) || !$trash)
+                                        <a href="{{ route('brands.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
+                                    @else
+                                        <a href="{{ route('brands.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
+                                    @endif
+                                </div>
                                 <a href="{{ route('brands.create') }}" class="btn btn-sm btn-primary">
                                     <i class="bx bx-plus me-1"></i>Add Brand
                                 </a>
@@ -80,7 +87,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($brands as $brand)
+                                                @forelse ($brands as $brand)
                                                     <tr>
                                                         <td></td>
                                                         <td>
@@ -109,20 +116,38 @@
                                                         </td>
                                                         <td>
                                                             <div class="d-flex gap-2 align-items-center">
-                                                                <a href="{{ route('brands.edit', $brand->id) }}" class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2" style="height: 32px; width: 32px;">
-                                                                    <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
-                                                                </a>
-                                                                <form action="{{ route('brands.destroy', $brand->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá thương hiệu này không?');">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;">
-                                                                        <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
-                                                                    </button>
-                                                                </form>
+                                                                @if (!isset($trash) || !$trash)
+                                                                    <a href="{{ route('brands.edit', $brand->id) }}" class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2" style="height: 32px; width: 32px;">
+                                                                        <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                                    </a>
+                                                                    <form action="{{ route('brands.destroy', $brand->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá thương hiệu này không?');">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;">
+                                                                            <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                                        </button>
+                                                                    </form>
+                                                                @else
+                                                                    <form action="{{ route('brands.restore', $brand->id) }}" method="POST" style="display:inline-block">
+                                                                        @csrf
+                                                                        @method('PATCH')
+                                                                        <button type="submit" class="btn btn-success btn-sm">Khôi phục</button>
+                                                                    </form>
+                                                                @endif
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                @endforeach
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">
+                                                            @if (isset($trash) && $trash)
+                                                                Không có thương hiệu nào trong thùng rác.
+                                                            @else
+                                                                Không có thương hiệu nào.
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -132,17 +157,21 @@
                                         <!-- Hiển thị thông tin số lượng -->
                                         <div class="mb-3 mb-sm-0">
                                             <p class="text-muted mb-0 fs-13">
-                                                Showing {{ $brands->firstItem() }} to {{ $brands->lastItem() }} of
-                                                {{ $brands->total() }} results
+                                                @if(method_exists($brands, 'firstItem'))
+                                                    Showing {{ $brands->firstItem() }} to {{ $brands->lastItem() }} of
+                                                    {{ $brands->total() }} results
+                                                @else
+                                                    Showing {{ $brands->count() }} results
+                                                @endif
                                             </p>
                                         </div>
 
                                         <!-- Custom Pagination -->
-                                        @if ($brands->hasPages())
+                                        @if(method_exists($brands, 'hasPages') && $brands->hasPages())
                                             <nav aria-label="Page navigation">
                                                 <ul class="pagination pagination-rounded mb-0">
                                                     {{-- Previous Page Link --}}
-                                                    @if ($brands->onFirstPage())
+                                                    @if(method_exists($brands, 'onFirstPage') && $brands->onFirstPage())
                                                         <li class="page-item disabled">
                                                             <span class="page-link" aria-hidden="true">
                                                                 <i class="bx bx-chevron-left"></i>
@@ -159,21 +188,23 @@
                                                     @endif
 
                                                     {{-- Pagination Elements --}}
-                                                    @foreach ($brands->getUrlRange(1, $brands->lastPage()) as $page => $url)
-                                                        @if ($page == $brands->currentPage())
-                                                            <li class="page-item active">
-                                                                <span class="page-link">{{ $page }}</span>
-                                                            </li>
-                                                        @else
-                                                            <li class="page-item">
-                                                                <a class="page-link"
-                                                                    href="{{ $brands->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
+                                                    @if(method_exists($brands, 'getUrlRange'))
+                                                        @foreach ($brands->getUrlRange(1, $brands->lastPage()) as $page => $url)
+                                                            @if ($page == $brands->currentPage())
+                                                                <li class="page-item active">
+                                                                    <span class="page-link">{{ $page }}</span>
+                                                                </li>
+                                                            @else
+                                                                <li class="page-item">
+                                                                    <a class="page-link"
+                                                                        href="{{ $brands->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
 
                                                     {{-- Next Page Link --}}
-                                                    @if ($brands->hasMorePages())
+                                                    @if(method_exists($brands, 'hasMorePages') && $brands->hasMorePages())
                                                         <li class="page-item">
                                                             <a class="page-link"
                                                                 href="{{ $brands->appends(request()->query())->nextPageUrl() }}" rel="next"
@@ -198,11 +229,25 @@
                                         <div class="mb-3">
                                             <i class="bx bx-package" style="font-size: 48px; color: #6c757d;"></i>
                                         </div>
-                                        <h5 class="text-muted">No Brands Found</h5>
-                                        <p class="text-muted">There are no brands in the system yet.</p>
-                                        <a href="{{ route('brands.create') }}" class="btn btn-primary">
-                                            <i class="bx bx-plus me-1"></i>Add First Brand
-                                        </a>
+                                        <h5 class="text-muted">
+                                            @if (isset($trash) && $trash)
+                                                Không có thương hiệu nào trong thùng rác.
+                                            @else
+                                                No Brands Found
+                                            @endif
+                                        </h5>
+                                        <p class="text-muted">
+                                            @if (isset($trash) && $trash)
+                                                Không có thương hiệu nào đã xóa.
+                                            @else
+                                                There are no brands in the system yet.
+                                            @endif
+                                        </p>
+                                        @if (!isset($trash) || !$trash)
+                                            <a href="{{ route('brands.create') }}" class="btn btn-primary">
+                                                <i class="bx bx-plus me-1"></i>Add First Brand
+                                            </a>
+                                        @endif
                                     </div>
                                 @endif
                             </div>

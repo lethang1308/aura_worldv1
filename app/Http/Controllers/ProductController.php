@@ -150,7 +150,26 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        $product->status = 'inactive';
+        $product->save();
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công!');
+    }
+
+    public function restore($id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->restore();
+        $product->status = 'active';
+        $product->save();
+        return redirect()->route('products.index')->with('success', 'Khôi phục sản phẩm thành công!');
+    }
+
+    public function trash()
+    {
+        $products = Product::onlyTrashed()->paginate(6);
+        $brands = Brand::orderBy('name')->get();
+        $categories = Category::orderBy('category_name')->get();
+        return view('admins.products.productlist', compact('products', 'brands', 'categories'))->with('trash', true);
     }
 }
