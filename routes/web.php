@@ -16,6 +16,7 @@ use App\Http\Controllers\AttributeValueController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductImageController;
+use App\Http\Controllers\VariantController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -107,3 +108,17 @@ Route::put('/brands/{id}', [BrandController::class, 'update'])->name('brands.upd
 Route::delete('/brands/{id}', [BrandController::class, 'destroy'])->name('brands.destroy');
 Route::patch('/brands/{id}/restore', [BrandController::class, 'restore'])->name('brands.restore');
 Route::get('/brands/trash', [BrandController::class, 'trash'])->name('brands.trash');
+
+// Variant routes
+Route::get('/variants', [VariantController::class, 'index'])->name('variants.index');
+Route::get('/variants/create', [VariantController::class, 'create'])->name('variants.create');
+Route::post('/variants', [VariantController::class, 'store'])->name('variants.store');
+Route::get('/variants/{id}', [VariantController::class, 'show'])->name('variants.show');
+Route::get('/variants/{id}/edit', [VariantController::class, 'edit'])->name('variants.edit');
+Route::put('/variants/{id}', [VariantController::class, 'update'])->name('variants.update');
+Route::delete('/variants/{id}', [VariantController::class, 'destroy'])->name('variants.destroy');
+Route::patch('/variants/{id}/status', [VariantController::class, 'updateStatus'])->name('variants.updateStatus');
+Route::get('/variants/trash', [VariantController::class, 'trash'])->name('variants.trash');
+Route::patch('/variants/{id}/restore', [VariantController::class, 'restore'])->name('variants.restore');
+Route::delete('/variants/{id}/force-delete', [VariantController::class, 'forceDelete'])->name('variants.forceDelete');
+Route::get('/variants/product/{productId}/attributes', [VariantController::class, 'getAttributeValuesByProduct'])->name('variants.getAttributeValuesByProduct');

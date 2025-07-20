@@ -185,20 +185,23 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link menu-arrow" href="#sidebarInvoice" data-bs-toggle="collapse"
-                                        role="button" aria-expanded="false" aria-controls="sidebarInvoice">
+                                    <a class="nav-link menu-arrow" href="#sidebarVariants" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarVariants">
                                         <span class="nav-icon">
-                                            <iconify-icon icon="solar:bill-list-bold-duotone"></iconify-icon>
+                                            <iconify-icon icon="solar:package-bold-duotone"></iconify-icon>
                                         </span>
                                         <span class="nav-text"> Variants </span>
                                     </a>
-                                    <div class="collapse" id="sidebarInvoice">
+                                    <div class="collapse" id="sidebarVariants">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="invoice-list.html">List</a>
+                                                <a class="sub-nav-link" href="{{ route('variants.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="invoice-add.html">Create</a>
+                                                <a class="sub-nav-link" href="{{ route('variants.create') }}">Create</a>
+                                            </li>
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('variants.trash') }}">Trash</a>
                                             </li>
                                         </ul>
                                     </div>
