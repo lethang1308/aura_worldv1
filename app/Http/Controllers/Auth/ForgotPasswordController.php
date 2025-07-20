@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ForgotPassword;
+use App\Models\OtpCode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,63 +21,78 @@ class ForgotPasswordController extends Controller
         return view('auth.passwords.email');
     }
 
-    // Xử lý gửi email reset password
-    public function sendResetLinkEmail(Request $request)
+    public function handleForgotPassword(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
-        $token = Str::random(64);
-        $email = $request->email;
-
-        // Xóa token cũ (nếu có)
-        DB::table('password_reset_tokens')->where('email', $email)->delete();
-        // Lưu token mới
-        DB::table('password_reset_tokens')->insert([
-            'email' => $email,
-            'token' => $token,
-            'created_at' => Carbon::now(),
+        $error = [];
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|max:255|exists:users,email',
+        ], [
+            'email.required' => 'Email không được để trống',
+            'email.email' => 'Email không hợp lệ',
+            'email.exists' => 'Email không tồn tại trong hệ thống',
         ]);
 
-        // Gửi email
-        $resetLink = url('/password/reset/' . $token . '?email=' . urlencode($email));
-        Mail::raw('Click vào link sau để đặt lại mật khẩu: ' . $resetLink, function ($message) use ($email) {
-            $message->to($email)->subject('Đặt lại mật khẩu');
-        });
+        if ($validatedData) {
+            $otp = rand(100000, 999999);
+            $expiresAt = now()->addMinutes(10); // OTP sẽ hết hạn sau 10 phút
 
-        return back()->with('status', 'Đã gửi email đặt lại mật khẩu!');
+            OtpCode::updateOrCreate(
+                ['email' => $validatedData['email']],
+                ['otp' => $otp, 'expires_at' => $expiresAt]
+            );
+
+            try {
+                Mail::to($validatedData['email'])->queue(new ForgotPassword($otp));
+                return redirect()->route('password.reset')->with([
+                    'success' => 'Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra email để đặt lại mật khẩu.',
+                    'email' => $validatedData['email']
+                ]);
+            } catch (\Exception $e) {
+                $error = ['error' => 'Không thể gửi email. Vui lòng thử lại sau.'];
+                return redirect()->route('password.forgot')->withErrors($error)->withInput();
+            }
+        }
     }
-
-    // Hiển thị form đặt lại mật khẩu
-    public function showResetForm(Request $request, $token)
+    public function handleResetPassword(Request $request)
     {
-        $email = $request->query('email');
-        return view('auth.passwords.reset', compact('token', 'email'));
-    }
-
-    // Xử lý đặt lại mật khẩu
-    public function reset(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'token' => 'required',
-            'password' => 'required|confirmed|min:6',
+        $error = [];
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|max:255|exists:users,email',
+            'otp' => 'required|digits:6',
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'otp.required' => 'Mã OTP không được để trống',
+            'otp.digits' => 'Mã OTP phải có 6 chữ số',
+            'password.required' => 'Mật khẩu không được để trống',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp',
         ]);
-
-        $record = DB::table('password_reset_tokens')
-            ->where('email', $request->email)
-            ->where('token', $request->token)
+        $otpCode = OtpCode::where('email', $validatedData['email'])
+            ->where('otp', $validatedData['otp'])
+            ->where('expires_at', '>', now())
             ->first();
-
-        if (!$record || Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
-            return back()->withErrors(['email' => 'Token không hợp lệ hoặc đã hết hạn.']);
+        // dd($otpCode);
+        if (!$otpCode) {
+            $error = ['error' => 'Mã OTP không hợp lệ hoặc đã hết hạn'];
+            return redirect()->route('password.reset')->withErrors($error)->withInput();
         }
 
-        $user = User::where('email', $request->email)->first();
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        // Xóa token sau khi dùng
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-
-        return redirect()->route('login')->with('status', 'Đặt lại mật khẩu thành công!');
+        $user = User::where('email', $validatedData['email'])->first();
+        if ($user) {
+            // dd($validatedData);
+            $validatedData['password'] = Hash::make($validatedData['password']);
+            $user->update(['password' => $validatedData['password']]);
+            // Xóa mã OTP sau khi đặt lại mật khẩu thành công
+            $otpCode->delete();
+            return redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập.');
+        } else {
+            $error = ['error' => 'Không tìm thấy người dùng với email này'];
+            return redirect()->route('password.reset')->withErrors($error)->withInput();
+        }
     }
-} 
+
+    public function showResetForm()
+    {
+        return view('auth.passwords.reset');
+    }
+}

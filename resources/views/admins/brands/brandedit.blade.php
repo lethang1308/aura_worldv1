@@ -13,7 +13,7 @@
                                 <label class="form-label">Preview Logo</label>
                                 <div id="logo-preview" class="d-flex flex-wrap gap-2">
                                     @if($brand->logo)
-                                        <img src="{{ $brand->logo }}" alt="Logo" class="rounded border" style="width:100px;height:100px;object-fit:cover;">
+                                        <img src="{{ asset($brand->logo) }}" alt="Logo" class="rounded border" style="width:100px;height:100px;object-fit:cover;">
                                     @endif
                                 </div>
                                 <div class="mb-3 mt-3">
@@ -119,8 +119,8 @@
                 reader.readAsDataURL(files[0]);
             } else {
                 // Nếu không chọn file mới, giữ lại logo cũ
-                previewContainer.innerHTML = `<img src='{{ $brand->logo }}' alt='Logo' class='rounded border' style='width:100px;height:100px;object-fit:cover;'>`;
-                document.getElementById('logo-url').value = "{{ $brand->logo }}";
+                previewContainer.innerHTML = `<img src='{{ asset($brand->logo) }}' alt='Logo' class='rounded border' style='width:100px;height:100px;object-fit:cover;'>`;
+                document.getElementById('logo-url').value = "{{ asset($brand->logo) }}";
             }
         });
     </script>

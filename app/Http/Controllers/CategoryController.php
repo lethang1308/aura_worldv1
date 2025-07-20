@@ -15,9 +15,21 @@ class CategoryController extends Controller
         $this->category = new category();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::with('parentCategory')->get();
+        $query = Category::with('parentCategory');
+
+        // Tìm kiếm theo tên danh mục
+        if ($request->filled('search_name')) {
+            $query->where('category_name', 'like', '%' . $request->search_name . '%');
+        }
+
+        // Sắp xếp theo ngày tạo mới nhất
+        $query->orderBy('created_at', 'desc');
+
+        // Phân trang với 10 item mỗi trang, giữ lại tham số tìm kiếm
+        $categories = $query->paginate(10)->appends(request()->query());
+
         return view('admins.categories.categorylist', compact('categories'));
     }
 
@@ -28,10 +40,7 @@ class CategoryController extends Controller
         return view('admins.categories.categorycreate', compact('categories'));
     }
 
-    public function show($id)
-    {
-
-    }
+    public function show($id) {}
 
     public function store(Request $request)
     {

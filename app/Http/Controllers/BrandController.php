@@ -7,9 +7,20 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $brands = Brand::all();
+        $query = Brand::query();
+
+        // Tìm kiếm theo tên brand
+        if ($request->filled('search_name')) {
+            $query->where('name', 'like', '%' . $request->search_name . '%');
+        }
+
+        // Sắp xếp theo ngày tạo mới nhất
+        $query->orderBy('created_at', 'desc');
+
+        $brands = $query->paginate(10);
+
         return view('admins.brands.brandlist', compact('brands'));
     }
 
@@ -90,4 +101,4 @@ class BrandController extends Controller
         $brands = Brand::onlyTrashed()->get();
         return view('admins.brands.brandlist', compact('brands'))->with('trash', true);
     }
-} 
+}

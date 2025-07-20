@@ -8,9 +8,26 @@ use Illuminate\Http\Request;
 class CustomerController extends Controller
 {
     // Hiển thị danh sách khách hàng
-    public function index()
+    public function index(Request $request)
     {
-        $customers = User::where('role_id', 2)->paginate(10);
+        $query = User::where('role_id', 2);
+
+        // Tìm kiếm theo từ khóa
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('email', 'LIKE', '%' . $search . '%')
+                    ->orWhere('phone', 'LIKE', '%' . $search . '%')
+                    ->orWhere('address', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        $customers = $query->latest()->paginate(10);
+
+        // Giữ lại các tham số tìm kiếm trong phân trang
+        $customers->appends($request->query());
+
         return view('admins.customers.customerlist', compact('customers'));
     }
 

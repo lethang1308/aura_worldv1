@@ -11,10 +11,36 @@ use App\Models\Brand;
 class ProductController extends Controller
 {
     // Hiển thị danh sách sản phẩm
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category', 'featuredImage')->get();
-        return view('admins.products.productlist', compact('products'));
+        $query = Product::with('category', 'featuredImage', 'brand');
+
+        // Tìm kiếm theo tên sản phẩm
+        if ($request->filled('search_name')) {
+            $query->where('name', 'like', '%' . $request->search_name . '%');
+        }
+
+        // Tìm kiếm theo brand
+        if ($request->filled('search_brand')) {
+            $query->whereHas('brand', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search_brand . '%');
+            });
+        }
+
+        // Tìm kiếm theo category
+        if ($request->filled('search_category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('category_name', 'like', '%' . $request->search_category . '%');
+            });
+        }
+        $query->orderBy('created_at', 'desc');
+        $products = $query->paginate(6);
+
+        // Lấy danh sách brands và categories để hiển thị trong dropdown
+        $brands = Brand::orderBy('name')->get();
+        $categories = Category::orderBy('category_name')->get();
+
+        return view('admins.products.productlist', compact('products', 'brands', 'categories'));
     }
 
     // Hiển thị form tạo sản phẩm
