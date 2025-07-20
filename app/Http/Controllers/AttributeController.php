@@ -32,12 +32,23 @@ class AttributeController extends Controller
         // Validate dữ liệu đầu vào
         $request->validate([
             'name' => 'required|string|max:255',
+            'values' => 'required|array|min:1',
+            'values.*' => 'required|string|max:255',
         ]);
 
         // Tạo mới thuộc tính
-        Attribute::create([
+        $attribute = Attribute::create([
             'name' => $request->name,
         ]);
+
+        // Tạo các attribute value nếu có
+        if ($request->has('values')) {
+            foreach ($request->values as $value) {
+                $attribute->attributeValues()->create([
+                    'value' => $value,
+                ]);
+            }
+        }
 
         // Redirect về danh sách với thông báo thành công
         return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được tạo thành công!');

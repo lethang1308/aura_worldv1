@@ -26,12 +26,44 @@
                                         </div>
                                     </div>
 
+                                    <!-- Attribute Values -->
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label class="form-label text-dark">Attribute Values</label>
+                                            <div id="attribute-values-list">
+                                                <div class="input-group mb-2">
+                                                    <input type="text" name="values[]" class="form-control" placeholder="Enter value" required>
+                                                    <button type="button" class="btn btn-danger remove-value" style="display:none;">X</button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-success btn-sm" id="add-value">+ Add Value</button>
+                                        </div>
+                                    </div>
+
                                     <div class="mt-3">
                                         <button type="submit" class="btn btn-primary">Save Attribute</button>
                                     </div>
                                 </form>
                             </div>
 
+                            <script>
+                                document.getElementById('add-value').onclick = function() {
+                                    let list = document.getElementById('attribute-values-list');
+                                    let item = document.createElement('div');
+                                    item.className = 'input-group mb-2';
+                                    item.innerHTML = `
+                                        <input type="text" name="values[]" class="form-control" placeholder="Enter value" required>
+                                        <button type="button" class="btn btn-danger remove-value">X</button>
+                                    `;
+                                    list.appendChild(item);
+                                };
+
+                                document.addEventListener('click', function(e) {
+                                    if (e.target && e.target.classList.contains('remove-value')) {
+                                        e.target.parentElement.remove();
+                                    }
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>

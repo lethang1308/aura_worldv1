@@ -267,4 +267,14 @@ class VariantController extends Controller
             return back()->with('error', 'Không thể xóa vĩnh viễn variant: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Hiển thị danh sách các giá trị thuộc tính của từng variant
+     */
+    public function variantValueList()
+    {
+        // Lấy tất cả variant cùng các attribute value liên quan
+        $variants = \App\Models\Variants::with('attributesValue')->get();
+        return view('admins.variants.variantvaluelist', compact('variants'));
+    }
 } 

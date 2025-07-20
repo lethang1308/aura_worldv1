@@ -188,8 +188,8 @@
                                     <a class="nav-link menu-arrow" href="#sidebarVariants" data-bs-toggle="collapse"
                                         role="button" aria-expanded="false" aria-controls="sidebarVariants">
                                         <span class="nav-icon">
-                                            <iconify-icon icon="solar:package-bold-duotone"></iconify-icon>
-                                        </span>
+                                            <iconify-icon icon="solar:ufo-2-bold-duotone"></iconify-icon>
+                                       </span>
                                         <span class="nav-text"> Variants </span>
                                     </a>
                                     <div class="collapse" id="sidebarVariants">
