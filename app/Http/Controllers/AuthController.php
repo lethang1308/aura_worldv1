@@ -121,7 +121,7 @@ class AuthController extends Controller
             }
 
             Auth::login($user);
-            return redirect()->route('admin'); // hoặc route nào phù hợp
+            return redirect()->route('clients.home');
 
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
