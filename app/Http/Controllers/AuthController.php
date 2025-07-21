@@ -6,6 +6,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use Faker\Factory as Faker;
+use Illuminate\Support\Str;
+
 
 class AuthController extends Controller
 {
@@ -74,6 +78,55 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+        session_start();
+        session_unset();
+        session_destroy();
         return redirect()->route('login'); // chuyển về trang login sau khi logout
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')
+            ->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $faker = Faker::create();
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            // Tìm user theo email
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if (!$user) {
+                // Nếu chưa tồn tại thì tạo mới
+                $user = User::create([
+                    'name'      => $googleUser->getName(),
+                    'email'     => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'password' => Hash::make(Str::random(6)),
+                    'phone'     => $faker->phoneNumber(),
+                    'address'   => $faker->address(),
+                    'role_id'   => 2, 
+                    'is_active' => 1,
+                ]);
+            } else {
+                // Nếu tài khoản bị khóa thì không cho đăng nhập
+                if (!$user->is_active) {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt.',
+                    ]);
+                }
+            }
+
+            Auth::login($user);
+            return redirect()->route('admin'); // hoặc route nào phù hợp
+
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Đăng nhập bằng Google thất bại!',
+            ]);
+        }
     }
 }
