@@ -200,9 +200,6 @@
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link" href="{{ route('variants.create') }}">Create</a>
                                             </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('variants.trash') }}">Trash</a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </li>
