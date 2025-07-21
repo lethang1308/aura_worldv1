@@ -121,7 +121,7 @@ class AuthController extends Controller
             }
 
             Auth::login($user);
-            return redirect()->route('clients.home');
+            return redirect()->route('client.home');
 
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
