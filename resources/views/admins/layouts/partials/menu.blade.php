@@ -265,7 +265,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="pages-review.html">
+                                    <a class="nav-link" href="{{ route('admin.reviews.list') }}">
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
                                         </span>

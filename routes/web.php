@@ -18,6 +18,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\VariantController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -140,4 +141,18 @@ Route::get('/clients', function () {
 
 Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'index'])->name('client.home');
+});
+
+// Route review cho khách hàng
+Route::middleware(['auth'])->group(function () {
+    Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
+});
+Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
+
+// Route review cho admin
+Route::middleware(['checklogin'])->prefix('admin')->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.list');
+    Route::get('/reviews/{id}/edit', [ReviewController::class, 'edit'])->name('admin.reviews.edit');
+    Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('admin.reviews.update');
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('admin.reviews.delete');
 });
