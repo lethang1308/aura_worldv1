@@ -139,5 +139,19 @@ Route::get('/clients', function () {
 })->name('clients.home');
 
 Route::prefix('clients')->group(function () {
-    Route::get('/', [ClientController::class, 'index'])->name('client.home');
+    Route::get('/', [ClientController::class, 'home'])->name('client.home');
+
+    Route::get('/products', [ClientController::class, 'index'])->name('client.products');
+    Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
+
+    Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
+
+    Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
+    Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
+    Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
+    Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');
+
+    Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
+    Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
+
 });
