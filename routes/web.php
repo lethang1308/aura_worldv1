@@ -156,3 +156,9 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('admin.reviews.update');
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('admin.reviews.delete');
 });
+
+// Route đổi mật khẩu cho user đã đăng nhập
+Route::middleware(['auth'])->group(function () {
+    Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.change.post');
+});
