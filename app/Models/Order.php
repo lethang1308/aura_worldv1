@@ -18,7 +18,9 @@ class Order extends Model
         'status_order',
         'status_payment',
         'type_payment',
-        'total_price'
+        'total_price',
+        'cancel_reason',
+        'cancelled_by_admin_id',
     ];
 
     public function user()

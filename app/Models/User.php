@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'user_id', 'id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     const ROLE_ADMIN = 'admin';
     const ROLE_USER = 'user';
 

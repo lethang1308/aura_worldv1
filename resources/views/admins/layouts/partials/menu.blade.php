@@ -118,7 +118,7 @@
                                         <ul class="nav sub-navbar-nav">
 
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="orders-list.html">List</a>
+                                                <a class="sub-nav-link" href="{{ route('orders.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link" href="order-detail.html">Details</a>
@@ -265,7 +265,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="pages-review.html">
+                                    <a class="nav-link" href="{{ route('admin.reviews.list') }}">
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
                                         </span>

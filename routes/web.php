@@ -18,6 +18,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\VariantController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -125,6 +126,19 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::patch('/variants/{id}/restore', [VariantController::class, 'restore'])->name('variants.restore');
     Route::delete('/variants/{id}/force-delete', [VariantController::class, 'forceDelete'])->name('variants.forceDelete');
     Route::get('/variants/product/{productId}/attributes', [VariantController::class, 'getAttributeValuesByProduct'])->name('variants.getAttributeValuesByProduct');
+
+    // Order routes (Admin)
+    Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/update-status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{id}/cancel', [App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/orders-search', [App\Http\Controllers\Admin\OrderController::class, 'search'])->name('orders.search');
+  
+    // Route review cho admin  
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.list');
+    Route::get('/reviews/{id}/edit', [ReviewController::class, 'edit'])->name('admin.reviews.edit');
+    Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('admin.reviews.update');
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('admin.reviews.delete');
 });
 
 // Forgot password routes (nên không bọc auth)
@@ -146,6 +160,10 @@ Route::prefix('clients')->group(function () {
 
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
 
+});
+
+Route::prefix('clients')->middleware('auth')->group(function () {
+  
     Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
     Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
@@ -153,5 +171,16 @@ Route::prefix('clients')->group(function () {
 
     Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
-
 });
+
+// Route review cho khách hàng
+// Route::middleware(['auth'])->group(function () {
+//     Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
+// });
+// Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
+
+// Route đổi mật khẩu cho user đã đăng nhập
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
+//     Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.change.post');
+// });
