@@ -126,6 +126,13 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::patch('/variants/{id}/restore', [VariantController::class, 'restore'])->name('variants.restore');
     Route::delete('/variants/{id}/force-delete', [VariantController::class, 'forceDelete'])->name('variants.forceDelete');
     Route::get('/variants/product/{productId}/attributes', [VariantController::class, 'getAttributeValuesByProduct'])->name('variants.getAttributeValuesByProduct');
+
+    // Order routes (Admin)
+    Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/update-status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{id}/cancel', [App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/orders-search', [App\Http\Controllers\Admin\OrderController::class, 'search'])->name('orders.search');
 });
 
 // Forgot password routes (nên không bọc auth)

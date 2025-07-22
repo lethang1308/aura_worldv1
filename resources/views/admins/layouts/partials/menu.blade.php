@@ -118,7 +118,7 @@
                                         <ul class="nav sub-navbar-nav">
 
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="orders-list.html">List</a>
+                                                <a class="sub-nav-link" href="{{ route('orders.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link" href="order-detail.html">Details</a>
