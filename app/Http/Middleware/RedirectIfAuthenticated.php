@@ -22,7 +22,7 @@ class RedirectIfAuthenticated
             }
 
             if ($user->role && $user->role->role_name === 'user') {
-                return redirect()->route('clients.home');
+                return redirect()->route('client.home');
             }
 
             // fallback nếu không biết role

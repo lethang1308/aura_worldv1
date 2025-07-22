@@ -29,7 +29,7 @@ class CheckLogin
         }
 
         if ($user->isRoleUser()) {
-            return redirect()->route('clients.home');
+            return redirect()->route('client.home');
         }
 
         if ($user->isRoleAdmin()) {

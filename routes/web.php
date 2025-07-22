@@ -15,6 +15,7 @@ use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\VariantController;
 
@@ -133,6 +134,10 @@ Route::get('/password/reset', [ForgotPasswordController::class, 'showResetForm']
 Route::put('/password/reset', [ForgotPasswordController::class, 'handleResetPassword'])->name('password.handleReset');
 
 
-Route::get('/client', function () {
-    return view('clients.home');
+Route::get('/clients', function () {
+    return view('clients.layouts.home');
 })->name('clients.home');
+
+Route::prefix('clients')->group(function () {
+    Route::get('/', [ClientController::class, 'index'])->name('client.home');
+});
