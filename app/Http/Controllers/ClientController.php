@@ -13,6 +13,7 @@ use App\Models\CartItem;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -191,25 +192,22 @@ class ClientController extends Controller
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
         }
+
         $variant = Variant::findOrFail($request->variant_id);
 
-        // 1. Tìm hoặc tạo cart cho user hiện tại
         $cart = Cart::firstOrCreate(
             ['user_id' => $user->id],
             ['created_at' => now(), 'updated_at' => now()]
         );
 
-        // 2. Kiểm tra xem sản phẩm đã có trong giỏ chưa
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('variant_id', $variant->id)
             ->first();
 
         if ($cartItem) {
-            // Nếu đã có → tăng số lượng
             $cartItem->quantity += $request->quantity;
             $cartItem->save();
         } else {
-            // Nếu chưa có → tạo mới
             CartItem::create([
                 'cart_id'    => $cart->id,
                 'variant_id' => $variant->id,
@@ -217,8 +215,13 @@ class ClientController extends Controller
             ]);
         }
 
+        // ✅ Cập nhật tổng số lượng và tổng tiền
+        $cart->load('cartItem.variant.product');
+        $this->updateCartTotals($cart);
+
         return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
+
 
     public function updateQuantity(Request $request, $itemId)
     {
@@ -230,13 +233,12 @@ class ClientController extends Controller
         $item->quantity = $request->quantity;
         $item->save();
 
-        // Tính lại tổng giá trị đơn hàng
+        $cart = $item->cart->load('cartItem.variant.product');
+        $this->updateCartTotals($cart); // ✅ cập nhật lại cart
+
         $price = $item->variant->price ?? $item->variant->product->base_price;
         $total = $price * $item->quantity;
-        $subtotal = $item->cart->cartItem->sum(function ($ci) {
-            $price = $ci->variant->price ?? $ci->variant->product->base_price;
-            return $price * $ci->quantity;
-        });
+        $subtotal = $cart->total_price;
 
         return response()->json([
             'success' => true,
@@ -244,6 +246,25 @@ class ClientController extends Controller
             'subtotal' => number_format($subtotal, 2),
         ]);
     }
+
+
+    private function updateCartTotals(Cart $cart)
+    {
+        $totalQuantity = 0;
+        $totalPrice = 0;
+
+        foreach ($cart->cartItem as $item) {
+            $price = $item->variant->price ?? $item->variant->product->base_price;
+            $totalQuantity += $item->quantity;
+            $totalPrice += $price * $item->quantity;
+        }
+
+        $cart->update([
+            'total_quantity' => $totalQuantity,
+            'total_price' => $totalPrice,
+        ]);
+    }
+
 
     public function deleteProduct($itemId)
     {
@@ -253,9 +274,22 @@ class ClientController extends Controller
             return redirect()->back()->with('error', 'Bạn không có quyền xoá sản phẩm này.');
         }
 
+        $cart = $item->cart;
         $item->delete();
 
+        // ✅ load lại cart sau khi xoá để cập nhật
+        $cart->load('cartItem.variant.product');
+        $this->updateCartTotals($cart);
+
         return redirect()->back()->with('success', 'Sản phẩm đã được xoá khỏi giỏ hàng.');
+    }
+
+
+    public function viewCheckOut()
+    {
+        $brands = Brand::all();
+        $categories = Category::all();
+        return view('clients.carts.checkout', compact('brands', 'categories'));
     }
 
     public function showProfile()
@@ -284,5 +318,36 @@ class ClientController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi. Vui lòng thử lại!');
         }
+    }
+
+    public function showChangePasswordForm()
+    {
+        $brands = Brand::all();
+        $categories = Category::all();
+        return view('clients.profiles.change', compact('brands', 'categories'));
+    }
+
+    // Xử lý đổi mật khẩu
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ], [
+            'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại',
+            'new_password.required' => 'Vui lòng nhập mật khẩu mới',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự',
+            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp',
+        ]);
+
+        $user = Auth::user();
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return back()->with('success', 'Đổi mật khẩu thành công!');
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 
@@ -100,17 +101,22 @@ class AuthController extends Controller
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
+                $randomPassword = Str::random(8);
                 // Nếu chưa tồn tại thì tạo mới
                 $user = User::create([
                     'name'      => $googleUser->getName(),
                     'email'     => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
-                    'password' => Hash::make(Str::random(6)),
+                    'password' => Hash::make($randomPassword),
                     'phone'     => $faker->phoneNumber(),
                     'address'   => $faker->address(),
-                    'role_id'   => 2, 
+                    'role_id'   => 2,
                     'is_active' => 1,
                 ]);
+                Mail::raw("Xin chào {$user->name},\n\nTài khoản của bạn đã được tạo thành công.\nMật khẩu đăng nhập: {$randomPassword}\n\nVui lòng đổi mật khẩu sau khi đăng nhập.", function ($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject('Thông tin tài khoản đăng nhập');
+                });
             } else {
                 // Nếu tài khoản bị khóa thì không cho đăng nhập
                 if (!$user->is_active) {
@@ -122,41 +128,10 @@ class AuthController extends Controller
 
             Auth::login($user);
             return redirect()->route('client.home');
-
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
                 'email' => 'Đăng nhập bằng Google thất bại!',
             ]);
         }
-    }
-
-    // Hiển thị form đổi mật khẩu
-    public function showChangePasswordForm()
-    {
-        return view('auth.passwords.change');
-    }
-
-    // Xử lý đổi mật khẩu
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
-        ], [
-            'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại',
-            'new_password.required' => 'Vui lòng nhập mật khẩu mới',
-            'new_password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự',
-            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp',
-        ]);
-
-        $user = Auth::user();
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng']);
-        }
-
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return back()->with('success', 'Đổi mật khẩu thành công!');
     }
 }

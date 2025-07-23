@@ -133,7 +133,7 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::post('/orders/{id}/update-status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/cancel', [App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders-search', [App\Http\Controllers\Admin\OrderController::class, 'search'])->name('orders.search');
-  
+
     // Route review cho admin  
     Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.list');
     Route::get('/reviews/{id}/edit', [ReviewController::class, 'edit'])->name('admin.reviews.edit');
@@ -159,18 +159,21 @@ Route::prefix('clients')->group(function () {
     Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
 
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
-
 });
 
 Route::prefix('clients')->middleware('auth')->group(function () {
-  
+
     Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
     Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
     Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');
 
+    Route::get('/carts/checkout', [ClientController::class, 'viewCheckOut'])->name('client.carts.checkout');
+
     Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
+    Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 });
 
 // Route review cho khách hàng
@@ -178,9 +181,3 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 //     Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
 // });
 // Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
-
-// Route đổi mật khẩu cho user đã đăng nhập
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
-//     Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.change.post');
-// });
