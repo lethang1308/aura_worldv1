@@ -255,10 +255,10 @@
                                     <div class="collapse" id="sidebarCoupons">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="coupons-list.html">List</a>
+                                                <a class="sub-nav-link" href="{{ route('coupons.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="coupons-add.html">Add</a>
+                                                <a class="sub-nav-link" href="{{ route('coupons.create') }}">Add</a>
                                             </li>
                                         </ul>
                                     </div>

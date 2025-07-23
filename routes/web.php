@@ -139,6 +139,16 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::get('/reviews/{id}/edit', [ReviewController::class, 'edit'])->name('admin.reviews.edit');
     Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('admin.reviews.update');
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('admin.reviews.delete');
+
+    // Coupon routes
+    Route::get('/coupons', [\App\Http\Controllers\Admin\CouponController::class, 'index'])->name('coupons.index');
+    Route::get('/coupons/create', [\App\Http\Controllers\Admin\CouponController::class, 'create'])->name('coupons.create');
+    Route::post('/coupons', [\App\Http\Controllers\Admin\CouponController::class, 'store'])->name('coupons.store');
+    Route::get('/coupons/{id}/edit', [\App\Http\Controllers\Admin\CouponController::class, 'edit'])->name('coupons.edit');
+    Route::put('/coupons/{id}', [\App\Http\Controllers\Admin\CouponController::class, 'update'])->name('coupons.update');
+    Route::delete('/coupons/{id}', [\App\Http\Controllers\Admin\CouponController::class, 'destroy'])->name('coupons.destroy');
+    Route::patch('/coupons/{id}/restore', [\App\Http\Controllers\Admin\CouponController::class, 'restore'])->name('coupons.restore');
+    Route::get('/coupons/trash', [\App\Http\Controllers\Admin\CouponController::class, 'trash'])->name('coupons.trash');
 });
 
 // Forgot password routes (nên không bọc auth)
