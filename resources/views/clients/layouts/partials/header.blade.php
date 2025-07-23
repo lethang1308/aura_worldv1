@@ -52,29 +52,38 @@
                             <div class="col-lg-7 pr-0">
                                 <ul class="nav navbar-nav center_nav pull-right">
                                     <li class="nav-item active">
-                                        <a class="nav-link" href="index.html">Trang chủ</a>
+                                        <a class="nav-link" href="{{ route('client.home') }}">Trang chủ</a>
                                     </li>
                                     <li class="nav-item submenu dropdown">
+                                        <a href="{{ route('client.products') }}" class="nav-link">Nước hoa</a>
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                            role="button" aria-haspopup="true" aria-expanded="false">Nước hoa</a>
+                                            role="button" aria-haspopup="true" aria-expanded="false"></a>
                                         <ul class="dropdown-menu">
                                             @foreach ($categories as $category_parent)
                                                 @if (is_null($category_parent->parent_category_id))
                                                     <li class="nav-item">
                                                         <a class="nav-link"
-                                                            href="">{{ $category_parent->category_name }}</a>
+                                                            href="{{ route('client.products', ['category' => $category_parent->id]) }}">
+                                                            {{ $category_parent->category_name }}
+                                                        </a>
                                                     </li>
                                                 @endif
                                             @endforeach
                                         </ul>
                                     </li>
+
                                     <li class="nav-item submenu dropdown">
+                                        <a href="{{ route('client.brands')}}" class="nav-link">Thương hiệu</a>
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                            role="button" aria-haspopup="true" aria-expanded="false">Thương hiệu</a>
+                                            role="button" aria-haspopup="true" aria-expanded="false"></a>
                                         <ul class="dropdown-menu">
                                             @foreach ($brands as $brand)
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="">{{ $brand->name }}</a>
+                                                    <a class="nav-link"
+                                                        href="{{ route('client.products', ['brand' => $brand->id]) }}">
+                                                        {{ $brand->name }}
+                                                    </a>
+
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -86,9 +95,6 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" href="tracking.html">Tracking</a>
                                             </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="elements.html">Elements</a>
-                                            </li>
                                         </ul>
                                     </li>
                                     <li class="nav-item">
@@ -99,14 +105,9 @@
 
                             <div class="col-lg-5 pr-0">
                                 <ul class="nav navbar-nav navbar-right right_nav pull-right">
-                                    <li class="nav-item">
-                                        <a href="#" class="icons">
-                                            <i class="ti-search" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
 
                                     <li class="nav-item">
-                                        <a href="#" class="icons">
+                                        <a href="{{ route('client.carts')}}" class="icons">
                                             <i class="ti-shopping-cart"></i>
                                         </a>
                                     </li>
@@ -116,8 +117,10 @@
                                             <i class="ti-user" aria-hidden="true"></i>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <a class="dropdown-item" href="">Profile</a>
-                                            <a class="dropdown-item text-danger" href="{{ route('logout') }}">Logout</a>
+                                            <a class="dropdown-item" href="{{ route('client.profiles')}}">Profile</a>
+                                            <a class="dropdown-item" href="{{ route('password.change')}}">Password Change</a>
+                                            <a class="dropdown-item text-danger"
+                                                href="{{ route('logout') }}">Logout</a>
                                         </ul>
                                     </li>
 

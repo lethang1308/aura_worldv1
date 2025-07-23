@@ -1,4 +1,4 @@
-@extends('admins.layouts.default')
+@extends('clients.layouts.default')
 
 @section('content')
 <div class="container mt-5">
