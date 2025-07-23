@@ -19,7 +19,7 @@ class Variants extends Model
         return $this->belongsTo(\App\Models\Product::class);
     }
 
-    public function attributeValues() 
+    public function attributesValue() 
     {
         return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_value_id');
     }

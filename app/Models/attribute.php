@@ -18,6 +18,6 @@ class Attribute extends Model
     protected $dates = ['deleted_at'];
     public function attributeValues()
     {
-        return $this->belongsToManys(AttributeValue::class);
+        return $this->hasMany(AttributeValue::class, 'attribute_id', 'id');
     }
 }

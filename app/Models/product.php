@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Variants;
+use App\Models\Variant;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -27,7 +27,7 @@ class Product extends Model
     }
     public function variants()
     {
-        return $this->hasMany(Variants::class, 'product_id');
+        return $this->hasMany(Variant::class, 'product_id');
     }
 
     public function featuredImage()

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Variants;
+use App\Models\Variant;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\VariantAttribute;
@@ -17,7 +17,7 @@ class VariantController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Variants::with(['product', 'attributesValue.attribute']);
+        $query = Variant::with(['product', 'attributesValue.attribute']);
 
         // Tìm kiếm theo tên sản phẩm
         if ($request->filled('search_product')) {
@@ -64,7 +64,7 @@ class VariantController extends Controller
      */
     public function show($id)
     {
-        $variant = Variants::with(['product', 'attributesValue.attribute'])->findOrFail($id);
+        $variant = Variant::with(['product', 'attributesValue.attribute'])->findOrFail($id);
         return view('admins.variants.variantdetail', compact('variant'));
     }
 
@@ -86,7 +86,7 @@ class VariantController extends Controller
             DB::beginTransaction();
 
             // Tạo variant
-            $variant = Variants::create([
+            $variant = Variant::create([
                 'product_id' => $validated['product_id'],
                 'price' => $validated['price'],
                 'stock_quantity' => $validated['stock_quantity'],
@@ -115,7 +115,7 @@ class VariantController extends Controller
      */
     public function edit($id)
     {
-        $variant = Variants::with(['product', 'attributesValue.attribute'])->findOrFail($id);
+        $variant = Variant::with(['product', 'attributesValue.attribute'])->findOrFail($id);
         $products = Product::orderBy('name')->get();
         $attributes = Attribute::with('attributeValues')->get();
         
@@ -142,7 +142,7 @@ class VariantController extends Controller
         try {
             DB::beginTransaction();
 
-            $variant = Variants::findOrFail($id);
+            $variant = Variant::findOrFail($id);
             
             // Cập nhật thông tin variant
             $variant->update([
@@ -178,7 +178,7 @@ class VariantController extends Controller
     public function destroy($id)
     {
         try {
-            $variant = Variants::findOrFail($id);
+            $variant = Variant::findOrFail($id);
             
             // Xóa các variant attributes trước
             VariantAttribute::where('variant_id', $variant->id)->delete();
@@ -215,7 +215,7 @@ class VariantController extends Controller
             'status' => 'required|in:active,inactive'
         ]);
 
-        $variant = Variants::findOrFail($id);
+        $variant = Variant::findOrFail($id);
         $variant->update(['status' => $validated['status']]);
 
         return response()->json([
@@ -229,7 +229,7 @@ class VariantController extends Controller
      */
     public function trash()
     {
-        $variants = Variants::onlyTrashed()
+        $variants = Variant::onlyTrashed()
             ->with(['product', 'attributesValue.attribute'])
             ->orderBy('deleted_at', 'desc')
             ->paginate(10);
@@ -242,7 +242,7 @@ class VariantController extends Controller
      */
     public function restore($id)
     {
-        $variant = Variants::onlyTrashed()->findOrFail($id);
+        $variant = Variant::onlyTrashed()->findOrFail($id);
         $variant->restore();
 
         return redirect()->route('variants.trash')->with('success', 'Khôi phục variant thành công!');
@@ -254,7 +254,7 @@ class VariantController extends Controller
     public function forceDelete($id)
     {
         try {
-            $variant = Variants::onlyTrashed()->findOrFail($id);
+            $variant = Variant::onlyTrashed()->findOrFail($id);
             
             // Xóa các variant attributes
             VariantAttribute::where('variant_id', $variant->id)->delete();
@@ -274,7 +274,7 @@ class VariantController extends Controller
     public function variantValueList()
     {
         // Lấy tất cả variant cùng các attribute value liên quan
-        $variants = \App\Models\Variants::with('attributesValue')->get();
+        $variants = \App\Models\Variant::with('attributesValue')->get();
         return view('admins.variants.variantvaluelist', compact('variants'));
     }
 } 
