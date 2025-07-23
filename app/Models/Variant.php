@@ -22,12 +22,20 @@ class Variant extends Model
     // tên khóa chính
     protected $primaryKey = 'id';
     // định nghĩa quan hệ với bảng products
-    public function product(){
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
-    public function attributesValue(){
-        return $this->belongsToMany(AttributeValue::class,'variant_attributes','variant_id','attribute_value_id');
+    public function attributesValue()
+    {
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_value_id');
     }
+
+    public function attributeValues()
+    {
+        return $this->belongsToMany(AttributeValue::class, 'variant_attributes', 'variant_id', 'attribute_value_id');
+    }
+
     /**
      * Mối quan hệ với model Variant
      * CartItem thuộc về một Variant
@@ -38,6 +46,6 @@ class Variant extends Model
     }
     public function OrderDetail()
     {
-        return $this->hasOne(OrderDetail::class,'variant_id','id');
+        return $this->hasOne(OrderDetail::class, 'variant_id', 'id');
     }
 }
