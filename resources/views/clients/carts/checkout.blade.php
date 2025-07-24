@@ -1,19 +1,16 @@
     @extends('clients.layouts.default')
 
     @section('content')
-        @if(session('success'))
+        @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
-        @if(session('error'))
+        @if (session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-        @if(
-            isset(
-                $errors
-            ) && $errors->any())
+        @if (isset($errors) && $errors->any())
             <div class="alert alert-danger">
                 <ul>
-                    @foreach($errors->all() as $err)
+                    @foreach ($errors->all() as $err)
                         <li>{{ $err }}</li>
                     @endforeach
                 </ul>
@@ -45,24 +42,30 @@
                     <a class="tp_btn" href="#">Áp dụng mã</a>
                 </div>
                 <div class="billing_details">
-                    <form class="row contact_form" action="{{ route('client.carts.placeOrder') }}" method="post" novalidate="novalidate">
+                    <form class="row contact_form" action="{{ route('client.carts.placeOrder') }}" method="post"
+                        novalidate="novalidate">
                         @csrf
                         <div class="col-lg-8">
                             <h3>Thông tin thanh toán</h3>
                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="last" name="name" placeholder="Họ và tên *" />
+                                <input type="text" class="form-control" id="last" name="name"
+                                    placeholder="Họ và tên *" />
                             </div>
                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="number" name="number" placeholder="Số điện thoại *" />
+                                <input type="text" class="form-control" id="number" name="number"
+                                    placeholder="Số điện thoại *" />
                             </div>
                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Email *" />
+                                <input type="text" class="form-control" id="email" name="email"
+                                    placeholder="Email *" />
                             </div>
                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add1" name="add1" placeholder="Địa chỉ nhận hàng *" />
+                                <input type="text" class="form-control" id="add1" name="add1"
+                                    placeholder="Địa chỉ nhận hàng *" />
                             </div>
                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="city" name="city" placeholder="Tỉnh/Thành phố *" />
+                                <input type="text" class="form-control" id="city" name="city"
+                                    placeholder="Tỉnh/Thành phố *" />
                             </div>
                             <div class="col-md-12 form-group p_star">
                                 <select class="country_select" name="district">
@@ -111,22 +114,25 @@
                                 </ul>
                                 <div class="payment_item">
                                     <div class="radion_btn">
-                                        <input type="radio" id="payment_cod" name="payment_method" value="cod" checked />
+                                        <input type="radio" id="payment_cod" name="payment_method" value="cod"
+                                            checked />
                                         <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
                                         <div class="check"></div>
                                     </div>
                                 </div>
                                 <div class="payment_item">
                                     <div class="radion_btn">
-                                        <input type="radio" id="payment_paypal" name="payment_method" value="paypal" />
-                                        <label for="payment_paypal">Thanh toán qua Paypal</label>
-                                        <img src="img/product/single-product/card.jpg" alt="" />
+                                        <input type="radio" id="payment_vnpay" name="payment_method" value="vnpay" />
+                                        <label for="payment_vnpay">Thanh toán qua VNPay</label>
+                                        <img src="{{ asset('img/payment/vnpay-logo.png') }}" alt="VNPay"
+                                            style="max-width: 100px;" />
                                         <div class="check"></div>
                                     </div>
                                     <p>
-                                        Vui lòng chuyển khoản hoặc thanh toán qua Paypal theo hướng dẫn.
+                                        Bạn sẽ được chuyển đến cổng thanh toán VNPay để hoàn tất giao dịch.
                                     </p>
                                 </div>
+
                                 <div class="creat_account">
                                     <input type="checkbox" id="f-option4" name="accept_terms" />
                                     <label for="f-option4">Tôi đã đọc và đồng ý với </label>

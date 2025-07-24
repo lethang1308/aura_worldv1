@@ -19,6 +19,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\VNPayController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -184,6 +185,7 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 
     Route::get('/carts/checkout', [ClientController::class, 'viewCheckOut'])->name('client.carts.checkout');
     Route::post('/carts/checkout', [ClientController::class, 'placeOrder'])->name('client.carts.placeOrder');
+    Route::get('/checkout/vnpay-return', [ClientController::class, 'handleReturn']);
 
     Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
@@ -198,3 +200,6 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 //     Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
 // });
 // Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
+Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+Route::get('/order/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
+Route::get('/order/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
