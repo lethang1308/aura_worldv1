@@ -108,7 +108,7 @@
                                     <td>
                                         <div class="checkout_btn_inner">
                                             <a class="gray_btn" href="{{ route('client.home') }}">Continue Shopping</a>
-                                            <a class="main_btn" href="#">Proceed to Checkout</a>
+                                            <a class="main_btn" href="{{ route('client.carts.checkout') }}">Proceed to Checkout</a>
                                         </div>
                                     </td>
                                     <td></td>

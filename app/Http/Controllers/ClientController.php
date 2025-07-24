@@ -350,4 +350,84 @@ class ClientController extends Controller
 
         return back()->with('success', 'Đổi mật khẩu thành công!');
     }
+
+    public function placeOrder(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:20',
+            'email' => 'required|email',
+            'add1' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'payment_method' => 'required|in:cod,paypal',
+            'accept_terms' => 'accepted',
+        ], [
+            'accept_terms.accepted' => 'Bạn phải đồng ý với điều khoản dịch vụ.'
+        ]);
+
+        $user = Auth::user();
+        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
+        if (!$cart || $cart->cartItem->isEmpty()) {
+            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
+        }
+
+        // Tính tổng tiền
+        $totalPrice = 0;
+        foreach ($cart->cartItem as $item) {
+            $price = $item->variant->price ?? 0;
+            $totalPrice += $price * $item->quantity;
+        }
+
+        // Tạo đơn hàng
+        $order = \App\Models\Order::create([
+            'user_id' => $user->id,
+            'user_email' => $request->email,
+            'user_phone' => $request->number,
+            'user_address' => $request->add1 . ', ' . $request->city,
+            'user_note' => $request->message,
+            'status_order' => 'pending',
+            'status_payment' => 'unpaid',
+            'type_payment' => $request->payment_method,
+            'total_price' => $totalPrice,
+        ]);
+
+        // Lưu chi tiết đơn hàng
+        foreach ($cart->cartItem as $item) {
+            \App\Models\OrderDetail::create([
+                'order_id' => $order->id,
+                'variant_id' => $item->variant_id,
+                'variant_price' => $item->variant->price ?? 0,
+                'quantity' => $item->quantity,
+                'total_price' => ($item->variant->price ?? 0) * $item->quantity,
+            ]);
+        }
+
+        // Xóa giỏ hàng sau khi đặt hàng
+        $cart->cartItem()->delete();
+        $cart->delete();
+
+        return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+    }
+
+    public function orderList()
+    {
+        $user = Auth::user();
+        $orders = \App\Models\Order::where('user_id', $user->id)->orderByDesc('created_at')->get();
+        $categories = \App\Models\Category::all();
+        $brands = \App\Models\Brand::all();
+        return view('clients.orders.orderlist', compact('orders', 'categories', 'brands'));
+    }
+
+    public function cancelOrder($id)
+    {
+        $user = Auth::user();
+        $order = \App\Models\Order::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        if ($order->status_order !== 'pending') {
+            return redirect()->route('client.orders')->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
+        }
+        $order->status_order = 'cancelled';
+        $order->cancel_reason = 'Khách tự hủy';
+        $order->save();
+        return redirect()->route('client.orders')->with('success', 'Đã hủy đơn hàng thành công.');
+    }
 }

@@ -179,11 +179,14 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');
 
     Route::get('/carts/checkout', [ClientController::class, 'viewCheckOut'])->name('client.carts.checkout');
+    Route::post('/carts/checkout', [ClientController::class, 'placeOrder'])->name('client.carts.placeOrder');
 
     Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
     Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
+    Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
+    Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
 });
 
 // Route review cho khách hàng

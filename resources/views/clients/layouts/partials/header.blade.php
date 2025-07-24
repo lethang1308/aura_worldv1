@@ -119,6 +119,7 @@
                                         <ul class="dropdown-menu">
                                             <a class="dropdown-item" href="{{ route('client.profiles')}}">Profile</a>
                                             <a class="dropdown-item" href="{{ route('password.change')}}">Password Change</a>
+                                            <li><a href="{{ route('client.orders') }}">Đơn hàng của tôi</a></li>
                                             <a class="dropdown-item text-danger"
                                                 href="{{ route('logout') }}">Logout</a>
                                         </ul>
