@@ -49,13 +49,13 @@
                         @csrf
                         <div class="col-lg-8">
                             <h3>Thông tin thanh toán</h3>
-                            <div class="col-md-6 form-group p_star">
+                            <div class="col-md-12 form-group p_star">
                                 <input type="text" class="form-control" id="last" name="name" placeholder="Họ và tên *" />
                             </div>
-                            <div class="col-md-6 form-group p_star">
+                            <div class="col-md-12 form-group p_star">
                                 <input type="text" class="form-control" id="number" name="number" placeholder="Số điện thoại *" />
                             </div>
-                            <div class="col-md-6 form-group p_star">
+                            <div class="col-md-12 form-group p_star">
                                 <input type="text" class="form-control" id="email" name="email" placeholder="Email *" />
                             </div>
                             <div class="col-md-12 form-group p_star">

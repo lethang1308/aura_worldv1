@@ -149,6 +149,10 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::delete('/coupons/{id}', [\App\Http\Controllers\Admin\CouponController::class, 'destroy'])->name('coupons.destroy');
     Route::patch('/coupons/{id}/restore', [\App\Http\Controllers\Admin\CouponController::class, 'restore'])->name('coupons.restore');
     Route::get('/coupons/trash', [\App\Http\Controllers\Admin\CouponController::class, 'trash'])->name('coupons.trash');
+
+    // Admin profile routes
+    Route::get('/profile', [AdminController::class, 'showProfile'])->name('admin.profile');
+    Route::post('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 });
 
 // Forgot password routes (nên không bọc auth)
