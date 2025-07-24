@@ -204,8 +204,15 @@ class ClientController extends Controller
             ->where('variant_id', $variant->id)
             ->first();
 
+        $currentQuantityInCart = $cartItem ? $cartItem->quantity : 0;
+        $newTotalQuantity = $currentQuantityInCart + $request->quantity;
+
+        if ($newTotalQuantity > $variant->stock_quantity) {
+            return redirect()->back()->with('error', 'Số lượng sản phẩm vượt quá tồn kho. Chỉ còn ' . $variant->stock_quantity . ' sản phẩm.');
+        }
+
         if ($cartItem) {
-            $cartItem->quantity += $request->quantity;
+            $cartItem->quantity = $newTotalQuantity;
             $cartItem->save();
         } else {
             CartItem::create([
@@ -385,7 +392,7 @@ class ClientController extends Controller
             'email' => 'required|email',
             'add1' => 'required|string|max:255',
             'city' => 'required|string|max:255',
-            'payment_method' => 'required|in:cod,vnpay', // Thay đổi từ paypal sang vnpay
+            'payment_method' => 'required|in:cod,vnpay',
             'accept_terms' => 'accepted',
         ], [
             'accept_terms.accepted' => 'Bạn phải đồng ý với điều khoản dịch vụ.'
@@ -398,17 +405,23 @@ class ClientController extends Controller
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        // Tính tổng tiền (bao gồm phí ship)
-        $subtotal = 0;
+        // ✅ Kiểm tra tồn kho cho từng item
         foreach ($cart->cartItem as $item) {
-            $price = $item->variant->price ?? 0;
-            $subtotal += $price * $item->quantity;
+            $variant = $item->variant;
+            if ($variant->stock_quantity < $item->quantity) {
+                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ số lượng tồn kho.');
+            }
         }
 
+        // ✅ Tính tổng tiền
+        $subtotal = 0;
+        foreach ($cart->cartItem as $item) {
+            $subtotal += ($item->variant->price ?? 0) * $item->quantity;
+        }
         $shipping = 50000;
         $totalPrice = $subtotal + $shipping;
 
-        // Tạo đơn hàng
+        // ✅ Tạo đơn hàng
         $order = \App\Models\Order::create([
             'user_id' => $user->id,
             'user_email' => $request->email,
@@ -421,7 +434,18 @@ class ClientController extends Controller
             'total_price' => $totalPrice,
         ]);
 
-        // Lưu chi tiết đơn hàng
+        // ✅ Trừ tồn kho nếu là COD
+        if ($request->payment_method === 'cod') {
+            foreach ($cart->cartItem as $item) {
+                $variant = $item->variant;
+                $variant->stock_quantity -= $item->quantity;
+                $variant->save();
+
+                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+            }
+        }
+
+        // ✅ Lưu chi tiết đơn hàng
         foreach ($cart->cartItem as $item) {
             \App\Models\OrderDetail::create([
                 'order_id' => $order->id,
@@ -432,12 +456,12 @@ class ClientController extends Controller
             ]);
         }
 
-        // Xóa giỏ hàng sau khi đặt hàng
+        // ✅ Xoá giỏ hàng
         $cart->cartItem()->delete();
         $cart->delete();
 
+        // ✅ Chuyển hướng VNPay nếu cần
         if ($request->payment_method === 'vnpay') {
-            // Chuyển hướng đến VNPay
             $vnpayService = new \App\Services\VNPayService();
             $paymentUrl = $vnpayService->createPaymentUrl(
                 $order->id,

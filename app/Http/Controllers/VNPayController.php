@@ -43,6 +43,16 @@ class VNPayController extends Controller
                 'vnpay_transaction_id' => $inputData['vnp_TransactionNo'] ?? null,
             ]);
 
+            foreach ($order->orderDetails as $detail) {
+                $variant = $detail->variant;
+                if ($variant) {
+                    $variant->stock_quantity = max(0, $variant->stock_quantity - $detail->quantity); // đảm bảo không âm
+                    $variant->save();
+
+                    app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+                }
+            }
+
             return redirect()->route('client.orders.success')->with([
                 'success' => 'Thanh toán thành công!',
                 'order_id' => $orderId,
@@ -59,31 +69,18 @@ class VNPayController extends Controller
     }
 
     public function paymentSuccess()
-{
-    $categories = Category::all();
-    $brands = Brand::all();
+    {
+        $categories = Category::all();
+        $brands = Brand::all();
 
-    return view('clients.orders.success', [
-        'categories' => $categories,
-        'brands' => $brands,
-        'success' => session('success'),
-        'order_id' => session('order_id'),
-        'transaction_id' => session('transaction_id'),
-    ]);
-}
+        return view('clients.orders.success', compact('categories', 'brands'));
+    }
 
-public function paymentFailed()
-{
-    $categories = Category::all();
-    $brands = Brand::all();
+    public function paymentFailed()
+    {
+        $categories = Category::all();
+        $brands = Brand::all();
 
-    return view('clients.orders.failed', [
-        'categories' => $categories,
-        'brands' => $brands,
-        'error' => session('error'),
-        'order_id' => session('order_id'),
-        'transaction_id' => session('transaction_id'),
-    ]);
-}
-
+        return view('clients.orders.failed', compact('categories', 'brands'));
+    }
 }

@@ -172,4 +172,24 @@ class ProductController extends Controller
         $categories = Category::orderBy('category_name')->get();
         return view('admins.products.productlist', compact('products', 'brands', 'categories'))->with('trash', true);
     }
+
+    public function autoTrashIfOutOfStock($productId)
+    {
+        $product = Product::with('variants')->find($productId);
+
+        if (!$product || $product->variants->isEmpty()) {
+            return;
+        }
+
+        // Nếu tất cả biến thể đều hết hàng
+        $allOutOfStock = $product->variants->every(function ($variant) {
+            return $variant->stock_quantity <= 0;
+        });
+
+        if ($allOutOfStock) {
+            $product->status = 'inactive';
+            $product->save();
+            $product->delete();
+        }
+    }
 }

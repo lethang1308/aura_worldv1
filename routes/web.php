@@ -200,6 +200,10 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 //     Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
 // });
 // Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
-Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
-Route::get('/order/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
-Route::get('/order/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+    Route::get('/order/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
+    Route::get('/order/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
+});
