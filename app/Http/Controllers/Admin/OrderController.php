@@ -37,6 +37,7 @@ class OrderController extends Controller
         $statusList = [
             'pending' => 'Chưa xác nhận',
             'confirmed' => 'Đã xác nhận',
+            'paid' => 'Đã thanh toán',
             'shipping' => 'Đang giao hàng',
             'shipped' => 'Đã giao hàng',
             'received' => 'Đã nhận hàng',
@@ -53,6 +54,7 @@ class OrderController extends Controller
         $order = Order::with(['user', 'OrderDetail.variant.product'])->findOrFail($id);
         $statusList = [
             'pending' => 'Chưa xác nhận',
+            'paid' => 'Đã thanh toán',
             'confirmed' => 'Đã xác nhận',
             'shipping' => 'Đang giao hàng',
             'shipped' => 'Đã giao hàng',

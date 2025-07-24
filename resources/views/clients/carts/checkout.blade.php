@@ -49,20 +49,20 @@
                         <div class="col-lg-8">
                             <h3>Thông tin thanh toán</h3>
                             <div class="col-md-12 form-group p_star">
-    <input type="text" class="form-control" id="last" name="name"
-        placeholder="Họ và tên *" value="{{ old('name', $user->name ?? '') }}" />
-</div>
-<div class="col-md-12 form-group p_star">
-    <input type="text" class="form-control" id="number" name="number"
-        placeholder="Số điện thoại *" value="{{ old('number', $user->phone ?? '') }}" />
-</div>
-<div class="col-md-12 form-group p_star">
-    <input type="text" class="form-control" id="email" name="email"
-        placeholder="Email *" value="{{ old('email', $user->email ?? '') }}" />
-</div>
-<div class="col-md-12 form-group p_star">
-    <input type="text" class="form-control" id="add1" name="add1"
-        placeholder="Địa chỉ nhận hàng *" value="{{ old('add1', $user->address ?? '') }}" />
+                                <input type="text" class="form-control" id="last" name="name"
+                                    placeholder="Họ và tên *" value="{{ old('name', $user->name ?? '') }}" />
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text" class="form-control" id="number" name="number"
+                                    placeholder="Số điện thoại *" value="{{ old('number', $user->phone ?? '') }}" />
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text" class="form-control" id="email" name="email"
+                                    placeholder="Email *" value="{{ old('email', $user->email ?? '') }}" />
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text" class="form-control" id="add1" name="add1"
+                                    placeholder="Địa chỉ nhận hàng *" value="{{ old('add1', $user->address ?? '') }}" />
                             </div>
                             <div class="col-md-12 form-group p_star">
                                 <input type="text" class="form-control" id="city" name="city"
@@ -82,20 +82,21 @@
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
-                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Ghi chú đơn hàng"></textarea>
+                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Ghi chú đơn hàng">{{ old('message') }}</textarea>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="order_box">
                                 <h2>Đơn hàng của bạn</h2>
                                 <ul class="list">
-                                    @if($cart && $cart->cartItem->count())
-                                        @foreach($cart->cartItem as $item)
+                                    @if ($cart && $cart->cartItem->count())
+                                        @foreach ($cart->cartItem as $item)
                                             <li>
                                                 <a href="#">
                                                     {{ $item->variant->product->name ?? 'Sản phẩm' }}
                                                     <span class="middle">x {{ $item->quantity }}</span>
-                                                    <span class="last">{{ number_format(($item->variant->price ?? 0) * $item->quantity, 0, ',', '.') }}đ</span>
+                                                    <span
+                                                        class="last">{{ number_format(($item->variant->price ?? 0) * $item->quantity, 0, ',', '.') }}đ</span>
                                                 </a>
                                             </li>
                                         @endforeach
