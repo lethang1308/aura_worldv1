@@ -289,7 +289,11 @@ class ClientController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
-        return view('clients.carts.checkout', compact('brands', 'categories'));
+        $cart = null;
+        if (Auth::check()) {
+            $cart = \App\Models\Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
+        }
+        return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
     }
 
     public function showProfile()
