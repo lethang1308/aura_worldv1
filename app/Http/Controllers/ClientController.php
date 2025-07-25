@@ -10,6 +10,9 @@ use App\Models\Variant;
 use App\Models\Attribute;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -204,8 +207,15 @@ class ClientController extends Controller
             ->where('variant_id', $variant->id)
             ->first();
 
+        $currentQuantityInCart = $cartItem ? $cartItem->quantity : 0;
+        $newTotalQuantity = $currentQuantityInCart + $request->quantity;
+
+        if ($newTotalQuantity > $variant->stock_quantity) {
+            return redirect()->back()->with('error', 'Số lượng sản phẩm vượt quá tồn kho. Chỉ còn ' . $variant->stock_quantity . ' sản phẩm.');
+        }
+
         if ($cartItem) {
-            $cartItem->quantity += $request->quantity;
+            $cartItem->quantity = $newTotalQuantity;
             $cartItem->save();
         } else {
             CartItem::create([
@@ -355,64 +365,6 @@ class ClientController extends Controller
         return back()->with('success', 'Đổi mật khẩu thành công!');
     }
 
-    public function placeOrder(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'number' => 'required|string|max:20',
-            'email' => 'required|email',
-            'add1' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'payment_method' => 'required|in:cod,paypal',
-            'accept_terms' => 'accepted',
-        ], [
-            'accept_terms.accepted' => 'Bạn phải đồng ý với điều khoản dịch vụ.'
-        ]);
-
-        $user = Auth::user();
-        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
-        if (!$cart || $cart->cartItem->isEmpty()) {
-            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
-        }
-
-        // Tính tổng tiền
-        $totalPrice = 0;
-        foreach ($cart->cartItem as $item) {
-            $price = $item->variant->price ?? 0;
-            $totalPrice += $price * $item->quantity;
-        }
-
-        // Tạo đơn hàng
-        $order = \App\Models\Order::create([
-            'user_id' => $user->id,
-            'user_email' => $request->email,
-            'user_phone' => $request->number,
-            'user_address' => $request->add1 . ', ' . $request->city,
-            'user_note' => $request->message,
-            'status_order' => 'pending',
-            'status_payment' => 'unpaid',
-            'type_payment' => $request->payment_method,
-            'total_price' => $totalPrice,
-        ]);
-
-        // Lưu chi tiết đơn hàng
-        foreach ($cart->cartItem as $item) {
-            \App\Models\OrderDetail::create([
-                'order_id' => $order->id,
-                'variant_id' => $item->variant_id,
-                'variant_price' => $item->variant->price ?? 0,
-                'quantity' => $item->quantity,
-                'total_price' => ($item->variant->price ?? 0) * $item->quantity,
-            ]);
-        }
-
-        // Xóa giỏ hàng sau khi đặt hàng
-        $cart->cartItem()->delete();
-        $cart->delete();
-
-        return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
-    }
-
     public function orderList()
     {
         $user = Auth::user();
@@ -433,5 +385,208 @@ class ClientController extends Controller
         $order->cancel_reason = 'Khách tự hủy';
         $order->save();
         return redirect()->route('client.orders')->with('success', 'Đã hủy đơn hàng thành công.');
+    }
+
+    public function placeOrder(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:20',
+            'email' => 'required|email',
+            'add1' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'payment_method' => 'required|in:cod,vnpay',
+            'accept_terms' => 'accepted',
+        ], [
+            'accept_terms.accepted' => 'Bạn phải đồng ý với điều khoản dịch vụ.'
+        ]);
+
+        $user = Auth::user();
+        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
+
+        if (!$cart || $cart->cartItem->isEmpty()) {
+            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
+        }
+
+        // ✅ Kiểm tra tồn kho cho từng item
+        foreach ($cart->cartItem as $item) {
+            $variant = $item->variant;
+            if ($variant->stock_quantity < $item->quantity) {
+                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ số lượng tồn kho.');
+            }
+        }
+
+        // ✅ Tính tổng tiền
+        $subtotal = 0;
+        foreach ($cart->cartItem as $item) {
+            $subtotal += ($item->variant->price ?? 0) * $item->quantity;
+        }
+        $shipping = 50000;
+        $totalPrice = $subtotal + $shipping;
+
+        // ✅ Tạo đơn hàng
+        $order = \App\Models\Order::create([
+            'user_id' => $user->id,
+            'user_email' => $request->email,
+            'user_phone' => $request->number,
+            'user_address' => $request->add1 . ', ' . $request->city,
+            'user_note' => $request->message,
+            'status_order' => 'pending',
+            'status_payment' => $request->payment_method === 'cod' ? 'unpaid' : 'pending',
+            'type_payment' => $request->payment_method,
+            'total_price' => $totalPrice,
+        ]);
+
+        // ✅ Trừ tồn kho nếu là COD
+        if ($request->payment_method === 'cod') {
+            foreach ($cart->cartItem as $item) {
+                $variant = $item->variant;
+                $variant->stock_quantity -= $item->quantity;
+                $variant->save();
+
+                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+            }
+        }
+
+        // ✅ Lưu chi tiết đơn hàng
+        foreach ($cart->cartItem as $item) {
+            \App\Models\OrderDetail::create([
+                'order_id' => $order->id,
+                'variant_id' => $item->variant_id,
+                'variant_price' => $item->variant->price ?? 0,
+                'quantity' => $item->quantity,
+                'total_price' => ($item->variant->price ?? 0) * $item->quantity,
+            ]);
+        }
+
+        // ✅ Xoá giỏ hàng
+        $cart->cartItem()->delete();
+        $cart->delete();
+
+        // ✅ Chuyển hướng VNPay nếu cần
+        if ($request->payment_method === 'vnpay') {
+            $vnpayService = new \App\Services\VNPayService();
+            $paymentUrl = $vnpayService->createPaymentUrl(
+                $order->id,
+                $totalPrice,
+                "Thanh toán đơn hàng #" . $order->id,
+                $request->ip()
+            );
+
+            return redirect($paymentUrl);
+        }
+
+        return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+    }
+
+    public function useCoupon(Request $request)
+    {
+        $code = $request->input('coupon_code');
+        $coupon = Coupon::where('code', $code)->where('status', 1)->first();
+
+        if (!$coupon) {
+            return response()->json(['error' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.']);
+        }
+
+        // Lấy giỏ hàng từ DB theo user
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Bạn cần đăng nhập để sử dụng mã giảm giá.']);
+        }
+
+        $cart = Cart::with('cartItem.variant.product')->where('user_id', $user->id)->first();
+
+        if (!$cart || $cart->cartItem->isEmpty()) {
+            return response()->json(['error' => 'Giỏ hàng trống.']);
+        }
+
+        $totalPrice = $cart->total_price;
+        $discount = 0;
+
+        if ($totalPrice < $coupon->min_order_value) {
+            return response()->json(['error' => 'Đơn hàng chưa đạt giá trị tối thiểu để dùng mã.']);
+        }
+
+        if ($coupon->type == 'percent') {
+            $discount = $totalPrice * ($coupon->value / 100);
+        } elseif ($coupon->type == 'fixed') {
+            $discount = $coupon->value;
+        }
+
+        if ($coupon->max_discount && $discount > $coupon->max_discount) {
+            $discount = $coupon->max_discount;
+        }
+
+        session()->put('applied_coupon', [
+            'code' => $coupon->code,
+            'discount' => $discount,
+        ]);
+
+        return response()->json([
+            'success' => 'Áp dụng mã thành công!',
+            'discount' => $discount,
+            'formatted_discount' => number_format($discount, 0, ',', '.'),
+            'total' => number_format($totalPrice + 50000 - $discount, 0, ',', '.')
+        ]);
+    }
+
+    public function removeCoupon()
+    {
+        session()->forget('applied_coupon');
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Bạn cần đăng nhập.']);
+        }
+
+        $cart = \App\Models\Cart::with('cartItem')->where('user_id', $user->id)->first();
+        $total = ($cart->total_price ?? 0) + 50000;
+
+        return response()->json([
+            'success' => 'Đã huỷ mã giảm giá.',
+            'discount' => 0,
+            'formatted_discount' => number_format(0, 0, ',', '.'),
+            'total' => number_format($total, 0, ',', '.')
+        ]);
+    }
+
+    public function addReview(Request $request, $id) // $id là product_id
+    {
+        $request->validate([
+            'rating'  => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+
+        // Kiểm tra xem user đã từng mua sản phẩm chưa
+        $hasPurchased = Order::where('user_id', $user->id)
+            ->whereIn('status_order', ['completed', 'received']) // các trạng thái đã nhận hàng
+            ->whereHas('orderDetail.variant', function ($q) use ($id) {
+                $q->where('product_id', $id);
+            })
+            ->exists();
+
+        if (!$hasPurchased) {
+            return back()->with('error', 'Bạn chỉ có thể đánh giá sau khi đã mua sản phẩm.');
+        }
+
+        // Kiểm tra nếu user đã đánh giá rồi thì không cho đánh giá lại (nếu muốn)
+        $alreadyReviewed = Review::where('user_id', $user->id)
+            ->where('product_id', $id)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            return back()->with('error', 'Bạn đã đánh giá sản phẩm này rồi.');
+        }
+
+        Review::create([
+            'user_id'    => $user->id,
+            'product_id' => $id,
+            'rating'     => $request->rating,
+            'comment'    => $request->comment,
+        ]);
+
+        return back()->with('success', 'Đánh giá của bạn đã được gửi.');
     }
 }
