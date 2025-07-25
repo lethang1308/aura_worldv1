@@ -10,6 +10,9 @@ use App\Models\Variant;
 use App\Models\Attribute;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -474,5 +477,116 @@ class ClientController extends Controller
         }
 
         return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+    }
+
+    public function useCoupon(Request $request)
+    {
+        $code = $request->input('coupon_code');
+        $coupon = Coupon::where('code', $code)->where('status', 1)->first();
+
+        if (!$coupon) {
+            return response()->json(['error' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.']);
+        }
+
+        // Lấy giỏ hàng từ DB theo user
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Bạn cần đăng nhập để sử dụng mã giảm giá.']);
+        }
+
+        $cart = Cart::with('cartItem.variant.product')->where('user_id', $user->id)->first();
+
+        if (!$cart || $cart->cartItem->isEmpty()) {
+            return response()->json(['error' => 'Giỏ hàng trống.']);
+        }
+
+        $totalPrice = $cart->total_price;
+        $discount = 0;
+
+        if ($totalPrice < $coupon->min_order_value) {
+            return response()->json(['error' => 'Đơn hàng chưa đạt giá trị tối thiểu để dùng mã.']);
+        }
+
+        if ($coupon->type == 'percent') {
+            $discount = $totalPrice * ($coupon->value / 100);
+        } elseif ($coupon->type == 'fixed') {
+            $discount = $coupon->value;
+        }
+
+        if ($coupon->max_discount && $discount > $coupon->max_discount) {
+            $discount = $coupon->max_discount;
+        }
+
+        session()->put('applied_coupon', [
+            'code' => $coupon->code,
+            'discount' => $discount,
+        ]);
+
+        return response()->json([
+            'success' => 'Áp dụng mã thành công!',
+            'discount' => $discount,
+            'formatted_discount' => number_format($discount, 0, ',', '.'),
+            'total' => number_format($totalPrice + 50000 - $discount, 0, ',', '.')
+        ]);
+    }
+
+    public function removeCoupon()
+    {
+        session()->forget('applied_coupon');
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Bạn cần đăng nhập.']);
+        }
+
+        $cart = \App\Models\Cart::with('cartItem')->where('user_id', $user->id)->first();
+        $total = ($cart->total_price ?? 0) + 50000;
+
+        return response()->json([
+            'success' => 'Đã huỷ mã giảm giá.',
+            'discount' => 0,
+            'formatted_discount' => number_format(0, 0, ',', '.'),
+            'total' => number_format($total, 0, ',', '.')
+        ]);
+    }
+
+    public function addReview(Request $request, $id) // $id là product_id
+    {
+        $request->validate([
+            'rating'  => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+
+        // Kiểm tra xem user đã từng mua sản phẩm chưa
+        $hasPurchased = Order::where('user_id', $user->id)
+            ->whereIn('status_order', ['completed', 'received']) // các trạng thái đã nhận hàng
+            ->whereHas('orderDetail.variant', function ($q) use ($id) {
+                $q->where('product_id', $id);
+            })
+            ->exists();
+
+        if (!$hasPurchased) {
+            return back()->with('error', 'Bạn chỉ có thể đánh giá sau khi đã mua sản phẩm.');
+        }
+
+        // Kiểm tra nếu user đã đánh giá rồi thì không cho đánh giá lại (nếu muốn)
+        $alreadyReviewed = Review::where('user_id', $user->id)
+            ->where('product_id', $id)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            return back()->with('error', 'Bạn đã đánh giá sản phẩm này rồi.');
+        }
+
+        Review::create([
+            'user_id'    => $user->id,
+            'product_id' => $id,
+            'rating'     => $request->rating,
+            'comment'    => $request->comment,
+        ]);
+
+        return back()->with('success', 'Đánh giá của bạn đã được gửi.');
     }
 }

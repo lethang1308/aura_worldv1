@@ -187,12 +187,23 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::post('/carts/checkout', [ClientController::class, 'placeOrder'])->name('client.carts.placeOrder');
     Route::get('/checkout/vnpay-return', [ClientController::class, 'handleReturn']);
 
+    Route::post('/coupon/use-coupon', [ClientController::class, 'useCoupon'])->name('client.carts.useCoupon');
+    Route::post('/coupon/remove-coupon', [ClientController::class, 'removeCoupon'])->name('client.carts.removeCoupon');
+
+    Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
+
+
+
     Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
     Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
+
     Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
+    Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
+    Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
+    Route::get('/orders/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 });
 
 // Route review cho khách hàng
@@ -201,9 +212,3 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 // });
 // Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
 
-Route::middleware('auth')->group(function () {
-
-    Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
-    Route::get('/order/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
-    Route::get('/order/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
-});

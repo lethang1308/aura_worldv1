@@ -1,26 +1,6 @@
 @extends('clients.layouts.default')
 
 @section('content')
-
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}<br>
-        Mã đơn hàng: {{ session('order_id') }}<br>
-        Mã giao dịch: {{ session('transaction_id') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}<br>
-        @if(session('order_id'))
-            Mã đơn hàng: {{ session('order_id') }}<br>
-        @endif
-        @if(session('transaction_id'))
-            Mã giao dịch: {{ session('transaction_id') }}
-        @endif
-    </div>
-@endif
     <!--================Home Banner Area =================-->
     <section class="banner_area">
         <div class="banner_inner d-flex align-items-center">
