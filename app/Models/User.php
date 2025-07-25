@@ -69,6 +69,8 @@ class User extends Authenticatable
     const ROLE_ADMIN = 'admin';
     const ROLE_USER = 'user';
 
+    const ROLE_SHIPPER = 'shipper';
+
     public function isRoleAdmin()
     {
         return $this->role && $this->role->role_name === self::ROLE_ADMIN;
@@ -77,5 +79,10 @@ class User extends Authenticatable
     public function isRoleUser()
     {
         return $this->role && $this->role->role_name === self::ROLE_USER;
+    }
+
+        public function isRoleShipper()
+    {
+        return $this->role && $this->role->role_name === self::ROLE_SHIPPER;
     }
 }

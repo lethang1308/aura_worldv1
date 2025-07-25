@@ -301,7 +301,7 @@ class ClientController extends Controller
         $categories = Category::all();
         $cart = null;
         if (Auth::check()) {
-            $cart = \App\Models\Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
+            $cart = Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
         }
         return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
     }
@@ -368,16 +368,16 @@ class ClientController extends Controller
     public function orderList()
     {
         $user = Auth::user();
-        $orders = \App\Models\Order::where('user_id', $user->id)->orderByDesc('created_at')->get();
-        $categories = \App\Models\Category::all();
-        $brands = \App\Models\Brand::all();
+        $orders = Order::where('user_id', $user->id)->orderByDesc('created_at')->get();
+        $categories = Category::all();
+        $brands = Brand::all();
         return view('clients.orders.orderlist', compact('orders', 'categories', 'brands'));
     }
 
     public function cancelOrder($id)
     {
         $user = Auth::user();
-        $order = \App\Models\Order::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        $order = Order::where('id', $id)->where('user_id', $user->id)->firstOrFail();
         if ($order->status_order !== 'pending') {
             return redirect()->route('client.orders')->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
         }
@@ -425,7 +425,7 @@ class ClientController extends Controller
         $totalPrice = $subtotal + $shipping;
 
         // ✅ Tạo đơn hàng
-        $order = \App\Models\Order::create([
+        $order = Order::create([
             'user_id' => $user->id,
             'user_email' => $request->email,
             'user_phone' => $request->number,

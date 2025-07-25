@@ -204,14 +204,8 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 
     Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
-    Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
-    Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
-    Route::get('/orders/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
 });
 
-// Route review cho khách hàng
-// Route::middleware(['auth'])->group(function () {
-//     Route::post('/products/{product}/review', [ReviewController::class, 'store'])->name('products.review.store');
-// });
-// Route::get('/products/{product}/reviews', [ReviewController::class, 'show'])->name('products.review.show');
-
+    Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
+    Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
+    Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
