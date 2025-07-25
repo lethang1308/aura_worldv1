@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     // Hiển thị danh sách khách hàng
-    public function index()
+    public function index(Request $request)
     {
-        $admins = User::where('role_id', 1)->paginate(10);
+        // Lấy danh sách admin như cũ
+        $admins = \App\Models\User::where('role_id', 1)->paginate(10);
         return view('admins.admin.adminlist', compact('admins'));
     }
 

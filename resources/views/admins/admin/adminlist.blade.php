@@ -4,6 +4,59 @@
     <div class="wrapper">
         <div class="page-content">
             <div class="container-xxl">
+                <!-- Form chọn ngày đã có ở đây -->
+                @if(isset($from) && isset($to))
+                <div class="mb-4">
+                    <h5>Thống kê từ <b>{{ $from }}</b> đến <b>{{ $to }}</b></h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="card text-bg-success mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Tổng doanh thu</h6>
+                                    <h4 class="card-text">{{ number_format($totalRevenue, 0, ',', '.') }} đ</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-bg-info mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Top user mua nhiều nhất</h6>
+                                    <ol class="mb-0">
+                                        @foreach($topUsers as $user)
+                                            <li>{{ $user->user ? $user->user->name : 'N/A' }} ({{ number_format($user->total_spent, 0, ',', '.') }} đ, {{ $user->order_count }} đơn)</li>
+                                        @endforeach
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-bg-primary mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Top sản phẩm bán chạy nhất</h6>
+                                    <ol class="mb-0">
+                                        @foreach($topProducts as $item)
+                                            <li>{{ $item->variant && $item->variant->product ? $item->variant->product->name : 'N/A' }} ({{ $item->total_sold }} sp)</li>
+                                        @endforeach
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-bg-warning mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Top sản phẩm bán ít nhất</h6>
+                                    <ol class="mb-0">
+                                        @foreach($bottomProducts as $item)
+                                            <li>{{ $item->variant && $item->variant->product ? $item->variant->product->name : 'N/A' }} ({{ $item->total_sold }} sp)</li>
+                                        @endforeach
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                <!-- Kết thúc form chọn ngày -->
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card">

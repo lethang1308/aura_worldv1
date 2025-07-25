@@ -20,6 +20,7 @@ use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -100,6 +101,7 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
 
     // Admin dashboard
     Route::get('/', [AdminController::class, 'index'])->name('admin.list');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     // Product Image routes
     Route::delete('/products/images/{id}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');
