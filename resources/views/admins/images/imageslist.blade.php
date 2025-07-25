@@ -20,6 +20,9 @@
                                 @endforeach
                             </select>
                             <button type="submit" class="btn btn-sm btn-primary">Lọc</button>
+                            <a href="{{ route('products.images.list') }}" class="btn btn-sm btn-secondary">
+                                Xoá lọc
+                            </a>
                         </form>
                     </div>
 
