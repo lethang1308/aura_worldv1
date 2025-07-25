@@ -3,16 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
 
 class ProductImageController extends Controller
 {
-
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $images = ProductImage::with('product')->latest()->paginate(8);
-        return view('admins.images.imageslist', compact('images'));
+        $products = Product::orderBy('name')->pluck('name', 'id'); // id => name
+
+        $query = ProductImage::with('product')->latest();
+
+        if ($productId = $request->input('product_id')) {
+            $query->where('product_id', $productId);
+        }
+
+        $images = $query->paginate(8)->withQueryString();
+
+        return view('admins.images.imageslist', compact('images', 'products'));
     }
     public function destroy($id)
     {
