@@ -203,6 +203,7 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 
     Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
+    Route::get('/orders/{id}', [ClientController::class, 'orderDetail'])->name('client.orders.detail');
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
     Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
     Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');

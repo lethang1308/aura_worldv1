@@ -374,6 +374,18 @@ class ClientController extends Controller
         return view('clients.orders.orderlist', compact('orders', 'categories', 'brands'));
     }
 
+    public function orderDetail($id)
+    {
+        $user = Auth::user();
+        $order = \App\Models\Order::with(['OrderDetail.variant.product.images'])
+            ->where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+        $categories = \App\Models\Category::all();
+        $brands = \App\Models\Brand::all();
+        return view('clients.orders.orderdetail', compact('order', 'categories', 'brands'));
+    }
+
     public function cancelOrder($id)
     {
         $user = Auth::user();

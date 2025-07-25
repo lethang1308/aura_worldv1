@@ -56,7 +56,7 @@
                                             <button type="submit" class="btn btn-sm btn-danger">B&#7887; hủy</button>
                                         </form>
                                     @endif
-                                    <a href="#" class="btn btn-sm btn-success">Order Detail</a>
+                                    <a href="{{ route('client.orders.detail', $order->id) }}" class="btn btn-sm btn-success">Order Detail</a>
                                 </div>
                             </td>
                         </tr>
