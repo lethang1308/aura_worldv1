@@ -167,10 +167,15 @@ class ProductController extends Controller
 
     public function trash()
     {
-        $products = Product::onlyTrashed()->paginate(6);
-        $brands = Brand::orderBy('name')->get();
-        $categories = Category::orderBy('category_name')->get();
-        return view('admins.products.productlist', compact('products', 'brands', 'categories'))->with('trash', true);
+        $products = Product::onlyTrashed()->paginate(10);
+        return view('admins.products.productlist', compact('products'))->with('trash', true);
+    }
+
+    public function forceDelete($id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->forceDelete();
+        return redirect()->route('products.trash')->with('success', 'Đã xóa vĩnh viễn sản phẩm!');
     }
 
     public function autoTrashIfOutOfStock($productId)

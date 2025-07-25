@@ -284,7 +284,21 @@
                                                             </td>
                                                             <td>
                                                                 <div class="d-flex gap-2 align-items-center">
-                                                                    @if (!isset($trash) || !$trash)
+                                                                    @if (isset($trash) && $trash)
+                                                                        <form action="{{ route('products.restore', $product->id) }}" method="POST"
+                                                                            style="display:inline-block">
+                                                                            @csrf
+                                                                            @method('PATCH')
+                                                                            <button type="submit"
+                                                                                class="btn btn-success btn-sm">Khôi
+                                                                                phục</button>
+                                                                        </form>
+                                                                        <form action="{{ route('products.forceDelete', $product->id) }}" method="POST" style="display:inline-block; margin-left: 4px;">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa vĩnh viễn sản phẩm này?');">Xóa vĩnh viễn</button>
+                                                                        </form>
+                                                                    @else
                                                                         <a href="{{ route('products.edit', $product->id) }}"
                                                                             class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2"
                                                                             style="height: 32px; width: 32px;">
@@ -305,20 +319,22 @@
                                                                                     class="align-middle fs-18"></iconify-icon>
                                                                             </button>
                                                                         </form>
-                                                                    @else
-                                                                        <form action="{{ route('products.restore', $product->id) }}" method="POST"
-                                                                            style="display:inline-block">
-                                                                            @csrf
-                                                                            @method('PATCH')
-                                                                            <button type="submit"
-                                                                                class="btn btn-success btn-sm">Khôi
-                                                                                phục</button>
-                                                                        </form>
                                                                     @endif
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     @endforeach
+                                                    @if ($products->isEmpty())
+                                                        <tr>
+                                                            <td colspan="9" class="text-center">
+                                                                @if (isset($trash) && $trash)
+                                                                    Không có sản phẩm nào trong thùng rác.
+                                                                @else
+                                                                    No Products Found
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>

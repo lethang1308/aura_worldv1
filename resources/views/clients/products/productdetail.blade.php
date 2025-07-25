@@ -175,7 +175,7 @@
                                                 @endfor
                                             </div>
                                             <p class="mb-0">{{ $review->comment }}</p>
-                                            <small class="text-muted">{{ $review->created_at->format('d/m/Y H:i') }}</small>
+                                            <small class="text-muted">{{ $review->created_at ? $review->created_at->format('d/m/Y H:i') : 'N/A' }}</small>
                                         </div>
                                     </div>
                                 @empty

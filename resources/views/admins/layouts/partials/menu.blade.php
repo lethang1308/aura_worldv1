@@ -120,38 +120,6 @@
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link" href="{{ route('orders.index') }}">List</a>
                                             </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="order-detail.html">Details</a>
-                                            </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="order-cart.html">Cart</a>
-                                            </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="order-checkout.html">Check Out</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link menu-arrow" href="#sidebarPurchases" data-bs-toggle="collapse"
-                                        role="button" aria-expanded="false" aria-controls="sidebarPurchases">
-                                        <span class="nav-icon">
-                                            <iconify-icon icon="solar:card-send-bold-duotone"></iconify-icon>
-                                        </span>
-                                        <span class="nav-text"> Purchases </span>
-                                    </a>
-                                    <div class="collapse" id="sidebarPurchases">
-                                        <ul class="nav sub-navbar-nav">
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="purchase-list.html">List</a>
-                                            </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="purchase-order.html">Order</a>
-                                            </li>
-                                            <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="purchase-returns.html">Return</a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </li>

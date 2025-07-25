@@ -51,13 +51,14 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     // Product routes
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::get('/products/trash', [ProductController::class, 'trash'])->name('products.trash');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::patch('/products/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
-    Route::get('/products/trash', [ProductController::class, 'trash'])->name('products.trash');
+    Route::delete('/products/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
 
     // Category routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
