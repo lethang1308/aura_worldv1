@@ -18,4 +18,14 @@ class Payment extends Model
         'transaction_id',
         'payment_date',
     ];
+
+    public function transaction()
+    {
+        return $this->hasOne(PaymentTransaction::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

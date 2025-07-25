@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PurchaseController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -157,6 +158,9 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     // Admin profile routes
     Route::get('/profile', [AdminController::class, 'showProfile'])->name('admin.profile');
     Route::post('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+
+    Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/{id}', [PurchaseController::class, 'show'])->name('purchases.show');
 });
 
 // Forgot password routes (nên không bọc auth)
@@ -206,6 +210,6 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
 });
 
-    Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
-    Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
-    Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
+Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
+Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
