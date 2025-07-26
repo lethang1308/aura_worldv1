@@ -94,12 +94,6 @@
                                             <a href="{{ route('orders.show', $order->id) }}" class="btn btn-soft-info btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;" title="Chi tiết">
                                                 <iconify-icon icon="solar:eye-bold-duotone" class="align-middle fs-18"></iconify-icon>
                                             </a>
-                                            <a href="#" class="btn btn-soft-secondary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;" title="Cập nhật" disabled>
-                                                <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
-                                            </a>
-                                            <a href="#" class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1" style="height: 32px; width: 32px;" title="Huỷ" disabled>
-                                                <iconify-icon icon="solar:trash-bin-trash-bold" class="align-middle fs-18"></iconify-icon>
-                                            </a>
                                         </td>
                                     </tr>
                                 @empty

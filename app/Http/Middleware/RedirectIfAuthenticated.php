@@ -25,6 +25,10 @@ class RedirectIfAuthenticated
                 return redirect()->route('client.home');
             }
 
+            // if ($user->role && $user->role->role_name === 'shipper') {
+            //     return redirect()->route('shipper.home');
+            // }
+
             // fallback nếu không biết role
             return redirect('login');
         }

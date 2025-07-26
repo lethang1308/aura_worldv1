@@ -162,11 +162,29 @@
                                 </li>
 
                                 <li class="nav-item">
+                                    <a class="nav-link menu-arrow" href="#sidebarPurchases" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarPurchases">
+                                        <span class="nav-icon">
+                                            <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
+                                        </span>
+                                        <span class="nav-text"> Purchases </span>
+                                    </a>
+                                    <div class="collapse" id="sidebarPurchases">
+                                        <ul class="nav sub-navbar-nav">
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('purchases.index')}}">List</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+
+                                <li class="nav-item">
                                     <a class="nav-link menu-arrow" href="#sidebarVariants" data-bs-toggle="collapse"
                                         role="button" aria-expanded="false" aria-controls="sidebarVariants">
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:ufo-2-bold-duotone"></iconify-icon>
-                                       </span>
+                                        </span>
                                         <span class="nav-text"> Variants </span>
                                     </a>
                                     <div class="collapse" id="sidebarVariants">
@@ -175,7 +193,8 @@
                                                 <a class="sub-nav-link" href="{{ route('variants.index') }}">List</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('variants.create') }}">Create</a>
+                                                <a class="sub-nav-link"
+                                                    href="{{ route('variants.create') }}">Create</a>
                                             </li>
                                         </ul>
                                     </div>

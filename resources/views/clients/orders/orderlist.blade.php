@@ -36,12 +36,18 @@
                                         NHẬN</span>
                                 @elseif($order->status_order === 'completed')
                                     <span class="badge bg-success px-3 py-2" style="font-size:1em;">HOÀN THÀNH</span>
-                                @elseif($order->status_order === 'paid')
-                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐÃ THANH TOÁN</span>
+                                @elseif($order->status_order === 'confirmed')
+                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐÃ XÁC NHẬN</span>
+                                @elseif($order->status_order === 'shipping')
+                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐANG GIAO HÀNG</span>
+                                @elseif($order->status_order === 'shipped')
+                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐÃ GIAO HÀNG</span>
+                                @elseif($order->status_order === 'received')
+                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐÃ NHẬN HÀNG</span>
+                                @elseif($order->status_order === 'shipped')
+                                    <span class="badge bg-success px-3 py-2" style="font-size:1em;">ĐÃ GIAO HÀNG</span>
                                 @elseif($order->status_order === 'cancelled')
                                     <span class="badge bg-danger px-3 py-2" style="font-size:1em;">ĐÃ HỦY</span>
-                                @elseif($order->status_order === 'confirmed')
-                                    <span class="badge bg-primary px-3 py-2" style="font-size:1em;">ĐÃ XÁC NHẬN</span>
                                 @else
                                     <span class="badge bg-secondary px-3 py-2"
                                         style="font-size:1em;">{{ strtoupper($order->status_order) }}</span>
