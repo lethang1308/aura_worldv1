@@ -175,46 +175,46 @@ Route::get('/clients', function () {
 })->name('clients.home');
 
 Route::prefix('clients')->group(function () {
+    // Trang chính
     Route::get('/', [ClientController::class, 'home'])->name('client.home');
 
+    // Sản phẩm
     Route::get('/products', [ClientController::class, 'index'])->name('client.products');
     Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
+    Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
+
+    // Thương hiệu
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
 
+    // Giỏ hàng
     Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
     Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
-
-    Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
-
-    Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
-
-    
-    Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
-});
-
-Route::prefix('clients')->middleware('auth')->group(function () {
-
     Route::get('/cart/recalculate', [ClientController::class, 'recalculate'])->name('client.carts.recalculate');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
     Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');
-
     Route::get('/carts/checkout', [ClientController::class, 'viewCheckOut'])->name('client.carts.checkout');
     Route::post('/carts/checkout', [ClientController::class, 'placeOrder'])->name('client.carts.placeOrder');
     Route::get('/checkout/vnpay-return', [ClientController::class, 'handleReturn']);
 
+    // Coupon
     Route::post('/coupon/use-coupon', [ClientController::class, 'useCoupon'])->name('client.carts.useCoupon');
     Route::post('/coupon/remove-coupon', [ClientController::class, 'removeCoupon'])->name('client.carts.removeCoupon');
 
-    Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
-
+    // Hồ sơ cá nhân
+    Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
+
+    // Đổi mật khẩu
+    Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 
+    // Đơn hàng
+    Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
     Route::get('/orders/{id}', [ClientController::class, 'orderDetail'])->name('client.orders.detail');
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
 });
 
+
 Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
 Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
 Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
-
