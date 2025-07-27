@@ -366,12 +366,11 @@ class ClientController extends Controller
         $brands = Brand::all();
 
         $categories = Category::all();
-        $cities = City::all();
         $cart = null;
         if (Auth::check()) {
             $cart = Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
         }
-        return view('clients.carts.checkout', compact('brands', 'categories', 'cart', 'cities'));
+        return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
     }
 
     public function showProfile()
