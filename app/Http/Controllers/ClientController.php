@@ -285,9 +285,6 @@ class ClientController extends Controller
             'total' => number_format($total, 0, ',', '.') . '₫',
         ]);
     }
-
-
-
     public function updateQuantity(Request $request, $itemId)
     {
         $request->validate([
@@ -315,10 +312,6 @@ class ClientController extends Controller
             'subtotal' => $subtotal,
         ]);
     }
-
-
-
-
     private function updateCartTotals(Cart $cart)
     {
         $totalQuantity = 0;
@@ -339,9 +332,6 @@ class ClientController extends Controller
             'total_price' => $totalPrice,
         ]);
     }
-
-
-
     public function deleteProduct($itemId)
     {
         $item = CartItem::findOrFail($itemId);
@@ -360,13 +350,16 @@ class ClientController extends Controller
         return redirect()->back()->with('success', 'Sản phẩm đã được xoá khỏi giỏ hàng.');
     }
 
-
     public function viewCheckOut()
     {
         $brands = Brand::all();
 
         $categories = Category::all();
         $cart = null;
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
+        }
         if (Auth::check()) {
             $cart = Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
         }
@@ -457,6 +450,9 @@ class ClientController extends Controller
     public function orderDetail($id)
     {
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
+        }
         $order = Order::with(['OrderDetail.variant.product.images', 'user'])
             ->where('id', $id)
             ->where('user_id', $user->id)
@@ -494,6 +490,9 @@ class ClientController extends Controller
         ]);
 
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
+        }
         $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
 
         if (!$cart || $cart->cartItem->isEmpty()) {
@@ -672,7 +671,9 @@ class ClientController extends Controller
         ]);
 
         $user = Auth::user();
-
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới được bình luận');
+        }
         // Kiểm tra xem user đã từng mua sản phẩm chưa
         $hasPurchased = Order::where('user_id', $user->id)
             ->whereIn('status_order', ['completed', 'received']) // các trạng thái đã nhận hàng
