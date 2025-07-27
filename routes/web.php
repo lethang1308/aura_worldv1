@@ -180,13 +180,21 @@ Route::prefix('clients')->group(function () {
     Route::get('/products', [ClientController::class, 'index'])->name('client.products');
     Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
+
+    Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
+    Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
+
+    Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
+
+    Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
+
+    
+    Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
 });
 
 Route::prefix('clients')->middleware('auth')->group(function () {
 
-    Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
     Route::get('/cart/recalculate', [ClientController::class, 'recalculate'])->name('client.carts.recalculate');
-    Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
     Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');
 
@@ -199,14 +207,9 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 
     Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
 
-
-
-    Route::get('/profiles', [ClientController::class, 'showProfile'])->name('client.profiles');
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
-    Route::get('/profiles/change', [ClientController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 
-    Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
     Route::get('/orders/{id}', [ClientController::class, 'orderDetail'])->name('client.orders.detail');
     Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
 });

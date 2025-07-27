@@ -174,9 +174,9 @@ class ClientController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới được vào giỏ hàng');
         }
         $cart = Cart::with(['cartItem.variant.product.images'])->where('user_id', $user->id)->first();
 
@@ -190,9 +190,9 @@ class ClientController extends Controller
             'quantity'   => 'required|integer|min:1'
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới thêm được vào giỏ hàng');
         }
 
         $variant = Variant::with('product')->findOrFail($request->variant_id);
@@ -378,6 +378,9 @@ class ClientController extends Controller
         $user = Auth::user();
         $brands = Brand::all();
         $categories = Category::all();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới xem được thông tin');
+        }
         return view('clients.profiles.profile', compact('user', 'brands', 'categories'));
     }
 
@@ -405,7 +408,13 @@ class ClientController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
-        return view('clients.profiles.change', compact('brands', 'categories'));
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới được đổi mật khẩu');
+        }
+
+        return view('clients.profiles.change', compact('brands', 'categories', 'user'));
     }
 
     // Xử lý đổi mật khẩu
@@ -435,10 +444,14 @@ class ClientController extends Controller
     public function orderList()
     {
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới được vào được trang đơn hàng');
+        }
         $orders = Order::where('user_id', $user->id)->orderByDesc('created_at')->get();
         $categories = Category::all();
         $brands = Brand::all();
-        return view('clients.orders.orderlist', compact('orders', 'categories', 'brands'));
+
+        return view('clients.orders.orderlist', compact('orders', 'categories', 'brands', 'user'));
     }
 
     public function orderDetail($id)
