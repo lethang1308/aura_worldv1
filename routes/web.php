@@ -122,15 +122,18 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::get('/variants', [VariantController::class, 'index'])->name('variants.index');
     Route::get('/variants/create', [VariantController::class, 'create'])->name('variants.create');
     Route::post('/variants', [VariantController::class, 'store'])->name('variants.store');
+    Route::get('/variants/trash', [VariantController::class, 'trash'])->name('variants.trash');
+    Route::patch('/variants/restore-multiple', [VariantController::class, 'restoreMultiple'])->name('variants.restoreMultiple');
+    Route::delete('/variants/force-delete-multiple', [VariantController::class, 'forceDeleteMultiple'])->name('variants.forceDeleteMultiple');
+    Route::delete('/variants/empty-trash', [VariantController::class, 'emptyTrash'])->name('variants.emptyTrash');
+    Route::get('/variants/product/{productId}/attributes', [VariantController::class, 'getAttributeValuesByProduct'])->name('variants.getAttributeValuesByProduct');
     Route::get('/variants/{id}', [VariantController::class, 'show'])->name('variants.show');
     Route::get('/variants/{id}/edit', [VariantController::class, 'edit'])->name('variants.edit');
     Route::put('/variants/{id}', [VariantController::class, 'update'])->name('variants.update');
     Route::delete('/variants/{id}', [VariantController::class, 'destroy'])->name('variants.destroy');
     Route::patch('/variants/{id}/status', [VariantController::class, 'updateStatus'])->name('variants.updateStatus');
-    Route::get('/variants/trash', [VariantController::class, 'trash'])->name('variants.trash');
     Route::patch('/variants/{id}/restore', [VariantController::class, 'restore'])->name('variants.restore');
     Route::delete('/variants/{id}/force-delete', [VariantController::class, 'forceDelete'])->name('variants.forceDelete');
-    Route::get('/variants/product/{productId}/attributes', [VariantController::class, 'getAttributeValuesByProduct'])->name('variants.getAttributeValuesByProduct');
 
     // Order routes (Admin)
     Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');

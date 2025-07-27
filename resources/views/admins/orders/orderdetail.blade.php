@@ -74,7 +74,7 @@
                                     @foreach($order->OrderDetail as $i => $detail)
                                         <tr>
                                             <td>{{ $i+1 }}</td>
-                                            <td>{{ $detail->variant->product->name ?? 'N/A' }}</td>
+                                            <td>{{ $detail->variant->product ? $detail->variant->product->name : 'Sản phẩm đã bị xóa' }}</td>
                                             <td>Mã biến thể: {{ $detail->variant_id }}</td>
                                             <td>{{ number_format($detail->variant_price, 0, ',', '.') }} đ</td>
                                             <td>{{ $detail->quantity }}</td>

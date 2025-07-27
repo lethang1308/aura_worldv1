@@ -59,7 +59,7 @@
                                         <form method="POST" action="{{ route('client.orders.cancel', $order->id) }}"
                                             onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?');">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger">B&#7887; hủy</button>
+                                            <button type="submit" class="btn btn-sm btn-danger">Hủy Đơn Hàng</button>
                                         </form>
                                     @endif
                                     <a href="{{ route('client.orders.detail', $order->id) }}" class="btn btn-sm btn-success">Order Detail</a>

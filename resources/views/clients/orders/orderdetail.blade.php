@@ -34,9 +34,9 @@
                 <tbody>
                     @foreach ($order->OrderDetail as $i => $detail)
                         @php
-                            $product = $detail->variant->product;
-                            $image = $product->images->first();
-                            $basePrice = $product->base_price ?? 0;
+                            $product = $detail->variant->product ?? null;
+                            $image = $product ? $product->images->first() : null;
+                            $basePrice = $product ? ($product->base_price ?? 0) : 0;
                             $variantPrice = $detail->variant_price ?? 0;
                             $unitPrice = $basePrice + $variantPrice;
                             $totalPrice = $unitPrice * $detail->quantity;
