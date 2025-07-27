@@ -17,7 +17,6 @@
             @endif
         </div>
 
-
         <div class="table-responsive">
             <table class="table table-bordered table-hover shadow-sm rounded" style="background:#fff;">
                 <thead style="background:#4cd964; color:#fff; font-weight:700; text-align:center;">
@@ -52,7 +51,7 @@
                                     <span>Không có ảnh</span>
                                 @endif
                             </td>
-                            <td>{{ number_format($variantPrice, 0, ',', '.') }} đ</td> {{-- Giá dung tích --}}
+                            <td>{{ number_format($variantPrice, 0, ',', '.') }} đ</td>
                             <td>{{ $detail->quantity }}</td>
                             <td>{{ number_format($basePrice, 0, ',', '.') }} đ</td>
                             <td>{{ number_format($totalPrice, 0, ',', '.') }} đ</td>
@@ -65,10 +64,20 @@
         {{-- Tính tổng tiền & phí ship --}}
         <div class="text-end mt-3">
             <p><strong>Phí vận chuyển:</strong> {{ number_format(50000, 0, ',', '.') }} đ</p>
+            <p><strong>Giảm giá:</strong> {{ number_format($order->discount ?? 0, 0, ',', '.') }} đ</p>
+            <p><strong>Mã giảm giá:</strong> {{ $order->coupon_code ?? 'Không sử dụng' }}</ p>
             <h5><strong>Tổng thanh toán:</strong>
                 <span class="text-danger" style="font-weight:700;">
                     {{ number_format($order->total_price, 0, ',', '.') }} đ
                 </span>
+            </h5>
+            <h5><strong>Phương thức thanh toán:</strong>
+                    @if ($order->type_payment == 'cod')
+                        <span class="text-success" style="font-weight:700;">Thanh toán khi nhận hàng</span>
+                        @elseif($order->type_payment == 'vnpay')
+                        <span class="text-success" style="font-weight:700;">Thanh toán bằng VNPay</span>
+                    @endif
+                    
             </h5>
         </div>
 
