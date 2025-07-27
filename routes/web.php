@@ -186,6 +186,7 @@ Route::prefix('clients')->group(function () {
 Route::prefix('clients')->middleware('auth')->group(function () {
 
     Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
+    Route::get('/cart/recalculate', [ClientController::class, 'recalculate'])->name('client.carts.recalculate');
     Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
     Route::delete('/cart/delete/{item}', [ClientController::class, 'deleteProduct'])->name('client.carts.delete');

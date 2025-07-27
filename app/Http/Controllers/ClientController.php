@@ -196,7 +196,8 @@ class ClientController extends Controller
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
         }
 
-        $variant = Variant::findOrFail($request->variant_id);
+        $variant = Variant::with('product')->findOrFail($request->variant_id);
+        $product = $variant->product;
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $user->id],
@@ -225,11 +226,41 @@ class ClientController extends Controller
             ]);
         }
 
-        // ✅ Cập nhật tổng số lượng và tổng tiền
         $cart->load('cartItem.variant.product');
         $this->updateCartTotals($cart);
 
         return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
+    }
+
+    public function recalculate()
+    {
+        $user = Auth::user();
+        $cart = $user->cart()->with('cartItem.variant.product')->first();
+
+        if (!$cart) {
+            return response()->json(['error' => 'Không tìm thấy giỏ hàng.'], 404);
+        }
+
+        $items = [];
+        $subtotal = 0;
+
+        foreach ($cart->cartItem as $item) {
+            $product = $item->variant->product;
+            $price = ($product->base_price ?? 0) + ($item->variant->price ?? 0);
+            $total = $price * $item->quantity;
+            $subtotal += $total;
+
+            $items[] = [
+                'id' => $item->id,
+                'unit_price' => number_format($price, 0, ',', '.') . '₫',
+                'line_total' => number_format($total, 0, ',', '.') . '₫',
+            ];
+        }
+
+        return response()->json([
+            'items' => $items,
+            'subtotal' => number_format($subtotal, 0, ',', '.') . '₫',
+        ]);
     }
 
 
@@ -239,23 +270,29 @@ class ClientController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $item = CartItem::findOrFail($itemId);
+        $item = CartItem::with('variant.product')->findOrFail($itemId);
         $item->quantity = $request->quantity;
         $item->save();
 
         $cart = $item->cart->load('cartItem.variant.product');
-        $this->updateCartTotals($cart); // ✅ cập nhật lại cart
+        $this->updateCartTotals($cart);
 
-        $price = $item->variant->price ?? $item->variant->product->base_price;
+        // ✅ Tính lại giá: base + variant
+        $product = $item->variant->product;
+        $basePrice = floatval($product->base_price);
+        $variantPrice = floatval($item->variant->price ?? 0);
+        $price = $basePrice + $variantPrice;
         $total = $price * $item->quantity;
-        $subtotal = $cart->total_price;
+        $subtotal = floatval($cart->total_price ?? 0);
 
         return response()->json([
             'success' => true,
-            'total' => number_format($total, 2),
-            'subtotal' => number_format($subtotal, 2),
+            'total' => $total,
+            'subtotal' => $subtotal,
         ]);
     }
+
+
 
 
     private function updateCartTotals(Cart $cart)
@@ -264,7 +301,11 @@ class ClientController extends Controller
         $totalPrice = 0;
 
         foreach ($cart->cartItem as $item) {
-            $price = $item->variant->price ?? $item->variant->product->base_price;
+            $product = $item->variant->product;
+            $variantPrice = $item->variant->price ?? 0;
+
+            $price = $product->base_price + $variantPrice;
+
             $totalQuantity += $item->quantity;
             $totalPrice += $price * $item->quantity;
         }
@@ -274,6 +315,7 @@ class ClientController extends Controller
             'total_price' => $totalPrice,
         ]);
     }
+
 
 
     public function deleteProduct($itemId)
@@ -377,12 +419,12 @@ class ClientController extends Controller
     public function orderDetail($id)
     {
         $user = Auth::user();
-        $order = \App\Models\Order::with(['OrderDetail.variant.product.images'])
+        $order = Order::with(['OrderDetail.variant.product.images', 'user'])
             ->where('id', $id)
             ->where('user_id', $user->id)
             ->firstOrFail();
-        $categories = \App\Models\Category::all();
-        $brands = \App\Models\Brand::all();
+        $categories = Category::all();
+        $brands = Brand::all();
         return view('clients.orders.orderdetail', compact('order', 'categories', 'brands'));
     }
 
@@ -423,16 +465,30 @@ class ClientController extends Controller
         // ✅ Kiểm tra tồn kho cho từng item
         foreach ($cart->cartItem as $item) {
             $variant = $item->variant;
+            if (!$variant || !$variant->product) {
+                return redirect()->route('client.carts')->with('error', 'Một số sản phẩm trong giỏ hàng không còn tồn tại. Vui lòng xoá khỏi giỏ hàng và thử lại.');
+            }
+            if ($variant->trashed() || $variant->product->trashed()) {
+                return back()->with('error', 'Một số sản phẩm đã bị xóa.');
+            }
             if ($variant->stock_quantity < $item->quantity) {
                 return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ số lượng tồn kho.');
             }
         }
 
         // ✅ Tính tổng tiền
+        // ✅ Tính tổng tiền: base_price + variant_price
         $subtotal = 0;
         foreach ($cart->cartItem as $item) {
-            $subtotal += ($item->variant->price ?? 0) * $item->quantity;
+            $variant = $item->variant;
+            $product = $variant->product;
+            $basePrice = $product->base_price ?? 0;
+            $variantPrice = $variant->price ?? 0;
+            $price = $basePrice + $variantPrice;
+
+            $subtotal += $price * $item->quantity;
         }
+
         $shipping = 50000;
         $totalPrice = $subtotal + $shipping;
 
@@ -461,15 +517,23 @@ class ClientController extends Controller
         }
 
         // ✅ Lưu chi tiết đơn hàng
+        // ✅ Lưu chi tiết đơn hàng: gồm cả base_price
         foreach ($cart->cartItem as $item) {
+            $variant = $item->variant;
+            $product = $variant->product;
+            $basePrice = $product->base_price ?? 0;
+            $variantPrice = $variant->price ?? 0;
+            $price = $basePrice + $variantPrice;
+
             \App\Models\OrderDetail::create([
                 'order_id' => $order->id,
-                'variant_id' => $item->variant_id,
-                'variant_price' => $item->variant->price ?? 0,
+                'variant_id' => $variant->id,
+                'variant_price' => $variantPrice,
                 'quantity' => $item->quantity,
-                'total_price' => ($item->variant->price ?? 0) * $item->quantity,
+                'total_price' => $price * $item->quantity,
             ]);
         }
+
 
         // ✅ Xoá giỏ hàng
         $cart->cartItem()->delete();

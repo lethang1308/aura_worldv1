@@ -1,26 +1,13 @@
 @extends('clients.layouts.default')
 
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-    @if (isset($errors) && $errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     @php
         $user = Auth::user();
         $coupon = session('applied_coupon');
         $discount = $coupon['discount'] ?? 0;
+        $shipping = 50000;
+        $cartTotal = $cart->total_price ?? 0;
+        $finalTotal = $cartTotal + $shipping - $discount;
     @endphp
 
     <section class="banner_area">
@@ -43,8 +30,25 @@
     <section class="checkout_area section_gap">
         <div class="container">
 
-            {{-- Form mã giảm giá --}}
-            <div class="cupon_area">
+            {{-- THÔNG BÁO --}}
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- FORM MÃ GIẢM GIÁ --}}
+            <div class="cupon_area mb-4">
                 <form id="coupon-form">
                     @csrf
                     <input type="text" name="coupon_code" id="coupon_code" placeholder="Nhập mã giảm giá" />
@@ -55,9 +59,10 @@
             </div>
 
             <div class="billing_details">
-                <form class="row contact_form" action="{{ route('client.carts.placeOrder') }}" method="post"
-                    novalidate="novalidate">
+                <form class="row contact_form" action="{{ route('client.carts.placeOrder') }}" method="POST" novalidate>
                     @csrf
+
+                    {{-- FORM THÔNG TIN --}}
                     <div class="col-lg-8">
                         <h3>Thông tin thanh toán</h3>
                         <div class="col-md-12 form-group p_star">
@@ -84,52 +89,40 @@
                         </div>
                     </div>
 
+                    {{-- HÓA ĐƠN --}}
                     <div class="col-lg-4">
                         <div class="order_box">
                             <h2>Đơn hàng của bạn</h2>
                             <ul class="list">
-                                @if ($cart && $cart->cartItem->count())
-                                    @foreach ($cart->cartItem as $item)
-                                        <li>
-                                            <a href="#">
-                                                {{ $item->variant->product->name ?? 'Sản phẩm' }}
-                                                <span class="middle">x {{ $item->quantity }}</span>
-                                                <span class="last">
-                                                    {{ number_format(($item->variant->price ?? 0) * $item->quantity, 0, ',', '.') }}đ
-                                                </span>
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                @else
-                                    <li><span>Giỏ hàng trống</span></li>
-                                @endif
+                                @foreach ($cart->cartItem as $item)
+                                    @php
+                                        $product = $item->variant->product ?? null;
+                                        $variant = $item->variant;
+                                        $name = $product ? $product->name : 'Sản phẩm';
+                                        $variantName = $variant && $variant->name ? ' - ' . $variant->name : '';
+                                        $basePrice = floatval($product->base_price ?? 0);
+                                        $variantPrice = floatval($variant->price ?? 0);
+                                        $unitPrice = $basePrice + $variantPrice;
+                                        $lineTotal = $unitPrice * $item->quantity;
+                                    @endphp
+                                    <li>
+                                        <a href="#">
+                                            {{ $name . $variantName }}
+                                            <span class="middle">x {{ $item->quantity }}</span>
+                                            <span class="last">{{ number_format($lineTotal, 0, ',', '.') }}đ</span>
+                                        </a>
+                                    </li>
+                                @endforeach
                             </ul>
 
                             <ul class="list list_2">
-                                <li>
-                                    <a href="#">Tạm tính
-                                        <span>{{ number_format($cart->total_price ?? 0, 0, ',', '.') }}đ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Giảm giá
-                                        <span id="discount-amount">-{{ number_format($discount, 0, ',', '.') }}đ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Phí vận chuyển
-                                        <span>50.000đ</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Tổng cộng
-                                        <span id="total-amount">
-                                            {{ number_format(($cart->total_price ?? 0) + 50000 - $discount, 0, ',', '.') }}đ
-                                        </span>
-                                    </a>
-                                </li>
+                                <li><a href="#">Tạm tính <span>{{ number_format($cartTotal, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Giảm giá <span id="discount-amount">-{{ number_format($discount, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Phí vận chuyển <span>{{ number_format($shipping, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Tổng cộng <span id="total-amount">{{ number_format($finalTotal, 0, ',', '.') }}đ</span></a></li>
                             </ul>
 
+                            {{-- PHƯƠNG THỨC THANH TOÁN --}}
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="payment_cod" name="payment_method" value="cod" checked />
@@ -141,11 +134,10 @@
                                 <div class="radion_btn">
                                     <input type="radio" id="payment_vnpay" name="payment_method" value="vnpay" />
                                     <label for="payment_vnpay">Thanh toán qua VNPay</label>
-                                    <img src="{{ asset('client/assets/img/ft_banner2.png') }}" alt="VNPay"
-                                        style="max-width: 65px;"/>
+                                    <img src="{{ asset('client/assets/img/ft_banner2.png') }}" alt="VNPay" style="max-width: 65px;"/>
                                     <div class="check"></div>
                                 </div>
-                                <p>Bạn sẽ được chuyển đến cổng thanh toán VNPay để hoàn tất giao dịch.</p>
+                                <p>Bạn sẽ được chuyển đến cổng VNPay để hoàn tất giao dịch.</p>
                             </div>
 
                             <div class="creat_account">
@@ -162,82 +154,78 @@
         </div>
     </section>
 
-    {{-- AJAX Script --}}
+    {{-- AJAX coupon --}}
     <script>
         document.getElementById('coupon-form').addEventListener('submit', function(e) {
             e.preventDefault();
             let code = document.getElementById('coupon_code').value;
 
             fetch('{{ route('client.carts.useCoupon') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({
-                        coupon_code: code
-                    })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    const msgBox = document.getElementById('coupon-message');
-                    if (res.error) {
-                        msgBox.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
-                    } else {
-                        msgBox.innerHTML = `<div class="alert alert-success">${res.success}</div>`;
-                        document.getElementById('discount-amount').innerText = '-' + res.formatted_discount +
-                            'đ';
-                        document.getElementById('total-amount').innerText = res.total + 'đ';
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('coupon-message').innerHTML =
-                        `<div class="alert alert-danger">Lỗi hệ thống.</div>`;
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ coupon_code: code })
+            })
+            .then(res => res.json())
+            .then(res => {
+                const msgBox = document.getElementById('coupon-message');
+                if (res.error) {
+                    msgBox.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
+                } else {
+                    msgBox.innerHTML = `<div class="alert alert-success">${res.success}</div>`;
+                    document.getElementById('discount-amount').innerText = '-' + res.formatted_discount + 'đ';
+                    document.getElementById('total-amount').innerText = res.total + 'đ';
+                }
+            });
         });
 
         document.getElementById('remove-coupon-btn').addEventListener('click', function() {
             fetch('{{ route('client.carts.removeCoupon') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    }
-                })
-                .then(res => res.json())
-                .then(res => {
-                    const msgBox = document.getElementById('coupon-message');
-                    if (res.error) {
-                        msgBox.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
-                    } else {
-                        msgBox.innerHTML = `<div class="alert alert-warning">${res.success}</div>`;
-                        document.getElementById('discount-amount').innerText = '-' + res.formatted_discount +
-                            'đ';
-                        document.getElementById('total-amount').innerText = res.total + 'đ';
-                        document.getElementById('coupon_code').value = '';
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('coupon-message').innerHTML =
-                        `<div class="alert alert-danger">Lỗi hệ thống.</div>`;
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                const msgBox = document.getElementById('coupon-message');
+                msgBox.innerHTML = `<div class="alert alert-warning">${res.success}</div>`;
+                document.getElementById('discount-amount').innerText = '-0đ';
+                document.getElementById('total-amount').innerText = res.total + 'đ';
+                document.getElementById('coupon_code').value = '';
+            });
+        });
+
+        // Check điều khoản
+        document.querySelector('form.contact_form').addEventListener('submit', function(e) {
+            if (!document.getElementById('f-option4').checked) {
+                e.preventDefault();
+                alert('Vui lòng đồng ý với điều khoản & chính sách trước khi đặt hàng.');
+            }
         });
     </script>
+
     <style>
         .order_box ul.list li a {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .order_box ul.list li a .middle {
             margin-left: auto;
             margin-right: 10px;
             white-space: nowrap;
+            font-weight: 600;
         }
 
         .order_box ul.list li a .last {
             white-space: nowrap;
+            color: #e53637;
         }
     </style>
 @endsection
