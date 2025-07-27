@@ -162,7 +162,6 @@ class ClientController extends Controller
         ));
     }
 
-
     public function showAllBrand()
     {
         $brands = Brand::all();
@@ -231,37 +230,62 @@ class ClientController extends Controller
 
         return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
-
     public function recalculate()
     {
         $user = Auth::user();
-        $cart = $user->cart()->with('cartItem.variant.product')->first();
 
-        if (!$cart) {
-            return response()->json(['error' => 'Không tìm thấy giỏ hàng.'], 404);
+        if (!$user) {
+            return response()->json(['error' => 'Chưa đăng nhập'], 401);
+        }
+
+        $cart = $user->cart()->with(['cartItem.variant.product'])->first();
+
+        if (!$cart || !$cart->cartItem) {
+            return response()->json([
+                'items' => [],
+                'subtotal' => '0₫',
+                'shipping' => '0₫',
+                'discount' => '0₫',
+                'total' => '0₫',
+            ]);
         }
 
         $items = [];
         $subtotal = 0;
 
         foreach ($cart->cartItem as $item) {
-            $product = $item->variant->product;
-            $price = ($product->base_price ?? 0) + ($item->variant->price ?? 0);
-            $total = $price * $item->quantity;
-            $subtotal += $total;
+            if (!$item->variant || !$item->variant->product) continue;
+
+            $basePrice = $item->variant->product->base_price ?? 0;
+            $variantPrice = $item->variant->price ?? 0;
+            $unitPrice = $basePrice + $variantPrice;
+            $lineTotal = $unitPrice * $item->quantity;
+
+            $subtotal += $lineTotal;
 
             $items[] = [
                 'id' => $item->id,
-                'unit_price' => number_format($price, 0, ',', '.') . '₫',
-                'line_total' => number_format($total, 0, ',', '.') . '₫',
+                'unit_price' => number_format($unitPrice, 0, ',', '.') . '₫',
+                'line_total' => number_format($lineTotal, 0, ',', '.') . '₫',
             ];
         }
+
+        // Giảm giá
+        $coupon = session('applied_coupon', []);
+        $discount = isset($coupon['discount']) ? (int)$coupon['discount'] : 0;
+
+        $shipping = 50000;
+        $total = $subtotal + $shipping - $discount;
 
         return response()->json([
             'items' => $items,
             'subtotal' => number_format($subtotal, 0, ',', '.') . '₫',
+            'shipping' => number_format($shipping, 0, ',', '.') . '₫',
+            'discount' => number_format($discount, 0, ',', '.') . '₫',
+            'total' => number_format($total, 0, ',', '.') . '₫',
         ]);
     }
+
 
 
     public function updateQuantity(Request $request, $itemId)
@@ -340,12 +364,14 @@ class ClientController extends Controller
     public function viewCheckOut()
     {
         $brands = Brand::all();
+
         $categories = Category::all();
+        $cities = City::all();
         $cart = null;
         if (Auth::check()) {
             $cart = Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
         }
-        return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
+        return view('clients.carts.checkout', compact('brands', 'categories', 'cart', 'cities'));
     }
 
     public function showProfile()

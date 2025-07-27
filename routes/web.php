@@ -179,7 +179,6 @@ Route::prefix('clients')->group(function () {
 
     Route::get('/products', [ClientController::class, 'index'])->name('client.products');
     Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
-
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
 });
 
@@ -215,3 +214,4 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
 Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
 Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+

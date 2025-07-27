@@ -116,10 +116,16 @@
                             </ul>
 
                             <ul class="list list_2">
-                                <li><a href="#">Tạm tính <span>{{ number_format($cartTotal, 0, ',', '.') }}đ</span></a></li>
-                                <li><a href="#">Giảm giá <span id="discount-amount">-{{ number_format($discount, 0, ',', '.') }}đ</span></a></li>
-                                <li><a href="#">Phí vận chuyển <span>{{ number_format($shipping, 0, ',', '.') }}đ</span></a></li>
-                                <li><a href="#">Tổng cộng <span id="total-amount">{{ number_format($finalTotal, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Tạm tính
+                                        <span>{{ number_format($cartTotal, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Giảm giá <span
+                                            id="discount-amount">-{{ number_format($discount, 0, ',', '.') }}đ</span></a>
+                                </li>
+                                <li><a href="#">Phí vận chuyển
+                                        <span>{{ number_format($shipping, 0, ',', '.') }}đ</span></a></li>
+                                <li><a href="#">Tổng cộng <span
+                                            id="total-amount">{{ number_format($finalTotal, 0, ',', '.') }}đ</span></a>
+                                </li>
                             </ul>
 
                             {{-- PHƯƠNG THỨC THANH TOÁN --}}
@@ -134,7 +140,8 @@
                                 <div class="radion_btn">
                                     <input type="radio" id="payment_vnpay" name="payment_method" value="vnpay" />
                                     <label for="payment_vnpay">Thanh toán qua VNPay</label>
-                                    <img src="{{ asset('client/assets/img/ft_banner2.png') }}" alt="VNPay" style="max-width: 65px;"/>
+                                    <img src="{{ asset('client/assets/img/ft_banner2.png') }}" alt="VNPay"
+                                        style="max-width: 65px;" />
                                     <div class="check"></div>
                                 </div>
                                 <p>Bạn sẽ được chuyển đến cổng VNPay để hoàn tất giao dịch.</p>
@@ -161,42 +168,45 @@
             let code = document.getElementById('coupon_code').value;
 
             fetch('{{ route('client.carts.useCoupon') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({ coupon_code: code })
-            })
-            .then(res => res.json())
-            .then(res => {
-                const msgBox = document.getElementById('coupon-message');
-                if (res.error) {
-                    msgBox.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
-                } else {
-                    msgBox.innerHTML = `<div class="alert alert-success">${res.success}</div>`;
-                    document.getElementById('discount-amount').innerText = '-' + res.formatted_discount + 'đ';
-                    document.getElementById('total-amount').innerText = res.total + 'đ';
-                }
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        coupon_code: code
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    const msgBox = document.getElementById('coupon-message');
+                    if (res.error) {
+                        msgBox.innerHTML = `<div class="alert alert-danger">${res.error}</div>`;
+                    } else {
+                        msgBox.innerHTML = `<div class="alert alert-success">${res.success}</div>`;
+                        document.getElementById('discount-amount').innerText = '-' + res.formatted_discount +
+                            'đ';
+                        document.getElementById('total-amount').innerText = res.total + 'đ';
+                    }
+                });
         });
 
         document.getElementById('remove-coupon-btn').addEventListener('click', function() {
             fetch('{{ route('client.carts.removeCoupon') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                }
-            })
-            .then(res => res.json())
-            .then(res => {
-                const msgBox = document.getElementById('coupon-message');
-                msgBox.innerHTML = `<div class="alert alert-warning">${res.success}</div>`;
-                document.getElementById('discount-amount').innerText = '-0đ';
-                document.getElementById('total-amount').innerText = res.total + 'đ';
-                document.getElementById('coupon_code').value = '';
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    const msgBox = document.getElementById('coupon-message');
+                    msgBox.innerHTML = `<div class="alert alert-warning">${res.success}</div>`;
+                    document.getElementById('discount-amount').innerText = '-0đ';
+                    document.getElementById('total-amount').innerText = res.total + 'đ';
+                    document.getElementById('coupon_code').value = '';
+                });
         });
 
         // Check điều khoản
@@ -206,6 +216,29 @@
                 alert('Vui lòng đồng ý với điều khoản & chính sách trước khi đặt hàng.');
             }
         });
+
+        setInterval(() => {
+            fetch('{{ route('client.carts.recalculate') }}')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || !data.items) return;
+
+                    data.items.forEach((item, index) => {
+                        const rows = document.querySelectorAll('.order_box ul.list li');
+                        if (rows[index]) {
+                            const li = rows[index].querySelector('a');
+                            if (li) {
+                                li.querySelector('.last').innerText = item.line_total;
+                            }
+                        }
+                    });
+
+                    // Tổng phụ và tổng cộng
+                    document.querySelector('ul.list_2 li:nth-child(1) span').innerText = data.subtotal;
+                    document.querySelector('ul.list_2 li:nth-child(3) span').innerText = data.shipping;
+                    document.querySelector('ul.list_2 li:nth-child(4) span').innerText = data.total;
+                });
+        }, 10000);
     </script>
 
     <style>

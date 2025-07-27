@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'user_id', 'id');
     }
 
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -81,7 +86,7 @@ class User extends Authenticatable
         return $this->role && $this->role->role_name === self::ROLE_USER;
     }
 
-        public function isRoleShipper()
+    public function isRoleShipper()
     {
         return $this->role && $this->role->role_name === self::ROLE_SHIPPER;
     }
