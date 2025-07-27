@@ -41,7 +41,7 @@ class VNPayController extends Controller
             // ✅ Cập nhật đơn hàng
             $order->update([
                 'status_payment' => 'paid',
-                'status_order' => 'confirmed',
+                'status_order' => 'pending',
                 'vnpay_transaction_id' => $inputData['vnp_TransactionNo'] ?? null,
             ]);
 

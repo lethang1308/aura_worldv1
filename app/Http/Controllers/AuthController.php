@@ -41,8 +41,7 @@ class AuthController extends Controller
             'is_active' => 1,
         ]);
 
-        Auth::login($user);
-        return redirect()->route('admin');
+        return redirect()->route('login')->with('success', 'Đăng ký thành công. Vui lòng đăng nhập.');
     }
 
     // Hiển thị form đăng nhập
