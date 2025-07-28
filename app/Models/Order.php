@@ -20,6 +20,8 @@ class Order extends Model
         'status_payment',
         'type_payment',
         'total_price',
+        'discount',
+        'coupon_code',
         'cancel_reason',
         'cancelled_by_admin_id',
     ];

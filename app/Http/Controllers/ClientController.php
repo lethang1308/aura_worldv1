@@ -353,18 +353,22 @@ class ClientController extends Controller
     public function viewCheckOut()
     {
         $brands = Brand::all();
-
         $categories = Category::all();
-        $cart = null;
         $user = Auth::user();
+
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
         }
-        if (Auth::check()) {
-            $cart = Cart::where('user_id', Auth::id())->with('cartItem.variant.product')->first();
+
+        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant.product')->first();
+
+        if (!$cart || $cart->cartItem->isEmpty()) {
+            return redirect()->route('client.carts')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
+
         return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
     }
+
 
     public function showProfile()
     {
@@ -493,43 +497,39 @@ class ClientController extends Controller
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
         }
-        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
 
+        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
         if (!$cart || $cart->cartItem->isEmpty()) {
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        // ✅ Kiểm tra tồn kho cho từng item
+        // Kiểm tra tồn kho
         foreach ($cart->cartItem as $item) {
             $variant = $item->variant;
-            if (!$variant || !$variant->product) {
-                return redirect()->route('client.carts')->with('error', 'Một số sản phẩm trong giỏ hàng không còn tồn tại. Vui lòng xoá khỏi giỏ hàng và thử lại.');
-            }
-            if ($variant->trashed() || $variant->product->trashed()) {
-                return back()->with('error', 'Một số sản phẩm đã bị xóa.');
+            if (!$variant || !$variant->product || $variant->trashed() || $variant->product->trashed()) {
+                return redirect()->route('client.carts')->with('error', 'Một số sản phẩm không tồn tại hoặc đã bị xoá.');
             }
             if ($variant->stock_quantity < $item->quantity) {
-                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ số lượng tồn kho.');
+                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ tồn kho.');
             }
         }
 
-        // ✅ Tính tổng tiền
-        // ✅ Tính tổng tiền: base_price + variant_price
+        // Tính tổng tiền
         $subtotal = 0;
         foreach ($cart->cartItem as $item) {
             $variant = $item->variant;
             $product = $variant->product;
-            $basePrice = $product->base_price ?? 0;
-            $variantPrice = $variant->price ?? 0;
-            $price = $basePrice + $variantPrice;
-
+            $price = ($product->base_price ?? 0) + ($variant->price ?? 0);
             $subtotal += $price * $item->quantity;
         }
 
         $shipping = 50000;
-        $totalPrice = $subtotal + $shipping;
+        $appliedCoupon = session('applied_coupon');
+        $discount = $appliedCoupon['discount'] ?? 0;
+        $couponCode = $appliedCoupon['code'] ?? null;
+        $totalPrice = $subtotal + $shipping - $discount;
 
-        // ✅ Tạo đơn hàng
+        // Tạo đơn hàng
         $order = Order::create([
             'user_id' => $user->id,
             'user_email' => $request->email,
@@ -539,22 +539,12 @@ class ClientController extends Controller
             'status_order' => 'pending',
             'status_payment' => $request->payment_method === 'cod' ? 'unpaid' : 'pending',
             'type_payment' => $request->payment_method,
+            'discount' => $discount,
+            'coupon_code' => $couponCode,
             'total_price' => $totalPrice,
         ]);
 
-        // ✅ Trừ tồn kho nếu là COD
-        if ($request->payment_method === 'cod') {
-            foreach ($cart->cartItem as $item) {
-                $variant = $item->variant;
-                $variant->stock_quantity -= $item->quantity;
-                $variant->save();
-
-                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
-            }
-        }
-
-        // ✅ Lưu chi tiết đơn hàng
-        // ✅ Lưu chi tiết đơn hàng: gồm cả base_price
+        // Lưu chi tiết đơn hàng
         foreach ($cart->cartItem as $item) {
             $variant = $item->variant;
             $product = $variant->product;
@@ -571,12 +561,26 @@ class ClientController extends Controller
             ]);
         }
 
+        // Xử lý theo loại thanh toán
+        if ($request->payment_method === 'cod') {
+            // Trừ tồn kho
+            foreach ($cart->cartItem as $item) {
+                $variant = $item->variant;
+                $variant->stock_quantity -= $item->quantity;
+                $variant->save();
 
-        // ✅ Xoá giỏ hàng
-        $cart->cartItem()->delete();
-        $cart->delete();
+                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+            }
 
-        // ✅ Chuyển hướng VNPay nếu cần
+            // Xóa giỏ hàng và mã giảm giá
+            $cart->cartItem()->delete();
+            $cart->delete();
+            session()->forget('applied_coupon');
+
+            return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+        }
+
+        // Nếu là VNPay thì chuyển hướng mà không xoá giỏ hàng
         if ($request->payment_method === 'vnpay') {
             $vnpayService = new \App\Services\VNPayService();
             $paymentUrl = $vnpayService->createPaymentUrl(
@@ -585,12 +589,12 @@ class ClientController extends Controller
                 "Thanh toán đơn hàng #" . $order->id,
                 $request->ip()
             );
-
             return redirect($paymentUrl);
         }
 
-        return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+        return redirect()->route('client.carts')->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
+
 
     public function useCoupon(Request $request)
     {
@@ -601,14 +605,12 @@ class ClientController extends Controller
             return response()->json(['error' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.']);
         }
 
-        // Lấy giỏ hàng từ DB theo user
         $user = Auth::user();
         if (!$user) {
             return response()->json(['error' => 'Bạn cần đăng nhập để sử dụng mã giảm giá.']);
         }
 
         $cart = Cart::with('cartItem.variant.product')->where('user_id', $user->id)->first();
-
         if (!$cart || $cart->cartItem->isEmpty()) {
             return response()->json(['error' => 'Giỏ hàng trống.']);
         }
@@ -620,9 +622,9 @@ class ClientController extends Controller
             return response()->json(['error' => 'Đơn hàng chưa đạt giá trị tối thiểu để dùng mã.']);
         }
 
-        if ($coupon->type == 'percent') {
+        if ($coupon->type === 'percent') {
             $discount = $totalPrice * ($coupon->value / 100);
-        } elseif ($coupon->type == 'fixed') {
+        } elseif ($coupon->type === 'fixed') {
             $discount = $coupon->value;
         }
 
@@ -643,6 +645,7 @@ class ClientController extends Controller
         ]);
     }
 
+
     public function removeCoupon()
     {
         session()->forget('applied_coupon');
@@ -652,7 +655,7 @@ class ClientController extends Controller
             return response()->json(['error' => 'Bạn cần đăng nhập.']);
         }
 
-        $cart = \App\Models\Cart::with('cartItem')->where('user_id', $user->id)->first();
+        $cart = Cart::with('cartItem')->where('user_id', $user->id)->first();
         $total = ($cart->total_price ?? 0) + 50000;
 
         return response()->json([
@@ -662,6 +665,7 @@ class ClientController extends Controller
             'total' => number_format($total, 0, ',', '.')
         ]);
     }
+
 
     public function addReview(Request $request, $id) // $id là product_id
     {

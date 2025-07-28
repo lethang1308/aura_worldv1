@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100" data-bs-theme="light">
+<html lang="vi" class="h-100" data-bs-theme="light">
 
 <head>
     <meta charset="utf-8">
-    <title>Sign In | Admin Dashboard</title>
+    <title>Đăng Nhập | Bảng Điều Khiển Quản Trị</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully responsive premium admin dashboard template">
+    <meta name="description" content="Một mẫu bảng điều khiển quản trị cao cấp, phản hồi đầy đủ">
     <meta name="author" content="Techzaa">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.ico') }}">
@@ -25,20 +25,17 @@
                             <div class="d-flex flex-column h-100 justify-content-center">
                                 <div class="auth-logo mb-4">
                                     <a href="index.html" class="logo-dark">
-                                        <img src="{{ asset('admin/assets/images/logo-dark.png') }}" height="24"
-                                            alt="logo dark">
+                                        <img src="{{ asset('admin/assets/images/logo-dark.png') }}" height="24" alt="logo dark">
                                     </a>
                                     <a href="index.html" class="logo-light">
-                                        <img src="{{ asset('admin/assets/images/logo-light.png') }}" height="24"
-                                            alt="logo light">
+                                        <img src="{{ asset('admin/assets/images/logo-light.png') }}" height="24" alt="logo light">
                                     </a>
                                 </div>
 
-                                <h2 class="fw-bold fs-24">Sign In</h2>
-                                <p class="text-muted mt-1 mb-4">Enter your email and password to access the admin panel.
-                                </p>
+                                <h2 class="fw-bold fs-24">Đăng Nhập</h2>
+                                <p class="text-muted mt-1 mb-4">Nhập email và mật khẩu để truy cập trang quản trị.</p>
 
-                                {{-- Hiển thị lỗi --}}
+                                {{-- Hiển thị thông báo thành công --}}
                                 @if (session('success'))
                                     <div class="alert alert-success">
                                         {{ session('success') }}
@@ -68,36 +65,37 @@
                                         <div class="mb-3">
                                             <label class="form-label" for="example-email">Email</label>
                                             <input type="email" id="example-email" name="email" class="form-control"
-                                                placeholder="Enter your email" required>
+                                                placeholder="Nhập email của bạn" required>
                                         </div>
                                         <div class="mb-3">
                                             <a href="{{ route('password.forgot') }}"
                                                 class="float-end text-muted text-unline-dashed ms-1">Quên mật khẩu?</a>
-                                            <label class="form-label" for="example-password">Password</label>
+                                            <label class="form-label" for="example-password">Mật khẩu</label>
                                             <input type="password" id="example-password" name="password"
-                                                class="form-control" placeholder="Enter your password" required>
+                                                class="form-control" placeholder="Nhập mật khẩu của bạn" required>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="checkbox-signin">
-                                                <label class="form-check-label" for="checkbox-signin">Remember
-                                                    me</label>
+                                                <label class="form-check-label" for="checkbox-signin">Ghi nhớ đăng nhập</label>
                                             </div>
                                         </div>
                                         <div class="mb-1 text-center d-grid">
-                                            <button class="btn btn-soft-primary" type="submit">Sign In</button>
+                                            <button class="btn btn-soft-primary" type="submit">Đăng Nhập</button>
                                         </div>
                                     </form>
 
-                                    <p class="mt-3 fw-semibold no-span">OR sign with</p>
+                                    <p class="mt-3 fw-semibold no-span">Hoặc đăng nhập bằng</p>
                                     <div class="d-grid gap-2">
-                                        <a href="{{ url('auths/google') }}" class="btn btn-soft-dark"><i
-                                                class="bx bxl-google fs-20 me-1"></i> Sign in with Google</a>
+                                        <a href="{{ url('auths/google') }}" class="btn btn-soft-dark">
+                                            <i class="bx bxl-google fs-20 me-1"></i> Đăng nhập bằng Google
+                                        </a>
                                     </div>
                                 </div>
 
-                                <p class="text-danger text-center">Don't have an account? <a
-                                        href="{{ route('register') }}" class="text-dark fw-bold ms-1">Sign Up</a>
+                                <p class="text-danger text-center">Chưa có tài khoản? 
+                                    <a href="{{ route('register') }}" class="text-dark fw-bold ms-1">Đăng ký</a>
+                                </p>
                             </div>
                         </div>
                     </div>

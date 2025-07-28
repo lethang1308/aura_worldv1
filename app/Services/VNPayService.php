@@ -22,7 +22,7 @@ class VNPayService
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $this->tmnCode,
-            "vnp_Amount" => $amount * 100, // VNPay yêu cầu amount * 100
+            "vnp_Amount" => $amount * 100,
             "vnp_Command" => "pay",
             "vnp_CreateDate" => date('YmdHis'),
             "vnp_CurrCode" => "VND",
@@ -36,14 +36,13 @@ class VNPayService
 
         ksort($inputData);
         $query = "";
-        $i = 0;
         $hashdata = "";
+        
         foreach ($inputData as $key => $value) {
-            if ($i == 1) {
+            if (strlen($hashdata) > 0) {
                 $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
             } else {
                 $hashdata .= urlencode($key) . "=" . urlencode($value);
-                $i = 1;
             }
             $query .= urlencode($key) . "=" . urlencode($value) . '&';
         }
@@ -57,18 +56,20 @@ class VNPayService
 
     public function validateResponse($inputData)
     {
+        if (!isset($inputData['vnp_SecureHash'])) {
+            return false;
+        }
+
         $vnp_SecureHash = $inputData['vnp_SecureHash'];
         unset($inputData['vnp_SecureHash']);
         ksort($inputData);
-        
+
         $hashData = "";
-        $i = 0;
         foreach ($inputData as $key => $value) {
-            if ($i == 1) {
-                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
+            if (strlen($hashData) > 0) {
+                $hashData .= '&' . urlencode($key) . "=" . urlencode($value);
             } else {
-                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
-                $i = 1;
+                $hashData .= urlencode($key) . "=" . urlencode($value);
             }
         }
 
