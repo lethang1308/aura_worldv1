@@ -212,7 +212,7 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 
     Route::get('/orders/{id}', [ClientController::class, 'orderDetail'])->name('client.orders.detail');
-    Route::post('/orders/{id}/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
+    Route::post('/orders/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
 
     Route::post('/coupon/use-coupon', [ClientController::class, 'useCoupon'])->name('client.carts.useCoupon');
     Route::post('/coupon/remove-coupon', [ClientController::class, 'removeCoupon'])->name('client.carts.removeCoupon');

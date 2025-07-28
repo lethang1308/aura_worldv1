@@ -466,15 +466,15 @@ class ClientController extends Controller
         return view('clients.orders.orderdetail', compact('order', 'categories', 'brands'));
     }
 
-    public function cancelOrder($id)
+    public function cancelOrder(Request $request)
     {
         $user = Auth::user();
-        $order = Order::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+        $order = Order::where('id', $request->order_id)->where('user_id', $user->id)->firstOrFail();
         if ($order->status_order !== 'pending') {
             return redirect()->route('client.orders')->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
         }
         $order->status_order = 'cancelled';
-        $order->cancel_reason = 'Khách tự hủy';
+        $order->cancel_reason = $request->cancel_reason;
         $order->save();
         return redirect()->route('client.orders')->with('success', 'Đã hủy đơn hàng thành công.');
     }

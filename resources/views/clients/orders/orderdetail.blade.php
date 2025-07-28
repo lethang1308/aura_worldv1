@@ -17,6 +17,13 @@
             @endif
         </div>
 
+        {{-- Hiển thị lý do hủy đơn nếu bị hủy --}}
+        @if ($order->status_order === 'cancelled')
+            <div class="alert alert-danger mt-3">
+                <strong>Lý do hủy đơn:</strong> {{ $order->cancel_reason ?? 'Không có lý do' }}
+            </div>
+        @endif
+
         <div class="table-responsive">
             <table class="table table-bordered table-hover shadow-sm rounded" style="background:#fff;">
                 <thead style="background:#4cd964; color:#fff; font-weight:700; text-align:center;">

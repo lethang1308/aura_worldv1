@@ -56,11 +56,7 @@
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
                                     @if ($order->status_order === 'pending')
-                                        <form method="POST" action="{{ route('client.orders.cancel', $order->id) }}"
-                                            onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?');">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger">Hủy Đơn Hàng</button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="showCancelModal({{ $order->id }})">Hủy Đơn Hàng</button>
                                     @endif
                                     <a href="{{ route('client.orders.detail', $order->id) }}" class="btn btn-sm btn-success">Order Detail</a>
                                 </div>
@@ -76,3 +72,36 @@
         </div>
     </div>
 @endsection
+
+<!-- Modal nhập lý do hủy đơn -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="cancelOrderForm" method="POST" action="{{ route('client.orders.cancel') }}">
+      @csrf
+      <input type="hidden" name="order_id" id="cancel_order_id">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Lý do hủy đơn</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <textarea name="cancel_reason" class="form-control" required placeholder="Nhập lý do hủy đơn..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+@push('scripts')
+<script>
+function showCancelModal(orderId) {
+    document.getElementById('cancel_order_id').value = orderId;
+    var myModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+    myModal.show();
+}
+</script>
+@endpush

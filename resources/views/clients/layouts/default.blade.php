@@ -76,7 +76,7 @@
     <script src="{{ asset('client/assets/vendors/counter-up/jquery.counterup.js') }}"></script>
     <script src="{{ asset('client/assets/js/mail-script.js') }}"></script>
     <script src="{{ asset('client/assets/js/theme.js') }}"></script>
-
+    @stack('scripts')
 </body>
 
 </html>
