@@ -80,7 +80,7 @@ class CustomerController extends Controller
             $customer->deleted_reason = request('deleted_reason');
         }
         $customer->save();
-        $customer->delete();
+        // KHÔNG gọi $customer->delete(); nữa
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
 

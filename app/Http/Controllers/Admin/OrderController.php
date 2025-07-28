@@ -79,6 +79,14 @@ class OrderController extends Controller
         if ($request->status_order === 'cancelled') {
             return redirect()->back()->with('error', 'Vui lòng sử dụng chức năng huỷ đơn để huỷ đơn hàng.');
         }
+        // Chỉ cho phép chuyển trạng thái tuần tự
+        $statusSteps = ['pending', 'confirmed', 'shipping', 'shipped', 'completed'];
+        $currentIndex = array_search($order->status_order, $statusSteps);
+        $nextIndex = $currentIndex !== false ? $currentIndex + 1 : false;
+        $nextStatus = $nextIndex !== false && isset($statusSteps[$nextIndex]) ? $statusSteps[$nextIndex] : null;
+        if ($request->status_order !== $nextStatus) {
+            return redirect()->back()->with('error', 'Chỉ được chuyển sang trạng thái tiếp theo, không được nhảy cóc.');
+        }
         $order->status_order = $request->status_order;
         if ($request->filled('status_payment')) {
             $order->status_payment = $request->status_payment;

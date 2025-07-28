@@ -84,7 +84,9 @@
                                 </tbody>
                             </table>
                             <div class="text-end mt-3">
-                                <strong class="fs-5">Tổng tiền: {{ number_format($order->total_price, 0, ',', '.') }} đ</strong>
+                                <div class="mb-1">Phí ship: <strong>{{ number_format(50000, 0, ',', '.') }} đ</strong></div>
+                                <div class="mb-1">Giảm giá: <strong>-{{ number_format($order->discount ?? 0, 0, ',', '.') }} đ</strong></div>
+                                <strong class="fs-5">Tổng tiền: {{ number_format($order->total_price + 50000 - ($order->discount ?? 0), 0, ',', '.') }} đ</strong>
                             </div>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
                             <label for="status_order" class="form-label">Trạng thái đơn hàng</label>
                             <select name="status_order" id="status_order" class="form-select" required>
                                 @foreach($statusList as $key => $label)
-                                    @if($key !== 'cancelled')
+                                    @if($key !== 'cancelled' && $key !== 'received')
                                         <option value="{{ $key }}" {{ $order->status_order == $key ? 'selected' : '' }}>{{ $label }}</option>
                                     @endif
                                 @endforeach
@@ -123,10 +125,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="status_payment" class="form-label">Trạng thái thanh toán</label>
-                            <select name="status_payment" id="status_payment" class="form-select">
-                                <option value="unpaid" {{ $order->status_payment == 'unpaid' ? 'selected' : '' }}>Chưa thanh toán</option>
-                                <option value="paid" {{ $order->status_payment == 'paid' ? 'selected' : '' }}>Đã thanh toán</option>
-                            </select>
+                            <input type="text" class="form-control" value="{{ $order->status_payment == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}" readonly>
+                            <input type="hidden" name="status_payment" value="{{ $order->status_payment }}">
                         </div>
                     </div>
                     <div class="modal-footer">
