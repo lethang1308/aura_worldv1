@@ -1,14 +1,14 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Your OTP Code</title>
+    <title>Mã Xác Thực OTP Của Bạn</title>
 </head>
 <body>
-    <h1>Your OTP Code</h1>
-    <p>Your One-Time Password (OTP) is: <strong>{{ $otp }}</strong></p>
-    <p>This code is valid for 10 minutes.</p>
-    <p>If you didn’t request this, ignore this email.</p>
-    <p>Thank you,</p>
+    <h1>Mã Xác Thực OTP</h1>
+    <p>Mã OTP (One-Time Password) của bạn là: <strong>{{ $otp }}</strong></p>
+    <p>Mã này có hiệu lực trong vòng 10 phút.</p>
+    <p>Nếu bạn không yêu cầu hành động này, vui lòng bỏ qua email này.</p>
+    <p>Trân trọng,</p>
     <p>{{ config('app.name') }}</p>
 </body>
 </html>
