@@ -86,7 +86,7 @@
                             <div class="text-end mt-3">
                                 <div class="mb-1">Phí ship: <strong>{{ number_format(50000, 0, ',', '.') }} đ</strong></div>
                                 <div class="mb-1">Giảm giá: <strong>-{{ number_format($order->discount ?? 0, 0, ',', '.') }} đ</strong></div>
-                                <strong class="fs-5">Tổng tiền: {{ number_format($order->total_price + 50000 - ($order->discount ?? 0), 0, ',', '.') }} đ</strong>
+                                <strong class="fs-5">Tổng tiền: {{ number_format($order->total_price, 0, ',', '.') }} đ</strong>
                             </div>
                         </div>
                     </div>

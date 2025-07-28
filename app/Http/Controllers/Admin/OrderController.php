@@ -88,7 +88,10 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Chỉ được chuyển sang trạng thái tiếp theo, không được nhảy cóc.');
         }
         $order->status_order = $request->status_order;
-        if ($request->filled('status_payment')) {
+        // Nếu hoàn thành thì tự động chuyển trạng thái thanh toán sang đã thanh toán
+        if ($request->status_order === 'completed') {
+            $order->status_payment = 'paid';
+        } elseif ($request->filled('status_payment')) {
             $order->status_payment = $request->status_payment;
         }
         $order->save();
