@@ -147,16 +147,35 @@
                                                                 <iconify-icon icon="solar:pen-2-broken"
                                                                     class="align-middle fs-18"></iconify-icon>
                                                             </a>
-                                                            <form action="{{ route('customers.destroy', $customer->id) }}"
-                                                                method="POST" onsubmit="return confirm('Are you sure?');">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-soft-danger btn-sm">
-                                                                    <iconify-icon
-                                                                        icon="solar:trash-bin-minimalistic-2-broken"
-                                                                        class="align-middle fs-18"></iconify-icon>
-                                                                </button>
-                                                            </form>
+                                                            <!-- Nút xóa mở modal -->
+                                                            <button type="button" class="btn btn-soft-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteReasonModal{{$customer->id}}">
+                                                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                            </button>
+                                                            <!-- Modal nhập lý do xóa -->
+                                                            <div class="modal fade" id="deleteReasonModal{{$customer->id}}" tabindex="-1" aria-labelledby="deleteReasonModalLabel{{$customer->id}}" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="deleteReasonModalLabel{{$customer->id}}">Nhập lý do xóa tài khoản</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label for="deleted_reason{{$customer->id}}" class="form-label">Lý do xóa</label>
+                                                                                    <textarea class="form-control" id="deleted_reason{{$customer->id}}" name="deleted_reason" rows="3" required></textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                                                <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @else
                                                             <form action="{{ route('customers.restore', $customer->id) }}"
                                                                 method="POST" style="display:inline-block">

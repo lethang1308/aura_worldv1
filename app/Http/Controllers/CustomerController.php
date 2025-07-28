@@ -75,6 +75,10 @@ class CustomerController extends Controller
     {
         $customer = User::where('role_id', 2)->findOrFail($id);
         $customer->is_active = 0;
+        // Lưu lý do xóa nếu có
+        if (request()->has('deleted_reason')) {
+            $customer->deleted_reason = request('deleted_reason');
+        }
         $customer->save();
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
