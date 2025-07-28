@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Payment;
@@ -123,6 +124,16 @@ class VNPayController extends Controller
                     'order_id' => $order->id,
                     'transaction_id' => $inputData['vnp_TransactionNo'] ?? null
                 ]);
+
+                try {
+                    Cart::where('user_id', $order->user_id)->delete();
+                    session()->forget('applied_coupon');
+                } catch (Exception $e) {
+                    Log::warning('Không thể xoá giỏ hàng sau thanh toán VNPay', [
+                        'user_id' => $order->user_id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
 
                 return redirect()->route('client.orders.success')->with([
                     'success' => 'Thanh toán thành công!',

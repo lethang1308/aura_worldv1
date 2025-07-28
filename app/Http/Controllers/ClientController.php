@@ -529,6 +529,7 @@ class ClientController extends Controller
         $couponCode = $appliedCoupon['code'] ?? null;
         $totalPrice = $subtotal + $shipping - $discount;
 
+        // Tạo đơn hàng
         $order = Order::create([
             'user_id' => $user->id,
             'user_email' => $request->email,
@@ -542,17 +543,6 @@ class ClientController extends Controller
             'coupon_code' => $couponCode,
             'total_price' => $totalPrice,
         ]);
-
-        // Trừ tồn kho nếu là COD
-        if ($request->payment_method === 'cod') {
-            foreach ($cart->cartItem as $item) {
-                $variant = $item->variant;
-                $variant->stock_quantity -= $item->quantity;
-                $variant->save();
-
-                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
-            }
-        }
 
         // Lưu chi tiết đơn hàng
         foreach ($cart->cartItem as $item) {
@@ -571,12 +561,26 @@ class ClientController extends Controller
             ]);
         }
 
-        // Xoá giỏ hàng và mã giảm giá
-        $cart->cartItem()->delete();
-        $cart->delete();
-        session()->forget('applied_coupon');
+        // Xử lý theo loại thanh toán
+        if ($request->payment_method === 'cod') {
+            // Trừ tồn kho
+            foreach ($cart->cartItem as $item) {
+                $variant = $item->variant;
+                $variant->stock_quantity -= $item->quantity;
+                $variant->save();
 
-        // Thanh toán VNPay nếu cần
+                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+            }
+
+            // Xóa giỏ hàng và mã giảm giá
+            $cart->cartItem()->delete();
+            $cart->delete();
+            session()->forget('applied_coupon');
+
+            return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+        }
+
+        // Nếu là VNPay thì chuyển hướng mà không xoá giỏ hàng
         if ($request->payment_method === 'vnpay') {
             $vnpayService = new \App\Services\VNPayService();
             $paymentUrl = $vnpayService->createPaymentUrl(
@@ -588,8 +592,9 @@ class ClientController extends Controller
             return redirect($paymentUrl);
         }
 
-        return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
+        return redirect()->route('client.carts')->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
+
 
     public function useCoupon(Request $request)
     {
