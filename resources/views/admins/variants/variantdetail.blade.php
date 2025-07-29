@@ -25,13 +25,13 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">Variant Details</h4>
+                                <h4 class="card-title">Chi Tiết Biến Thể</h4>
                                 <div class="d-flex gap-2">
                                     <a href="{{ route('variants.edit', $variant->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="bx bx-edit me-1"></i>Edit
+                                        <i class="bx bx-edit me-1"></i>Sửa
                                     </a>
                                     <a href="{{ route('variants.index') }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="bx bx-arrow-back me-1"></i>Back to List
+                                        <i class="bx bx-arrow-back me-1"></i>Quay Lại Danh Sách
                                     </a>
                                 </div>
                             </div>
@@ -42,13 +42,13 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="card-title mb-0">
-                                                    <i class="bx bx-info-circle me-2"></i>Basic Information
+                                                    <i class="bx bx-info-circle me-2"></i>Thông Tin Cơ Bản
                                                 </h6>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row mb-3">
                                                     <div class="col-sm-4">
-                                                        <strong>Variant ID:</strong>
+                                                        <strong>ID Biến Thể:</strong>
                                                     </div>
                                                     <div class="col-sm-8">
                                                         <span class="badge bg-primary">{{ $variant->id }}</span>
@@ -57,7 +57,7 @@
 
                                                 <div class="row mb-3">
                                                     <div class="col-sm-4">
-                                                        <strong>Product:</strong>
+                                                        <strong>Sản Phẩm:</strong>
                                                     </div>
                                                     <div class="col-sm-8">
                                                         <a href="{{ route('products.show', $variant->product->id) }}" 
@@ -70,7 +70,7 @@
 
                                                 <div class="row mb-3">
                                                     <div class="col-sm-4">
-                                                        <strong>Price:</strong>
+                                                        <strong>Giá:</strong>
                                                     </div>
                                                     <div class="col-sm-8">
                                                         <span class="fw-bold text-success fs-5">
@@ -81,7 +81,7 @@
 
                                                 <div class="row mb-3">
                                                     <div class="col-sm-4">
-                                                        <strong>Stock Quantity:</strong>
+                                                        <strong>Số Lượng Tồn Kho:</strong>
                                                     </div>
                                                     <div class="col-sm-8">
                                                         <span class="badge bg-{{ $variant->stock_quantity > 0 ? 'success' : 'danger' }}-subtle 
@@ -93,7 +93,7 @@
 
                                                 <div class="row mb-3">
                                                     <div class="col-sm-4">
-                                                        <strong>Status:</strong>
+                                                        <strong>Trạng Thái:</strong>
                                                     </div>
                                                     <div class="col-sm-8">
                                                         <span class="badge bg-{{ $variant->status == 'active' ? 'success' : 'secondary' }}-subtle 
@@ -111,7 +111,7 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="card-title mb-0">
-                                                    <i class="bx bx-tag me-2"></i>Attributes
+                                                    <i class="bx bx-tag me-2"></i>Thuộc Tính
                                                 </h6>
                                             </div>
                                             <div class="card-body">
@@ -127,7 +127,7 @@
                                                 @else
                                                     <div class="text-center py-3">
                                                         <i class="bx bx-package display-4 text-muted"></i>
-                                                        <p class="text-muted mt-2">No attributes assigned to this variant.</p>
+                                                        <p class="text-muted mt-2">Không có thuộc tính nào được gán cho biến thể này.</p>
                                                     </div>
                                                 @endif
                                             </div>
@@ -141,7 +141,7 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="card-title mb-0">
-                                                    <i class="bx bx-package me-2"></i>Product Information
+                                                    <i class="bx bx-package me-2"></i>Thông Tin Sản Phẩm
                                                 </h6>
                                             </div>
                                             <div class="card-body">
@@ -149,7 +149,7 @@
                                                     <div class="col-md-6">
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Product Name:</strong>
+                                                                <strong>Tên Sản Phẩm:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 {{ $variant->product->name }}
@@ -158,7 +158,7 @@
 
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Category:</strong>
+                                                                <strong>Danh Mục:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 @if($variant->product->category)
@@ -167,14 +167,14 @@
                                                                         {{ $variant->product->category->category_name }}
                                                                     </a>
                                                                 @else
-                                                                    <span class="text-muted">No category</span>
+                                                                    <span class="text-muted">Không có danh mục</span>
                                                                 @endif
                                                             </div>
                                                         </div>
 
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Brand:</strong>
+                                                                <strong>Thương Hiệu:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 @if($variant->product->brand)
@@ -183,7 +183,7 @@
                                                                         {{ $variant->product->brand->name }}
                                                                     </a>
                                                                 @else
-                                                                    <span class="text-muted">No brand</span>
+                                                                    <span class="text-muted">Không có thương hiệu</span>
                                                                 @endif
                                                             </div>
                                                         </div>
@@ -192,7 +192,7 @@
                                                     <div class="col-md-6">
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Base Price:</strong>
+                                                                <strong>Giá Cơ Bản:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 <span class="text-muted">${{ number_format($variant->product->base_price, 2) }}</span>
@@ -201,20 +201,20 @@
 
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Description:</strong>
+                                                                <strong>Mô Tả:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 @if($variant->product->description)
                                                                     <p class="text-muted mb-0">{{ Str::limit($variant->product->description, 100) }}</p>
                                                                 @else
-                                                                    <span class="text-muted">No description</span>
+                                                                    <span class="text-muted">Không có mô tả</span>
                                                                 @endif
                                                             </div>
                                                         </div>
 
                                                         <div class="row mb-3">
                                                             <div class="col-sm-4">
-                                                                <strong>Created:</strong>
+                                                                <strong>Ngày Tạo:</strong>
                                                             </div>
                                                             <div class="col-sm-8">
                                                                 <span class="text-muted">{{ $variant->created_at->format('M d, Y H:i') }}</span>
@@ -233,7 +233,7 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="card-title mb-0">
-                                                    <i class="bx bx-time me-2"></i>Timestamps
+                                                    <i class="bx bx-time me-2"></i>Thời Gian
                                                 </h6>
                                             </div>
                                             <div class="card-body">
@@ -241,7 +241,7 @@
                                                     <div class="col-md-4">
                                                         <div class="row mb-3">
                                                             <div class="col-sm-5">
-                                                                <strong>Created:</strong>
+                                                                <strong>Ngày Tạo:</strong>
                                                             </div>
                                                             <div class="col-sm-7">
                                                                 <span class="text-muted">{{ $variant->created_at->format('M d, Y H:i:s') }}</span>
@@ -251,7 +251,7 @@
                                                     <div class="col-md-4">
                                                         <div class="row mb-3">
                                                             <div class="col-sm-5">
-                                                                <strong>Updated:</strong>
+                                                                <strong>Ngày Cập Nhật:</strong>
                                                             </div>
                                                             <div class="col-sm-7">
                                                                 <span class="text-muted">{{ $variant->updated_at->format('M d, Y H:i:s') }}</span>
@@ -261,7 +261,7 @@
                                                     <div class="col-md-4">
                                                         <div class="row mb-3">
                                                             <div class="col-sm-5">
-                                                                <strong>Status:</strong>
+                                                                <strong>Trạng Thái:</strong>
                                                             </div>
                                                             <div class="col-sm-7">
                                                                 <span class="badge bg-{{ $variant->status == 'active' ? 'success' : 'secondary' }}-subtle 
@@ -282,16 +282,16 @@
                                     <div class="col-12">
                                         <div class="d-flex gap-2">
                                             <a href="{{ route('variants.edit', $variant->id) }}" class="btn btn-primary">
-                                                <i class="bx bx-edit me-1"></i>Edit Variant
+                                                <i class="bx bx-edit me-1"></i>Sửa Biến Thể
                                             </a>
                                             <a href="{{ route('variants.index') }}" class="btn btn-outline-secondary">
-                                                <i class="bx bx-arrow-back me-1"></i>Back to List
+                                                <i class="bx bx-arrow-back me-1"></i>Quay Lại Danh Sách
                                             </a>
                                             <button type="button" class="btn btn-outline-danger" 
-                                                    onclick="if(confirm('Are you sure you want to delete this variant?')) { 
+                                                    onclick="if(confirm('Bạn có chắc chắn muốn xóa biến thể này?')) { 
                                                         document.getElementById('deleteForm').submit(); 
                                                     }">
-                                                <i class="bx bx-trash me-1"></i>Delete
+                                                <i class="bx bx-trash me-1"></i>Xóa
                                             </button>
                                         </div>
                                     </div>

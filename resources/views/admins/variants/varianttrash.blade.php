@@ -21,16 +21,95 @@
                     </div>
                 @endif
 
+                <!-- Trash Statistics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bx bx-trash display-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-0">{{ $variants->total() }}</h4>
+                                        <p class="mb-0">Biến Thể Đã Xóa</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bx bx-refresh display-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-0">{{ $variants->where('product_id', '!=', null)->count() }}</h4>
+                                        <p class="mb-0">Có Thể Khôi Phục</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bx bx-time display-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-0">{{ $variants->where('deleted_at', '>=', now()->subDays(7))->count() }}</h4>
+                                        <p class="mb-0">Đã Xóa Tuần Này</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bx bx-calendar display-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-0">{{ $variants->where('deleted_at', '>=', now()->subDays(30))->count() }}</h4>
+                                        <p class="mb-0">Đã Xóa Tháng Này</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">
-                                    <i class="bx bx-trash me-2"></i>Deleted Variants
+                                    <i class="bx bx-trash me-2"></i>Biến Thể Đã Xóa
+                                    <span class="badge bg-secondary ms-2">{{ $variants->total() }}</span>
                                 </h4>
                                 <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-success" id="restoreSelected" style="display: none;">
+                                        <i class="bx bx-refresh me-1"></i>Khôi Phục Đã Chọn
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" id="deleteSelected" style="display: none;">
+                                        <i class="bx bx-trash me-1"></i>Xóa Đã Chọn
+                                    </button>
+                                    <form action="{{ route('variants.emptyTrash') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn TẤT CẢ biến thể trong thùng rác? Hành động này không thể hoàn tác.')">
+                                            <i class="bx bx-trash me-1"></i>Làm Trống Thùng Rác
+                                        </button>
+                                    </form>
                                     <a href="{{ route('variants.index') }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="bx bx-arrow-back me-1"></i>Back to List
+                                        <i class="bx bx-arrow-back me-1"></i>Quay Lại Danh Sách
                                     </a>
                                 </div>
                             </div>
@@ -38,7 +117,7 @@
                                 @if ($variants->count() > 0)
                                     <div class="alert alert-warning">
                                         <i class="bx bx-exclamation-triangle me-2"></i>
-                                        <strong>Warning:</strong> These variants have been deleted and can be restored or permanently deleted.
+                                        <strong>Cảnh Báo:</strong> Những biến thể này đã được xóa và có thể được khôi phục hoặc xóa vĩnh viễn.
                                     </div>
 
                                     <div class="table-responsive">
@@ -53,12 +132,12 @@
                                                                 for="customCheckAll"></label>
                                                         </div>
                                                     </th>
-                                                    <th>Product</th>
-                                                    <th>Price</th>
-                                                    <th>Stock</th>
-                                                    <th>Attributes</th>
-                                                    <th>Deleted At</th>
-                                                    <th style="width: 150px;">Actions</th>
+                                                    <th>Sản Phẩm</th>
+                                                    <th>Giá</th>
+                                                    <th>Tồn Kho</th>
+                                                    <th>Thuộc Tính</th>
+                                                    <th>Ngày Xóa</th>
+                                                    <th style="width: 150px;">Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -76,9 +155,19 @@
                                                             <div class="d-flex align-items-center">
                                                                 <div class="flex-grow-1">
                                                                     <h6 class="mb-0 fw-semibold text-muted">
-                                                                        {{ $variant->product->name ?? 'Product Deleted' }}
+                                                                        @if($variant->product)
+                                                                            {{ $variant->product->name }}
+                                                                        @else
+                                                                            <span class="text-danger">Sản Phẩm Đã Xóa</span>
+                                                                        @endif
                                                                     </h6>
-                                                                    <small class="text-muted">ID: {{ $variant->product_id ?? 'N/A' }}</small>
+                                                                    <small class="text-muted">
+                                                                        @if($variant->product)
+                                                                            ID: {{ $variant->product->id }}
+                                                                        @else
+                                                                            ID Sản phẩm: {{ $variant->product_id ?? 'N/A' }}
+                                                                        @endif
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -97,13 +186,19 @@
                                                             @if($variant->attributesValue->count() > 0)
                                                                 <div class="d-flex flex-wrap gap-1">
                                                                     @foreach($variant->attributesValue as $attrValue)
-                                                                        <span class="badge bg-light text-dark">
-                                                                            {{ $attrValue->attribute->name }}: {{ $attrValue->value }}
-                                                                        </span>
+                                                                        @if($attrValue->attribute)
+                                                                            <span class="badge bg-light text-dark">
+                                                                                {{ $attrValue->attribute->name }}: {{ $attrValue->value }}
+                                                                            </span>
+                                                                        @else
+                                                                            <span class="badge bg-warning text-dark">
+                                                                                Thuộc tính đã xóa: {{ $attrValue->value }}
+                                                                            </span>
+                                                                        @endif
                                                                     @endforeach
                                                                 </div>
                                                             @else
-                                                                <span class="text-muted">No attributes</span>
+                                                                <span class="text-muted">Không có thuộc tính</span>
                                                             @endif
                                                         </td>
                                                         <td>
@@ -123,7 +218,7 @@
                                                                         @csrf
                                                                         @method('PATCH')
                                                                         <button type="submit" class="dropdown-item text-success">
-                                                                            <i class="bx bx-refresh me-2"></i>Restore
+                                                                            <i class="bx bx-refresh me-2"></i>Khôi Phục
                                                                         </button>
                                                                     </form>
                                                                     <div class="dropdown-divider"></div>
@@ -132,8 +227,8 @@
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <button type="submit" class="dropdown-item text-danger" 
-                                                                                onclick="return confirm('Are you sure you want to permanently delete this variant? This action cannot be undone.')">
-                                                                            <i class="bx bx-trash me-2"></i>Delete Permanently
+                                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn biến thể này? Hành động này không thể hoàn tác.')">
+                                                                            <i class="bx bx-trash me-2"></i>Xóa Vĩnh Viễn
                                                                         </button>
                                                                     </form>
                                                                 </div>
@@ -148,8 +243,8 @@
                                     <!-- Pagination -->
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div class="text-muted">
-                                            Showing {{ $variants->firstItem() }} to {{ $variants->lastItem() }} 
-                                            of {{ $variants->total() }} entries
+                                            Hiển thị {{ $variants->firstItem() }} đến {{ $variants->lastItem() }} 
+                                            trong tổng số {{ $variants->total() }} mục
                                         </div>
                                         <div>
                                             {{ $variants->links() }}
@@ -160,10 +255,10 @@
                                         <div class="mb-3">
                                             <i class="bx bx-trash display-1 text-muted"></i>
                                         </div>
-                                        <h5 class="text-muted">No deleted variants found</h5>
-                                        <p class="text-muted">The trash is empty. No variants have been deleted.</p>
+                                        <h5 class="text-muted">Không tìm thấy biến thể đã xóa</h5>
+                                        <p class="text-muted">Thùng rác trống. Chưa có biến thể nào được xóa.</p>
                                         <a href="{{ route('variants.index') }}" class="btn btn-primary">
-                                            <i class="bx bx-arrow-back me-1"></i>Back to Variants
+                                            <i class="bx bx-arrow-back me-1"></i>Quay Lại Biến Thể
                                         </a>
                                     </div>
                                 @endif
@@ -180,11 +275,22 @@
             // Select all functionality
             const selectAllCheckbox = document.getElementById('customCheckAll');
             const individualCheckboxes = document.querySelectorAll('input[type="checkbox"]:not(#customCheckAll)');
+            const restoreSelectedBtn = document.getElementById('restoreSelected');
+            const deleteSelectedBtn = document.getElementById('deleteSelected');
+            
+            function updateActionButtons() {
+                const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:not(#customCheckAll):checked');
+                const hasChecked = checkedBoxes.length > 0;
+                
+                restoreSelectedBtn.style.display = hasChecked ? 'inline-block' : 'none';
+                deleteSelectedBtn.style.display = hasChecked ? 'inline-block' : 'none';
+            }
             
             selectAllCheckbox.addEventListener('change', function() {
                 individualCheckboxes.forEach(checkbox => {
                     checkbox.checked = this.checked;
                 });
+                updateActionButtons();
             });
 
             // Update select all when individual checkboxes change
@@ -195,7 +301,84 @@
                     
                     selectAllCheckbox.checked = allChecked;
                     selectAllCheckbox.indeterminate = anyChecked && !allChecked;
+                    updateActionButtons();
                 });
+            });
+            
+            // Restore selected variants
+            restoreSelectedBtn.addEventListener('click', function() {
+                const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:not(#customCheckAll):checked');
+                const variantIds = Array.from(checkedBoxes).map(cb => cb.id.replace('customCheck', ''));
+                
+                if (variantIds.length === 0) return;
+                
+                if (confirm(`Bạn có chắc chắn muốn khôi phục ${variantIds.length} biến thể?`)) {
+                    // Create form to submit multiple restore requests
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route("variants.restoreMultiple") }}';
+                    
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+                    
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'PATCH';
+                    form.appendChild(methodField);
+                    
+                    variantIds.forEach(id => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'variant_ids[]';
+                        input.value = id;
+                        form.appendChild(input);
+                    });
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+            
+            // Delete selected variants permanently
+            deleteSelectedBtn.addEventListener('click', function() {
+                const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:not(#customCheckAll):checked');
+                const variantIds = Array.from(checkedBoxes).map(cb => cb.id.replace('customCheck', ''));
+                
+                if (variantIds.length === 0) return;
+                
+                if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn ${variantIds.length} biến thể? Hành động này không thể hoàn tác.`)) {
+                    // Create form to submit multiple delete requests
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route("variants.forceDeleteMultiple") }}';
+                    
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+                    
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'DELETE';
+                    form.appendChild(methodField);
+                    
+                    variantIds.forEach(id => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'variant_ids[]';
+                        input.value = id;
+                        form.appendChild(input);
+                    });
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
             });
         });
     </script>

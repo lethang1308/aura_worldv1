@@ -17,7 +17,12 @@ class VariantController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Variant::with(['product', 'attributesValue.attribute']);
+        // Kiểm tra nếu muốn hiển thị variants đã xóa
+        if ($request->has('show_deleted') && $request->show_deleted == '1') {
+            $query = Variant::onlyTrashed()->with(['product', 'attributesValue.attribute']);
+        } else {
+            $query = Variant::with(['product', 'attributesValue.attribute']);
+        }
 
         // Tìm kiếm theo tên sản phẩm
         if ($request->filled('search_product')) {
@@ -45,7 +50,10 @@ class VariantController extends Controller
         // Lấy danh sách sản phẩm để hiển thị trong dropdown
         $products = Product::orderBy('name')->get();
 
-        return view('admins.variants.variantlist', compact('variants', 'products'));
+        // Lấy số lượng variants đã xóa để hiển thị badge
+        $deletedCount = Variant::onlyTrashed()->count();
+
+        return view('admins.variants.variantlist', compact('variants', 'products', 'deletedCount'));
     }
 
     /**
@@ -173,20 +181,17 @@ class VariantController extends Controller
     }
 
     /**
-     * Xóa variant
+     * Xóa mềm variant (soft delete)
      */
     public function destroy($id)
     {
         try {
             $variant = Variant::findOrFail($id);
             
-            // Xóa các variant attributes trước
-            VariantAttribute::where('variant_id', $variant->id)->delete();
-            
-            // Xóa variant
+            // Soft delete variant (không xóa variant attributes vì sẽ được khôi phục cùng)
             $variant->delete();
             
-            return redirect()->route('variants.index')->with('success', 'Xóa variant thành công!');
+            return redirect()->route('variants.index')->with('success', 'Xóa variant thành công! Variant đã được chuyển vào thùng rác.');
         } catch (\Exception $e) {
             return back()->with('error', 'Không thể xóa variant: ' . $e->getMessage());
         }
@@ -242,10 +247,39 @@ class VariantController extends Controller
      */
     public function restore($id)
     {
-        $variant = Variant::onlyTrashed()->findOrFail($id);
-        $variant->restore();
+        try {
+            $variant = Variant::onlyTrashed()->findOrFail($id);
+            $variant->restore();
 
-        return redirect()->route('variants.trash')->with('success', 'Khôi phục variant thành công!');
+            return redirect()->route('variants.trash')->with('success', 'Khôi phục variant thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Không thể khôi phục variant: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Khôi phục nhiều variants từ thùng rác
+     */
+    public function restoreMultiple(Request $request)
+    {
+        $request->validate([
+            'variant_ids' => 'required|array',
+            'variant_ids.*' => 'exists:variants,id'
+        ]);
+
+        try {
+            $variants = Variant::onlyTrashed()->whereIn('id', $request->variant_ids)->get();
+            $count = 0;
+
+            foreach ($variants as $variant) {
+                $variant->restore();
+                $count++;
+            }
+
+            return redirect()->route('variants.trash')->with('success', "Đã khôi phục {$count} variant thành công!");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Không thể khôi phục variants: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -256,7 +290,7 @@ class VariantController extends Controller
         try {
             $variant = Variant::onlyTrashed()->findOrFail($id);
             
-            // Xóa các variant attributes
+            // Xóa vĩnh viễn các variant attributes trước
             VariantAttribute::where('variant_id', $variant->id)->delete();
             
             // Xóa vĩnh viễn variant
@@ -265,6 +299,59 @@ class VariantController extends Controller
             return redirect()->route('variants.trash')->with('success', 'Xóa vĩnh viễn variant thành công!');
         } catch (\Exception $e) {
             return back()->with('error', 'Không thể xóa vĩnh viễn variant: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Xóa vĩnh viễn nhiều variants
+     */
+    public function forceDeleteMultiple(Request $request)
+    {
+        $request->validate([
+            'variant_ids' => 'required|array',
+            'variant_ids.*' => 'exists:variants,id'
+        ]);
+
+        try {
+            $variants = Variant::onlyTrashed()->whereIn('id', $request->variant_ids)->get();
+            $count = 0;
+
+            foreach ($variants as $variant) {
+                // Xóa vĩnh viễn các variant attributes trước
+                VariantAttribute::where('variant_id', $variant->id)->delete();
+                
+                // Xóa vĩnh viễn variant
+                $variant->forceDelete();
+                $count++;
+            }
+
+            return redirect()->route('variants.trash')->with('success', "Đã xóa vĩnh viễn {$count} variant thành công!");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Không thể xóa vĩnh viễn variants: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Xóa tất cả variants trong trash
+     */
+    public function emptyTrash()
+    {
+        try {
+            $variants = Variant::onlyTrashed()->get();
+            $count = 0;
+
+            foreach ($variants as $variant) {
+                // Xóa vĩnh viễn các variant attributes trước
+                VariantAttribute::where('variant_id', $variant->id)->delete();
+                
+                // Xóa vĩnh viễn variant
+                $variant->forceDelete();
+                $count++;
+            }
+
+            return redirect()->route('variants.trash')->with('success', "Đã xóa vĩnh viễn tất cả {$count} variants trong trash!");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Không thể xóa tất cả variants: ' . $e->getMessage());
         }
     }
 

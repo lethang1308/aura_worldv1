@@ -6,19 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('discount', 15, 2)->nullable()->after('type_payment');
-            $table->string('coupon_code')->nullable()->after('discount');
+            if (!Schema::hasColumn('orders', 'cancel_reason')) {
+                $table->string('cancel_reason')->nullable()->after('status_order');
+            }
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('discount');
-            $table->dropColumn('coupon_code');
+            if (Schema::hasColumn('orders', 'cancel_reason')) {
+                $table->dropColumn('cancel_reason');
+            }
         });
     }
 };

@@ -25,13 +25,13 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">Edit Variant</h4>
+                                <h4 class="card-title">Sửa Biến Thể</h4>
                                 <div class="d-flex gap-2">
                                     <a href="{{ route('variants.show', $variant->id) }}" class="btn btn-sm btn-outline-info">
-                                        <i class="bx bx-show me-1"></i>View Details
+                                        <i class="bx bx-show me-1"></i>Xem Chi Tiết
                                     </a>
                                     <a href="{{ route('variants.index') }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="bx bx-arrow-back me-1"></i>Back to List
+                                        <i class="bx bx-arrow-back me-1"></i>Quay Lại Danh Sách
                                     </a>
                                 </div>
                             </div>
@@ -44,10 +44,10 @@
                                         <!-- Product Selection -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="product_id" class="form-label">Product <span class="text-danger">*</span></label>
+                                                <label for="product_id" class="form-label">Sản Phẩm <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('product_id') is-invalid @enderror" 
                                                         id="product_id" name="product_id" required>
-                                                    <option value="">Select Product</option>
+                                                    <option value="">Chọn Sản Phẩm</option>
                                                     @foreach($products as $product)
                                                         <option value="{{ $product->id }}" 
                                                                 {{ (old('product_id', $variant->product_id) == $product->id) ? 'selected' : '' }}>
@@ -64,7 +64,7 @@
                                         <!-- Price -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
+                                                <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
                                                     <input type="number" step="0.01" min="0" 
@@ -82,7 +82,7 @@
                                         <!-- Stock Quantity -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="stock_quantity" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+                                                <label for="stock_quantity" class="form-label">Số Lượng Tồn Kho <span class="text-danger">*</span></label>
                                                 <input type="number" min="0" 
                                                        class="form-control @error('stock_quantity') is-invalid @enderror" 
                                                        id="stock_quantity" name="stock_quantity" 
@@ -97,12 +97,12 @@
                                         <!-- Status -->
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                                <label for="status" class="form-label">Trạng Thái <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('status') is-invalid @enderror" 
                                                         id="status" name="status" required>
-                                                    <option value="">Select Status</option>
-                                                    <option value="active" {{ (old('status', $variant->status) == 'active') ? 'selected' : '' }}>Active</option>
-                                                    <option value="inactive" {{ (old('status', $variant->status) == 'inactive') ? 'selected' : '' }}>Inactive</option>
+                                                    <option value="">Chọn Trạng Thái</option>
+                                                    <option value="active" {{ (old('status', $variant->status) == 'active') ? 'selected' : '' }}>Hoạt Động</option>
+                                                    <option value="inactive" {{ (old('status', $variant->status) == 'inactive') ? 'selected' : '' }}>Không Hoạt Động</option>
                                                 </select>
                                                 @error('status')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -116,7 +116,7 @@
                                         <div class="col-12">
                                             <div class="alert alert-info">
                                                 <h6 class="alert-heading">
-                                                    <i class="bx bx-info-circle me-2"></i>Current Attributes
+                                                    <i class="bx bx-info-circle me-2"></i>Thuộc Tính Hiện Tại
                                                 </h6>
                                                 @if($variant->attributesValue->count() > 0)
                                                     <div class="d-flex flex-wrap gap-2 mt-2">
@@ -127,7 +127,7 @@
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <p class="mb-0">No attributes assigned to this variant.</p>
+                                                    <p class="mb-0">Không có thuộc tính nào được gán cho biến thể này.</p>
                                                 @endif
                                             </div>
                                         </div>
@@ -137,10 +137,10 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Attributes <span class="text-danger">*</span></label>
+                                                <label class="form-label">Thuộc Tính <span class="text-danger">*</span></label>
                                                 <div class="alert alert-warning">
                                                     <i class="bx bx-exclamation-triangle me-2"></i>
-                                                    Select at least one attribute value for this variant. Current selections will be replaced.
+                                                    Chọn ít nhất một giá trị thuộc tính cho biến thể này. Các lựa chọn hiện tại sẽ được thay thế.
                                                 </div>
                                                 
                                                 @error('attribute_values')
@@ -186,16 +186,16 @@
                                         <div class="col-12">
                                             <div class="d-flex gap-2">
                                                 <button type="submit" class="btn btn-primary">
-                                                    <i class="bx bx-save me-1"></i>Update Variant
+                                                    <i class="bx bx-save me-1"></i>Cập Nhật Biến Thể
                                                 </button>
                                                 <a href="{{ route('variants.index') }}" class="btn btn-outline-secondary">
-                                                    <i class="bx bx-x me-1"></i>Cancel
+                                                    <i class="bx bx-x me-1"></i>Hủy
                                                 </a>
                                                 <button type="button" class="btn btn-outline-danger" 
-                                                        onclick="if(confirm('Are you sure you want to delete this variant?')) { 
+                                                        onclick="if(confirm('Bạn có chắc chắn muốn xóa biến thể này?')) { 
                                                             document.getElementById('deleteForm').submit(); 
                                                         }">
-                                                    <i class="bx bx-trash me-1"></i>Delete
+                                                    <i class="bx bx-trash me-1"></i>Xóa
                                                 </button>
                                             </div>
                                         </div>

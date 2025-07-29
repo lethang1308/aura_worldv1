@@ -55,9 +55,15 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        // Lấy user theo email
-        $user = User::where('email', $credentials['email'])->first();
+        // Lấy user theo email (kể cả đã bị xóa mềm)
+        $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
 
+        // Nếu user đã bị xóa mềm (bị khóa)
+        if ($user && $user->trashed()) {
+            return back()->withErrors([
+                'email' => 'Tài khoản của bạn đã bị khóa do vi phạm chính sách.',
+            ]);
+        }
         // Kiểm tra user tồn tại và active
         if (!$user || !$user->is_active) {
             return back()->withErrors([

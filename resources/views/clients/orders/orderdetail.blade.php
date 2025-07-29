@@ -17,6 +17,13 @@
             @endif
         </div>
 
+        {{-- Hiển thị lý do hủy đơn nếu bị hủy --}}
+        @if ($order->status_order === 'cancelled')
+            <div class="alert alert-danger mt-3">
+                <strong>Lý do hủy đơn:</strong> {{ $order->cancel_reason ?? 'Không có lý do' }}
+            </div>
+        @endif
+
         <div class="table-responsive">
             <table class="table table-bordered table-hover shadow-sm rounded" style="background:#fff;">
                 <thead style="background:#4cd964; color:#fff; font-weight:700; text-align:center;">
@@ -33,9 +40,9 @@
                 <tbody>
                     @foreach ($order->OrderDetail as $i => $detail)
                         @php
-                            $product = $detail->variant->product;
-                            $image = $product->images->first();
-                            $basePrice = $product->base_price ?? 0;
+                            $product = $detail->variant->product ?? null;
+                            $image = $product ? $product->images->first() : null;
+                            $basePrice = $product ? ($product->base_price ?? 0) : 0;
                             $variantPrice = $detail->variant_price ?? 0;
                             $unitPrice = $basePrice + $variantPrice;
                             $totalPrice = $unitPrice * $detail->quantity;
