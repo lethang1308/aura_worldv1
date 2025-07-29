@@ -10,23 +10,19 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="card">
                             <div class="card-body">
-                                <label class="form-label">Preview Logo</label>
+                                <label class="form-label">Xem trước logo</label>
                                 <div id="logo-preview" class="d-flex flex-wrap gap-2"></div>
                                 <div class="mb-3 mt-3">
-                                    <label for="brand-logo" class="btn btn-outline-primary w-100">
-                                        Choose Logo
-                                    </label>
+                                    <label for="brand-logo" class="btn btn-outline-primary w-100">Chọn logo</label>
                                 </div>
                             </div>
                             <div class="card-footer bg-light-subtle">
                                 <div class="row g-2">
                                     <div class="col-lg-6">
-                                        <button type="submit" form="brand-form" class="btn btn-outline-secondary w-100">
-                                            Create Brand
-                                        </button>
+                                        <button type="submit" form="brand-form" class="btn btn-outline-secondary w-100">Tạo thương hiệu</button>
                                     </div>
                                     <div class="col-lg-6">
-                                        <a href="{{ route('brands.index') }}" class="btn btn-primary w-100">Cancel</a>
+                                        <a href="{{ route('brands.index') }}" class="btn btn-primary w-100">Huỷ</a>
                                     </div>
                                 </div>
                             </div>
@@ -36,7 +32,7 @@
                     <div class="col-xl-9 col-lg-8 ">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Brand Information</h4>
+                                <h4 class="card-title">Thông tin thương hiệu</h4>
                             </div>
                             <div class="card-body">
                                 <form id="brand-form" action="{{ route('brands.store') }}" method="POST" enctype="multipart/form-data">
@@ -44,8 +40,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Brand Name</label>
-                                                <input type="text" id="name" name="name" class="form-control" placeholder="Brand Name" value="{{ old('name') }}" required>
+                                                <label for="name" class="form-label">Tên thương hiệu</label>
+                                                <input type="text" id="name" name="name" class="form-control" placeholder="Nhập tên thương hiệu" value="{{ old('name') }}" required>
                                                 @error('name')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -53,10 +49,10 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status</label>
+                                                <label for="status" class="form-label">Trạng thái</label>
                                                 <select class="form-control" id="status" name="status">
-                                                    <option value="active">Active</option>
-                                                    <option value="inactive">Inactive</option>
+                                                    <option value="active">Đang hoạt động</option>
+                                                    <option value="inactive">Ngừng hoạt động</option>
                                                 </select>
                                                 @error('status')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -67,8 +63,8 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="mb-3">
-                                                <label for="description" class="form-label">Description</label>
-                                                <textarea class="form-control bg-light-subtle" id="description" name="description" rows="5" placeholder="Description">{{ old('description') }}</textarea>
+                                                <label for="description" class="form-label">Mô tả</label>
+                                                <textarea class="form-control bg-light-subtle" id="description" name="description" rows="5" placeholder="Mô tả">{{ old('description') }}</textarea>
                                                 @error('description')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror

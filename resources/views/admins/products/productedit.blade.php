@@ -49,9 +49,7 @@
                                 <label class="form-label">Ảnh mới (nếu có)</label>
                                 <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
 
-                                <label for="product-images" class="btn btn-outline-primary w-100 mt-3">
-                                    Chọn ảnh mới
-                                </label>
+                                <label for="product-images" class="btn btn-outline-primary w-100 mt-3">Chọn ảnh mới</label>
                             </div>
 
                             {{-- Action Buttons --}}
@@ -113,9 +111,9 @@
                                     {{-- Brand --}}
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="brand_id" class="form-label">Brand</label>
+                                            <label for="brand_id" class="form-label">Thương hiệu</label>
                                             <select class="form-control" id="brand_id" name="brand_id">
-                                                <option value="">Choose a brand</option>
+                                                <option value="">Chọn thương hiệu</option>
                                                 @foreach ($brands as $brand)
                                                     <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                                 @endforeach

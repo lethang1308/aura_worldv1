@@ -44,23 +44,23 @@
                     <div class="card-body">
                         <form method="GET" action="{{ route('categories.index') }}" class="row g-3">
                             <div class="col-md-6">
-                                <label for="search_name" class="form-label">Category Name</label>
+                                <label for="search_name" class="form-label">Tên danh mục</label>
                                 <input type="text" 
                                        class="form-control" 
                                        id="search_name" 
                                        name="search_name" 
                                        value="{{ request('search_name') }}" 
-                                       placeholder="Search by category name...">
+                                       placeholder="Tìm theo tên danh mục...">
                             </div>
                             
                             <div class="col-md-6">
                                 <label class="form-label d-block">&nbsp;</label>
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="bx bx-search me-1"></i>Search
+                                        <i class="bx bx-search me-1"></i>Tìm kiếm
                                     </button>
                                     <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bx bx-refresh me-1"></i>Reset
+                                        <i class="bx bx-refresh me-1"></i>Đặt lại
                                     </a>
                                 </div>
                             </div>
@@ -70,9 +70,8 @@
                         @if(request('search_name'))
                             <div class="mt-3 pt-3 border-top">
                                 <div class="d-flex flex-wrap align-items-center gap-2">
-                                    <span class="text-muted">Search filters:</span>
-                                    <span class="badge bg-primary-subtle text-primary">
-                                        Name: "{{ request('search_name') }}"
+                                    <span class="text-muted">Bộ lọc tìm kiếm:</span>
+                                    <span class="badge bg-primary-subtle text-primary">Tên: "{{ request('search_name') }}"
                                         <a href="{{ route('categories.index') }}" 
                                            class="text-decoration-none ms-1">×</a>
                                     </span>
@@ -86,7 +85,7 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center gap-1">
-                                <h4 class="card-title flex-grow-1">All Categories List</h4>
+                                <h4 class="card-title flex-grow-1">Danh sách danh mục</h4>
                                 <div>
                                     @if (!isset($trash) || !$trash)
                                         <a href="{{ route('categories.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
@@ -94,20 +93,20 @@
                                         <a href="{{ route('categories.index') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
                                     @endif
                                 </div>
-                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary">Add Category</a>
+                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary">Thêm danh mục</a>
 
                                 <div class="dropdown">
                                     <a href="#" class="dropdown-toggle btn btn-sm btn-outline-light"
                                         data-bs-toggle="dropdown" aria-expanded="false">
-                                        This Month
+                                        Tháng này
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <!-- item-->
-                                        <a href="#!" class="dropdown-item">Download</a>
+                                        <a href="#!" class="dropdown-item">Tải xuống</a>
                                         <!-- item-->
-                                        <a href="#!" class="dropdown-item">Export</a>
+                                        <a href="#!" class="dropdown-item">Xuất file</a>
                                         <!-- item-->
-                                        <a href="#!" class="dropdown-item">Import</a>
+                                        <a href="#!" class="dropdown-item">Nhập file</a>
                                     </div>
                                 </div>
                             </div>
@@ -123,14 +122,14 @@
                                                             <label class="form-check-label" for="customCheck1"></label>
                                                         </div>
                                                     </th>
-                                                    <th>Categories</th>
+                                                    <th>Danh mục</th>
                                                     <th>ID</th>
-                                                    <th>Parent Category</th>
-                                                    <th>Description</th>
-                                                    <th>Status</th>
-                                                    <th>Created At</th>
-                                                    <th>Updated At</th>
-                                                    <th>Action</th>
+                                                    <th>Danh mục cha</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Ngày cập nhật</th>
+                                                    <th>Thao tác</th>
                                                 </tr>
                                             </thead>
 
@@ -218,17 +217,17 @@
                                         <div class="mb-3">
                                             <i class="bx bx-category" style="font-size: 48px; color: #6c757d;"></i>
                                         </div>
-                                        <h5 class="text-muted">No Categories Found</h5>
+                                        <h5 class="text-muted">Không tìm thấy danh mục nào</h5>
                                         <p class="text-muted">
                                             @if(request('search_name'))
-                                                No categories match your search criteria.
+                                                Không có danh mục nào phù hợp với tiêu chí tìm kiếm.
                                             @else
-                                                There are no categories in the system yet.
+                                                Chưa có danh mục nào trong hệ thống.
                                             @endif
                                         </p>
                                         @if(!request('search_name'))
                                             <a href="{{ route('categories.create') }}" class="btn btn-primary">
-                                                <i class="bx bx-plus me-1"></i>Add First Category
+                                                <i class="bx bx-plus me-1"></i>Thêm danh mục đầu tiên
                                             </a>
                                         @endif
                                     </div>
@@ -242,10 +241,9 @@
                                         <div class="mb-3 mb-sm-0">
                                             <p class="text-muted mb-0 fs-13">
                                                 @if(method_exists($categories, 'firstItem'))
-                                                    Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of
-                                                    {{ $categories->total() }} results
+                                                    Hiển thị {{ $categories->firstItem() }} đến {{ $categories->lastItem() }} trong tổng số {{ $categories->total() }} kết quả
                                                 @else
-                                                    Showing {{ $categories->count() }} results
+                                                    Hiển thị {{ $categories->count() }} kết quả
                                                 @endif
                                             </p>
                                         </div>
@@ -265,7 +263,7 @@
                                                         <li class="page-item">
                                                             <a class="page-link"
                                                                 href="{{ $categories->appends(request()->query())->previousPageUrl() }}"
-                                                                rel="prev" aria-label="Previous">
+                                                                rel="prev" aria-label="Trước">
                                                                 <i class="bx bx-chevron-left"></i>
                                                             </a>
                                                         </li>
@@ -292,7 +290,7 @@
                                                         <li class="page-item">
                                                             <a class="page-link"
                                                                 href="{{ $categories->appends(request()->query())->nextPageUrl() }}" rel="next"
-                                                                aria-label="Next">
+                                                                aria-label="Sau">
                                                                 <i class="bx bx-chevron-right"></i>
                                                             </a>
                                                         </li>
