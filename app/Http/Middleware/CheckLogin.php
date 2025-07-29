@@ -32,6 +32,10 @@ class CheckLogin
             return redirect()->route('client.home');
         }
 
+        if ($user->isRoleShipper()) {
+            return redirect()->route('shipper.home');
+        }
+
         if ($user->isRoleAdmin()) {
             return $next($request);
         }

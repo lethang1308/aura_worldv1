@@ -22,6 +22,7 @@ use App\Http\Controllers\VariantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ShipperController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -176,6 +177,12 @@ Route::put('/password/reset', [ForgotPasswordController::class, 'handleResetPass
 Route::get('/clients', function () {
     return view('clients.layouts.home');
 })->name('clients.home');
+
+Route::get('/shippers', [ShipperController::class, 'home'])->name('shipper.home');
+Route::post('/shippers/orders/{order}/accept', [ShipperController::class, 'acceptOrder'])->name('shipper.order');
+Route::post('/shippers/orders/{order}/complete', [ShipperController::class, 'completeOrder'])->name('shipper.order.complete');
+
+
 
 Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'home'])->name('client.home');
