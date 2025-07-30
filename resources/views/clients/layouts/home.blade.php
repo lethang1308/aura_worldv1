@@ -2,21 +2,24 @@
 
 @section('content')
         <!--================Home Banner Area =================-->
-        <section class="home_banner_area mb-40">
-            <div class="banner_inner d-flex align-items-center">
-                <div class="container">
-                    <div class="banner_content row">
-                        <div class="col-lg-12">
-                            <p class="sub text-uppercase">Perfume Collection</p>
-                            <h3><span>Discover</span> Your <br />Signature <span>Scent</span></h3>
-                            <h4>Gợi mở cảm xúc. Lưu giữ phong cách.<br> Hương thơm của bạn, câu chuyện của riêng bạn.</h4>
-                            <a class="main_btn mt-40" href="#">Khám phá bộ sưu tập</a>
+        @if($banners->count() > 0)
+            @include('clients.components.banners')
+        @else
+            <section class="home_banner_area mb-40">
+                <div class="banner_inner d-flex align-items-center">
+                    <div class="container">
+                        <div class="banner_content row">
+                            <div class="col-lg-12">
+                                <p class="sub text-uppercase">Perfume Collection</p>
+                                <h3><span>Discover</span> Your <br />Signature <span>Scent</span></h3>
+                                <h4>Gợi mở cảm xúc. Lưu giữ phong cách.<br> Hương thơm của bạn, câu chuyện của riêng bạn.</h4>
+                                <a class="main_btn mt-40" href="#">Khám phá bộ sưu tập</a>
+                            </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
         <!--================End Home Banner Area =================-->
 
         <!-- Start feature Area -->
@@ -109,7 +112,10 @@
         </section>
         <!--================ End Feature Product Area =================-->
 
-        <!--================ Offer Area =================-->
+        <!--================ Secondary Banner Area =================-->
+        @if($banners->count() > 0)
+            @include('clients.components.secondary-banner')
+        @else
         <section class="offer_area" style="height: 750px">
             <div class="container">
                 <div class="row justify-content-center">
@@ -124,8 +130,8 @@
                 </div>
             </div>
         </section>
-
-        <!--================ End Offer Area =================-->
+        @endif
+        <!--================ End Secondary Banner Area =================-->
 
         <!--================ New Product Area =================-->
         <section class="new_product_area section_gap_top section_gap_bottom_custom">
@@ -239,4 +245,5 @@
                 </div>
             </div>
         </section>
+        <!--================ End Inspired Product Area =================-->
 @endsection

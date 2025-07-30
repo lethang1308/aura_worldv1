@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttributeValue;
+use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -45,7 +46,9 @@ class ClientController extends Controller
         $brands = Brand::all();
         $categories = Category::all();
         $products = Product::all();
-        return view('clients.layouts.home', compact('brands', 'categories', 'products'));
+        $banners = Banner::active()->main()->ordered()->get();
+        $secondaryBanners = Banner::active()->secondary()->ordered()->limit(1)->get();
+        return view('clients.layouts.home', compact('brands', 'categories', 'products', 'banners', 'secondaryBanners'));
     }
 
     public function index(Request $request)

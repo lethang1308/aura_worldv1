@@ -238,6 +238,26 @@
                                     </div>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link menu-arrow" href="#sidebarBanners" data-bs-toggle="collapse"
+                                        role="button" aria-expanded="false" aria-controls="sidebarBanners">
+                                        <span class="nav-icon">
+                                            <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
+                                        </span>
+                                        <span class="nav-text"> Banner </span>
+                                    </a>
+                                    <div class="collapse" id="sidebarBanners">
+                                        <ul class="nav sub-navbar-nav">
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('banners.index') }}">Danh sách</a>
+                                            </li>
+                                            <li class="sub-nav-item">
+                                                <a class="sub-nav-link" href="{{ route('banners.create') }}">Thêm mới</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
                                 <li class="menu-title mt-2">Other</li>
 
                                 <li class="nav-item">

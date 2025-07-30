@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\PurchaseController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BannerController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -158,6 +159,18 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::delete('/coupons/{id}', [\App\Http\Controllers\Admin\CouponController::class, 'destroy'])->name('coupons.destroy');
     Route::patch('/coupons/{id}/restore', [\App\Http\Controllers\Admin\CouponController::class, 'restore'])->name('coupons.restore');
     Route::get('/coupons/trash', [\App\Http\Controllers\Admin\CouponController::class, 'trash'])->name('coupons.trash');
+
+    // Banner routes
+    Route::get('/banners', [BannerController::class, 'index'])->name('banners.index');
+    Route::get('/banners/create', [BannerController::class, 'create'])->name('banners.create');
+    Route::post('/banners', [BannerController::class, 'store'])->name('banners.store');
+    Route::get('/banners/{id}', [BannerController::class, 'show'])->name('banners.show');
+    Route::get('/banners/{id}/edit', [BannerController::class, 'edit'])->name('banners.edit');
+    Route::put('/banners/{id}', [BannerController::class, 'update'])->name('banners.update');
+    Route::delete('/banners/{id}', [BannerController::class, 'destroy'])->name('banners.destroy');
+    Route::patch('/banners/{id}/restore', [BannerController::class, 'restore'])->name('banners.restore');
+    Route::get('/banners/trash', [BannerController::class, 'trash'])->name('banners.trash');
+    Route::delete('/banners/{id}/force-delete', [BannerController::class, 'forceDelete'])->name('banners.forceDelete');
 
     // Admin profile routes
     Route::get('/profile', [AdminController::class, 'showProfile'])->name('admin.profile');
