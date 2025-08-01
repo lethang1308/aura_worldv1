@@ -8,7 +8,7 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="d-flex card-header justify-content-between align-items-center">
-                                <h4 class="card-title">Attribute Value List</h4>
+                                <h4 class="card-title">Danh sách giá trị thuộc tính</h4>
                                 <div>
                                     @if (!isset($trash) || !$trash)
                                         <a href="{{ route('attributeValues.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
@@ -23,11 +23,11 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Value</th>
-                                                <th>Attribute</th>
-                                                <th>Created At</th>
-                                                <th>Updated At</th>
-                                                <th>Action</th>
+                                                <th>Giá trị</th>
+                                                <th>Thuộc tính</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Ngày cập nhật</th>
+                                                <th>Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -42,11 +42,11 @@
                                                     </td>
                                                     <td>
                                                         @if (!isset($trash) || !$trash)
-                                                            <a href="{{ route('attributeValues.edit', $val->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                                            <a href="{{ route('attributeValues.edit', $val->id) }}" class="btn btn-sm btn-warning">Sửa</a>
                                                             <form action="{{ route('attributeValues.destroy', $val->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Xoá giá trị này?')">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                                                <button class="btn btn-sm btn-danger">Xoá</button>
                                                             </form>
                                                         @else
                                                             <form action="{{ route('attributeValues.restore', $val->id) }}" method="POST" style="display:inline-block">

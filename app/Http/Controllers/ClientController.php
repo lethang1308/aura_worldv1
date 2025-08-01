@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttributeValue;
+use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -45,7 +46,9 @@ class ClientController extends Controller
         $brands = Brand::all();
         $categories = Category::all();
         $products = Product::all();
-        return view('clients.layouts.home', compact('brands', 'categories', 'products'));
+        $banners = Banner::active()->main()->ordered()->get();
+        $secondaryBanners = Banner::active()->secondary()->ordered()->limit(1)->get();
+        return view('clients.layouts.home', compact('brands', 'categories', 'products', 'banners', 'secondaryBanners'));
     }
 
     public function index(Request $request)
@@ -134,31 +137,34 @@ class ClientController extends Controller
         $product = Product::with([
             'images',
             'featuredImage',
-            'variants.attributeValues.attribute' // để lấy được cả tên attribute (VD: "Dung tích")
-        ])->findOrFail($id);
-
+            'variants.attributeValues.attribute'
+        ])->withTrashed()->find($id);
         $categories = Category::all();
         $brands = Brand::all();
-
-        // Trích xuất các giá trị thuộc tính gắn với sản phẩm qua variant
-        $attributeValues = $product->variants
-            ->flatMap(function ($variant) {
-                return $variant->attributeValues->map(function ($value) use ($variant) {
-                    return [
-                        'id' => $value->id,
-                        'value' => $value->value,
-                        'attribute_name' => $value->attribute->name ?? '',
-                        'variant_id' => $variant->id,
-                        'price' => $variant->price,
-                    ];
-                });
-            })->unique('id')->values();
-
+        $error = null;
+        $attributeValues = collect();
+        if (!$product || $product->trashed()) {
+            $error = 'Sản phẩm này không tồn tại hoặc đã bị xóa.';
+        } else {
+            $attributeValues = $product->variants
+                ->flatMap(function ($variant) {
+                    return $variant->attributeValues->map(function ($value) use ($variant) {
+                        return [
+                            'id' => $value->id,
+                            'value' => $value->value,
+                            'attribute_name' => $value->attribute->name ?? '',
+                            'variant_id' => $variant->id,
+                            'price' => $variant->price,
+                        ];
+                    });
+                })->unique('id')->values();
+        }
         return view('clients.products.productdetail', compact(
             'product',
             'categories',
             'brands',
-            'attributeValues'
+            'attributeValues',
+            'error'
         ));
     }
 
@@ -197,6 +203,14 @@ class ClientController extends Controller
 
         $variant = Variant::with('product')->findOrFail($request->variant_id);
         $product = $variant->product;
+        // Kiểm tra sản phẩm đã bị xóa (soft delete) chưa
+        if (!$product || $product->trashed()) {
+            return redirect()->back()->with('error', 'Sản phẩm này đã bị xóa, không thể thêm vào giỏ hàng.');
+        }
+        // Kiểm tra tên sản phẩm truyền lên có khớp với tên hiện tại không
+        if ($request->has('product_name') && $request->product_name !== $product->name) {
+            return redirect()->back()->with('error', 'Sản phẩm vừa được cập nhật tên, vui lòng kiểm tra lại.');
+        }
 
         $cart = Cart::firstOrCreate(
             ['user_id' => $user->id],

@@ -17,7 +17,7 @@
                         <div class="card">
                             <div class="d-flex card-header justify-content-between align-items-center">
                                 <div>
-                                    <h4 class="card-title">All Attribute List</h4>
+                                    <h4 class="card-title">Danh sách thuộc tính</h4>
                                 </div>
                                 <div>
                                     @if (!isset($trash) || !$trash)
@@ -39,11 +39,11 @@
                                                     </div>
                                                 </th>
                                                 <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Value</th>
-                                                <th>Created At</th>
-                                                <th>Updated At</th>
-                                                <th>Action</th>
+                                                <th>Tên thuộc tính</th>
+                                                <th>Giá trị</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Ngày cập nhật</th>
+                                                <th>Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -124,13 +124,13 @@
                             <div class="card-footer border-top">
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination justify-content-end mb-0">
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">Trước</a>
                                         </li>
                                         <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a>
                                         </li>
                                         <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
                                         <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">Sau</a></li>
                                     </ul>
                                 </nav>
                             </div>

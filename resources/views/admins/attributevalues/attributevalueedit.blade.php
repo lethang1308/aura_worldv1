@@ -8,8 +8,8 @@
                 <div class="col-lg-8 offset-lg-2">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h4 class="card-title">Edit Attribute Value</h4>
-                            <a href="{{ route('attributeValues.list') }}" class="btn btn-outline-primary btn-sm">Back</a>
+                            <h4 class="card-title">Chỉnh sửa giá trị thuộc tính</h4>
+                            <a href="{{ route('attributeValues.list') }}" class="btn btn-outline-primary btn-sm">Quay lại danh sách</a>
                         </div>
 
                         <div class="card-body">
@@ -18,7 +18,7 @@
                                 @method('PUT')
 
                                 <div class="mb-3">
-                                    <label class="form-label">Attribute</label>
+                                    <label class="form-label">Thuộc tính</label>
                                     <select name="attribute_id" class="form-control" required>
                                         @foreach($attributes as $attr)
                                             <option value="{{ $attr->id }}"
@@ -30,13 +30,13 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Value</label>
+                                    <label class="form-label">Giá trị</label>
                                     <input type="text" name="value" class="form-control"
                                         value="{{ old('value', $value->value) }}" required>
                                 </div>
 
                                 <div class="mt-3">
-                                    <button type="submit" class="btn btn-success">Update Value</button>
+                                    <button type="submit" class="btn btn-success">Cập nhật</button>
                                 </div>
                             </form>
                         </div>

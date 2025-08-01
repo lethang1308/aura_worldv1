@@ -50,9 +50,7 @@
                                 <label class="form-label">Ảnh mới (nếu có)</label>
                                 <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
 
-                                <label for="product-images" class="btn btn-outline-primary w-100 mt-3">
-                                    Chọn ảnh mới
-                                </label>
+                                <label for="product-images" class="btn btn-outline-primary w-100 mt-3">Chọn ảnh mới</label>
                             </div>
 
                             {{-- Action Buttons --}}
