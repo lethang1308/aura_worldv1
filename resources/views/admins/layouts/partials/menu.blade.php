@@ -1,7 +1,7 @@
 <div class="main-nav">
     <!-- Sidebar Logo -->
     <div class="logo-box">
-        <a href="index-2.html" class="logo-dark">
+        <a href="{{ route('admin') }}" class="logo-dark">
             <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
             <img src="{{ asset('admin/assets/images/logo-dark.png') }}" class="logo-lg" alt="logo dark">
         </a>
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Menu Toggle Button (sm-hover) -->
-    <button type="button" class="button-sm-hover" aria-label="Show Full Sidebar">
+    <button type="button" class="button-sm-hover" aria-label="Hiển thị Sidebar đầy đủ">
         <iconify-icon icon="solar:double-alt-arrow-right-bold-duotone" class="button-sm-hover-icon"></iconify-icon>
     </button>
 
@@ -29,14 +29,14 @@
                         <div class="simplebar-content" style="padding: 0px;">
                             <ul class="navbar-nav" id="navbar-nav">
 
-                                <li class="menu-title">General</li>
+                                <li class="menu-title">Chung</li>
 
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin') }}">
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:pie-chart-2-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Home Page </span>
+                                        <span class="nav-text">Trang chủ</span>
                                     </a>
                                 </li>
 
@@ -45,7 +45,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Dashboard </span>
+                                        <span class="nav-text">Thống kê</span>
                                     </a>
                                 </li>
 
@@ -55,19 +55,19 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:t-shirt-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Products </span>
+                                        <span class="nav-text">Sản phẩm</span>
                                     </a>
                                     <div class="collapse" id="sidebarProducts">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('products.index') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('products.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('products.create') }}">Create</a>
+                                                <a class="sub-nav-link" href="{{ route('products.create') }}">Tạo mới</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('products.images.list') }}">Product Images</a>
+                                                    href="{{ route('products.images.list') }}">Hình ảnh sản phẩm</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -79,15 +79,15 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Brands </span>
+                                        <span class="nav-text">Thương hiệu</span>
                                     </a>
                                     <div class="collapse" id="sidebarSellers">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('brands.index') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('brands.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('brands.create') }}">Create</a>
+                                                <a class="sub-nav-link" href="{{ route('brands.create') }}">Tạo mới</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -99,17 +99,17 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:clipboard-list-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Category </span>
+                                        <span class="nav-text">Danh mục</span>
                                     </a>
                                     <div class="collapse" id="sidebarCategory">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('categories.index') }}">List</a>
+                                                    href="{{ route('categories.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('categories.create') }}">Create</a>
+                                                    href="{{ route('categories.create') }}">Tạo mới</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -121,13 +121,13 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:bag-smile-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Orders </span>
+                                        <span class="nav-text">Đơn hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarOrders">
                                         <ul class="nav sub-navbar-nav">
 
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('orders.index') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('orders.index') }}">Danh sách</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -141,21 +141,21 @@
                                             <iconify-icon
                                                 icon="solar:confetti-minimalistic-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Attributes </span>
+                                        <span class="nav-text">Thuộc tính</span>
                                     </a>
                                     <div class="collapse" id="sidebarAttributes">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('attributes.index') }}">List</a>
+                                                    href="{{ route('attributes.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('attributes.create') }}">Create</a>
+                                                    href="{{ route('attributes.create') }}">Tạo mới</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('attributeValues.list') }}">Attribute Value</a>
+                                                    href="{{ route('attributeValues.list') }}">Giá trị thuộc tính</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -167,17 +167,16 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Purchases </span>
+                                        <span class="nav-text">Mua hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarPurchases">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('purchases.index')}}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('purchases.index')}}">Danh sách</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </li>
-
 
                                 <li class="nav-item">
                                     <a class="nav-link menu-arrow" href="#sidebarVariants" data-bs-toggle="collapse"
@@ -185,16 +184,16 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:ufo-2-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Variants </span>
+                                        <span class="nav-text">Biến thể</span>
                                     </a>
                                     <div class="collapse" id="sidebarVariants">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('variants.index') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('variants.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('variants.create') }}">Create</a>
+                                                    href="{{ route('variants.create') }}">Tạo mới</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -207,14 +206,14 @@
                                             <iconify-icon
                                                 icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Customers </span>
+                                        <span class="nav-text">Khách hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarCustomers">
                                         <ul class="nav sub-navbar-nav">
 
                                             <li class="sub-nav-item">
                                                 <a class="sub-nav-link"
-                                                    href="{{ route('customers.index') }}">List</a>
+                                                    href="{{ route('customers.index') }}">Danh sách</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -226,13 +225,13 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Admins </span>
+                                        <span class="nav-text">Quản trị viên</span>
                                     </a>
                                     <div class="collapse" id="sidebarRoles">
                                         <ul class="nav sub-navbar-nav">
 
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('admin.list') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('admin.list') }}">Danh sách</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -244,7 +243,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Banner </span>
+                                        <span class="nav-text">Banner</span>
                                     </a>
                                     <div class="collapse" id="sidebarBanners">
                                         <ul class="nav sub-navbar-nav">
@@ -258,7 +257,7 @@
                                     </div>
                                 </li>
 
-                                <li class="menu-title mt-2">Other</li>
+                                <li class="menu-title mt-2">Khác</li>
 
                                 <li class="nav-item">
                                     <a class="nav-link menu-arrow" href="#sidebarCoupons" data-bs-toggle="collapse"
@@ -266,15 +265,15 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:leaf-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Coupons </span>
+                                        <span class="nav-text">Mã giảm giá</span>
                                     </a>
                                     <div class="collapse" id="sidebarCoupons">
                                         <ul class="nav sub-navbar-nav">
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('coupons.index') }}">List</a>
+                                                <a class="sub-nav-link" href="{{ route('coupons.index') }}">Danh sách</a>
                                             </li>
                                             <li class="sub-nav-item">
-                                                <a class="sub-nav-link" href="{{ route('coupons.create') }}">Add</a>
+                                                <a class="sub-nav-link" href="{{ route('coupons.create') }}">Thêm mới</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -285,36 +284,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text"> Reviews </span>
-                                    </a>
-                                </li>
-
-                                <li class="menu-title mt-2">Support</li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="help-center.html">
-                                        <span class="nav-icon">
-                                            <iconify-icon icon="solar:help-bold-duotone"></iconify-icon>
-                                        </span>
-                                        <span class="nav-text"> Help Center </span>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="pages-faqs.html">
-                                        <span class="nav-icon">
-                                            <iconify-icon icon="solar:question-circle-bold-duotone"></iconify-icon>
-                                        </span>
-                                        <span class="nav-text"> FAQs </span>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="privacy-policy.html">
-                                        <span class="nav-icon">
-                                            <iconify-icon icon="solar:document-text-bold-duotone"></iconify-icon>
-                                        </span>
-                                        <span class="nav-text"> Privacy Policy </span>
+                                        <span class="nav-text">Đánh giá</span>
                                     </a>
                                 </li>
                             </ul>
