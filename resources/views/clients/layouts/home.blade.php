@@ -10,10 +10,10 @@
                     <div class="container">
                         <div class="banner_content row">
                             <div class="col-lg-12">
-                                <p class="sub text-uppercase">Perfume Collection</p>
-                                <h3><span>Discover</span> Your <br />Signature <span>Scent</span></h3>
+                                <p class="sub text-uppercase">Bộ Sưu Tập Nước Hoa</p>
+                                <h3><span>Khám Phá</span> Mùi Hương <br />Đặc Trưng <span>Của Riêng Bạn</span></h3>
                                 <h4>Gợi mở cảm xúc. Lưu giữ phong cách.<br> Hương thơm của bạn, câu chuyện của riêng bạn.</h4>
-                                <a class="main_btn mt-40" href="#">Khám phá bộ sưu tập</a>
+                                <a class="main_btn mt-40" href="{{ route('client.products')}}">Khám phá bộ sưu tập</a>
                             </div>
                         </div>
                     </div>
@@ -30,9 +30,9 @@
                         <div class="single-feature">
                             <a href="#" class="title">
                                 <i class="flaticon-money"></i>
-                                <h3>Money back gurantee</h3>
+                                <h3>Đảm bảo hoàn tiền</h3>
                             </a>
-                            <p>Shall open divide a one</p>
+                            <p>Cam kết chất lượng 100%</p>
                         </div>
                     </div>
 
@@ -40,9 +40,9 @@
                         <div class="single-feature">
                             <a href="#" class="title">
                                 <i class="flaticon-truck"></i>
-                                <h3>Free Delivery</h3>
+                                <h3>Giao hàng miễn phí</h3>
                             </a>
-                            <p>Shall open divide a one</p>
+                            <p>Miễn phí vận chuyển toàn quốc</p>
                         </div>
                     </div>
 
@@ -50,9 +50,9 @@
                         <div class="single-feature">
                             <a href="#" class="title">
                                 <i class="flaticon-support"></i>
-                                <h3>Alway support</h3>
+                                <h3>Hỗ trợ 24/7</h3>
                             </a>
-                            <p>Shall open divide a one</p>
+                            <p>Luôn sẵn sàng phục vụ bạn</p>
                         </div>
                     </div>
 
@@ -60,9 +60,9 @@
                         <div class="single-feature">
                             <a href="#" class="title">
                                 <i class="flaticon-blockchain"></i>
-                                <h3>Secure payment</h3>
+                                <h3>Thanh toán bảo mật</h3>
                             </a>
-                            <p>Shall open divide a one</p>
+                            <p>An toàn và tiện lợi</p>
                         </div>
                     </div>
                 </div>
@@ -76,8 +76,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                         <div class="main_title">
-                            <h2><span>Featured product</span></h2>
-                            <p>Bring called seed first of third give itself now ment</p>
+                            <h2><span>Sản phẩm nổi bật</span></h2>
+                            <p>Những mùi hương được yêu thích nhất từ bộ sưu tập của chúng tôi</p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                                 <div class="product-img">
                                     <img class="img-fluid w-100"
                                         src="{{ $product_featured->featuredImage ? asset('storage/' . $product_featured->featuredImage->path) : asset('admin/assets/images/product/placeholder.png') }}"
-                                        alt="" />
+                                        alt="{{ $product_featured->name }}" />
                                     <div class="p_icon">
                                         <a href="{{ route('client.products.show', $product_featured->id) }}">
                                             <i class="ti-eye"></i>
@@ -97,11 +97,11 @@
                                     </div>
                                 </div>
                                 <div class="product-btm">
-                                    <a href="#" class="d-block">
+                                    <a href="{{ route('client.products.show', $product_featured->id) }}" class="d-block">
                                         <h4>{{ $product_featured->name }}</h4>
                                     </a>
                                     <div class="mt-3">
-                                        <span class="mr-4">{{ $product_featured->base_price }}</span>
+                                        <span class="mr-4">{{ number_format($product_featured->base_price, 0, ',', '.') }}₫</span>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                         <div class="offer_content">
                             <h3 class="text-uppercase mb-40">nước hoa cao cấp</h3>
                             <h2 class="text-uppercase">Giảm 50%</h2>
-                            <a href="#" class="main_btn mb-20 mt-5">Khám phá ngay</a>
+                            <a href="{{ route('client.products')}}" class="main_btn mb-20 mt-5">Khám phá ngay</a>
                             <p>Ưu đãi có hạn – chỉ trong tuần này</p>
                         </div>
                     </div>
@@ -139,8 +139,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                         <div class="main_title">
-                            <h2><span>new products</span></h2>
-                            <p>Bring called seed first of third give itself now ment</p>
+                            <h2><span>Sản phẩm mới</span></h2>
+                            <p>Những mùi hương mới nhất và độc đáo nhất trong bộ sưu tập</p>
                         </div>
                     </div>
                 </div>
@@ -151,15 +151,15 @@
                             <!-- Sản phẩm mới nhất -->
                             <div class="col-lg-6">
                                 <div class="new_product">
-                                    <h5 class="text-uppercase">collection of {{ $product->created_at->year }}</h5>
+                                    <h5 class="text-uppercase">bộ sưu tập {{ $product->created_at->year }}</h5>
                                     <h3 class="text-uppercase">{{ $product->name }}</h3>
                                     <div class="product-img">
                                         <img class="img-fluid"
                                             src="{{ $product->featuredImage ? asset('storage/' . $product->featuredImage->path) : asset('admin/assets/images/product/placeholder.png') }}"
                                             alt="{{ $product->name }}" />
                                     </div>
-                                    <h4>${{ number_format($product->base_price, 2) }}</h4>
-                                    <a href="" class="main_btn">Add to cart</a>
+                                    <h4>{{ number_format($product->base_price, 0, ',', '.') }}₫</h4>
+                                    <a href="{{ route('client.products.show', $product->id) }}" class="main_btn">Xem chi tiết</a>
                                 </div>
                             </div>
 
@@ -174,18 +174,15 @@
                                                     src="{{ $product->featuredImage ? asset('storage/' . $product->featuredImage->path) : asset('admin/assets/images/product/placeholder.png') }}"
                                                     alt="{{ $product->name }}" />
                                                 <div class="p_icon">
-                                                    <a href="#"><i class="ti-eye"></i></a>
-                                                    <a href="#"><i class="ti-heart"></i></a>
-                                                    <a href="#"><i class="ti-shopping-cart"></i></a>
+                                                    <a href="{{ route('client.products.show', $product->id) }}"><i class="ti-eye"></i></a>
                                                 </div>
                                             </div>
                                             <div class="product-btm">
-                                                <a href="#" class="d-block">
+                                                <a href="{{ route('client.products.show', $product->id) }}" class="d-block">
                                                     <h4>{{ $product->name }}</h4>
                                                 </a>
                                                 <div class="mt-3">
-                                                    <span
-                                                        class="mr-4">${{ number_format($product->base_price, 2) }}</span>
+                                                    <span class="mr-4">{{ number_format($product->base_price, 0, ',', '.') }}₫</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -205,8 +202,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                         <div class="main_title">
-                            <h2><span>Inspired products</span></h2>
-                            <p>Bring called seed first of third give itself now ment</p>
+                            <h2><span>Sản phẩm gợi ý</span></h2>
+                            <p>Những lựa chọn hoàn hảo dành riêng cho phong cách của bạn</p>
                         </div>
                     </div>
                 </div>
@@ -218,25 +215,19 @@
                                 <div class="product-img">
                                     <img class="img-fluid w-100"
                                         src="{{ $product_inspired->featuredImage ? asset('storage/' . $product_inspired->featuredImage->path) : asset('admin/assets/images/product/placeholder.png') }}"
-                                        alt="" />
+                                        alt="{{ $product_inspired->name }}" />
                                     <div class="p_icon">
-                                        <a href="#">
+                                        <a href="{{ route('client.products.show', $product_inspired->id) }}">
                                             <i class="ti-eye"></i>
-                                        </a>
-                                        <a href="#">
-                                            <i class="ti-heart"></i>
-                                        </a>
-                                        <a href="#">
-                                            <i class="ti-shopping-cart"></i>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="product-btm">
-                                    <a href="#" class="d-block">
+                                    <a href="{{ route('client.products.show', $product_inspired->id) }}" class="d-block">
                                         <h4>{{ $product_inspired->name }}</h4>
                                     </a>
                                     <div class="mt-3">
-                                        <span class="mr-4">{{ $product_inspired->base_price }}</span>
+                                        <span class="mr-4">{{ number_format($product_inspired->base_price, 0, ',', '.') }}₫</span>
                                     </div>
                                 </div>
                             </div>

@@ -175,18 +175,18 @@
                                 <div class="row total_rate">
                                     <div class="col-6">
                                         <div class="box_total">
-                                            <h5>Overall</h5>
+                                            <h5>Tổng số sao</h5>
                                             <h4>{{ $average }}</h4>
-                                            <h6>({{ str_pad($totalReviews, 2, '0', STR_PAD_LEFT) }} Reviews)</h6>
+                                            <h6>({{ str_pad($totalReviews, 2, '0', STR_PAD_LEFT) }} Bình luận)</h6>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="rating_list">
-                                            <h3>Based on {{ $totalReviews }} Reviews</h3>
+                                            <h3>Dựa trên {{ $totalReviews }} đánh giá</h3>
                                             <ul class="list">
                                                 @for ($i = 5; $i >= 1; $i--)
                                                     <li>
-                                                        <a href="#">{{ $i }} Star
+                                                        <a href="#">{{ $i }} Sao
                                                             @for ($j = 0; $j < 5; $j++)
                                                                 <i class="fa fa-star{{ $j < $i ? '' : '-o' }}"></i>
                                                             @endfor

@@ -61,6 +61,7 @@ class ShipperController extends Controller
         }
 
         $order->status_order = 'delivered';
+        $order->status_payment = 'paid';
         $order->save();
 
         return redirect()->back()->with('success', 'Bạn đã hoàn thành đơn hàng thành công!');

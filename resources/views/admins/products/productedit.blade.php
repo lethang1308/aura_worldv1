@@ -19,7 +19,7 @@
                                         <div class="position-relative me-2 mb-2">
                                             <img src="{{ asset('storage/' . $image->path) }}"
                                                 class="rounded border" style="width: 100px; height: 100px; object-fit: cover;">
-
+                                            
                                             {{-- Form xoá ảnh --}}
                                             <form action="{{ route('products.images.destroy', $image->id) }}"
                                                 method="POST"
@@ -45,6 +45,7 @@
                                 </div>
 
                                 <hr>
+
                                 {{-- Preview ảnh mới chọn --}}
                                 <label class="form-label">Ảnh mới (nếu có)</label>
                                 <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
@@ -108,14 +109,17 @@
                                         </div>
                                     </div>
 
-                                    {{-- Brand --}}
+                                    {{-- Thương hiệu --}}
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="brand_id" class="form-label">Thương hiệu</label>
                                             <select class="form-control" id="brand_id" name="brand_id">
                                                 <option value="">Chọn thương hiệu</option>
                                                 @foreach ($brands as $brand)
-                                                    <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                                    <option value="{{ $brand->id }}" 
+                                                        {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
+                                                        {{ $brand->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @error('brand_id')
@@ -170,9 +174,10 @@
 
     {{-- Scripts --}}
     <script>
+        // Tự động cập nhật hình ảnh xem trước khi chọn ảnh mới
         document.getElementById('product-images').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('image-preview');
-            previewContainer.innerHTML = '';
+            previewContainer.innerHTML = '';  // Xoá các ảnh cũ trong preview
 
             const files = event.target.files;
             Array.from(files).forEach(file => {

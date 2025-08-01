@@ -1,22 +1,22 @@
 @extends('clients.layouts.default')
 
 @section('content')
-    <!--================Home Banner Area =================-->
+    <!--================Khu vực Banner Trang chủ =================-->
     <section class="banner_area">
         <div class="banner_inner d-flex align-items-center">
             <div class="container">
                 <div class="banner_content d-md-flex justify-content-between align-items-center">
                     <div class="mb-3 mb-md-0">
-                        <h2>Shop Category</h2>
-                        <p>Very us move be blessed multiply night</p>
+                        <h2>Danh mục Sản phẩm</h2>
+                        <p>Rất nhiều sản phẩm đang chờ bạn khám phá</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!--================End Home Banner Area =================-->
+    <!--================Kết thúc Khu vực Banner Trang chủ =================-->
 
-    <!--================Category Product Area =================-->
+    <!--================Khu vực Sản phẩm Danh mục =================-->
     <section class="cat_product_area section_gap">
         <div class="container">
             <form action="{{ route('client.products') }}" method="GET">
@@ -27,7 +27,7 @@
                             <input type="text" name="keyword" class="form-control mr-2"
                                 placeholder="Tìm kiếm sản phẩm..." value="{{ request('keyword') }}">
                             <button class="btn btn-outline-success" type="submit">Tìm</button>
-                            <a href="{{ route('client.products') }}" class="btn btn-outline-secondary ml-2">Clear all</a>
+                            <a href="{{ route('client.products') }}" class="btn btn-outline-secondary ml-2">Xóa tất cả</a>
                         </div>
 
                         <div class="latest_product_inner">
@@ -43,8 +43,6 @@
                                                     <a href="{{ route('client.products.show', $product->id) }}">
                                                         <i class="ti-eye"></i>
                                                     </a>
-                                                    <a href="#"><i class="ti-heart"></i></a>
-                                                    <a href="#"><i class="ti-shopping-cart"></i></a>
                                                 </div>
                                             </div>
                                             <div class="product-btm mt-3">
@@ -52,7 +50,7 @@
                                                     <h4>{{ $product->name }}</h4>
                                                 </a>
                                                 <div>
-                                                    <span class="mr-4">{{ $product->base_price }}$</span>
+                                                    <span class="mr-4">{{ number_format($product->base_price, 0, ',', '.') }} VNĐ</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -65,9 +63,9 @@
 
                         {{-- PHÂN TRANG --}}
                         @if ($products->hasPages())
-                            <nav class="mt-4" aria-label="Page navigation">
+                            <nav class="mt-4" aria-label="Điều hướng trang">
                                 <ul class="pagination pagination-rounded justify-content-center mb-0">
-                                    {{-- Previous Page Link --}}
+                                    {{-- Liên kết Trang Trước --}}
                                     @if ($products->onFirstPage())
                                         <li class="page-item disabled">
                                             <span class="page-link" aria-hidden="true"><i
@@ -77,13 +75,13 @@
                                         <li class="page-item">
                                             <a class="page-link"
                                                 href="{{ $products->appends(request()->query())->previousPageUrl() }}"
-                                                rel="prev" aria-label="Previous">
+                                                rel="prev" aria-label="Trang trước">
                                                 <i class="bx bx-chevron-left"></i>
                                             </a>
                                         </li>
                                     @endif
 
-                                    {{-- Pagination Elements --}}
+                                    {{-- Các phần tử Phân trang --}}
                                     @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
                                         @if ($page == $products->currentPage())
                                             <li class="page-item active"><span class="page-link">{{ $page }}</span>
@@ -94,12 +92,12 @@
                                         @endif
                                     @endforeach
 
-                                    {{-- Next Page Link --}}
+                                    {{-- Liên kết Trang Sau --}}
                                     @if ($products->hasMorePages())
                                         <li class="page-item">
                                             <a class="page-link"
                                                 href="{{ $products->appends(request()->query())->nextPageUrl() }}"
-                                                rel="next" aria-label="Next">
+                                                rel="next" aria-label="Trang sau">
                                                 <i class="bx bx-chevron-right"></i>
                                             </a>
                                         </li>
@@ -134,7 +132,6 @@
                                 </div>
                             </aside>
 
-
                             <!-- Danh mục -->
                             <aside class="left_widgets p_filter_widgets">
                                 <div class="l_w_title">
@@ -151,7 +148,6 @@
                                     @endforeach
                                 </div>
                             </aside>
-
 
                             <!-- Thuộc tính -->
                             <aside class="left_widgets p_filter_widgets mt-4">
@@ -170,7 +166,6 @@
                                             </label><br>
                                         @endforeach
                                     @endforeach
-
                                 </div>
                             </aside>
 
@@ -195,5 +190,5 @@
             </form>
         </div>
     </section>
-    <!--================End Category Product Area =================-->
+    <!--================Kết thúc Khu vực Sản phẩm Danh mục =================-->
 @endsection
