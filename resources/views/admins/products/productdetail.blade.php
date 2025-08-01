@@ -52,7 +52,7 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="badge bg-success text-light fs-14 py-1 px-2">New Arrival</h4>
+                                    <h4 class="badge bg-success text-light fs-14 py-1 px-2">Sản phẩm mới</h4>
                                     <p class="mb-1">
                                         <a href="#!" class="fs-24 text-dark fw-medium">{{ $product->name }}</a>
                                     </p>
@@ -74,10 +74,9 @@
                                                 <i class="bx bxs-star-half"></i>
                                             </li>
                                         </ul>
-                                        <p class="mb-0 fw-medium fs-18 text-dark">4.5 <span class="text-muted fs-13">(55
-                                                Review)</span></p>
+                                        <p class="mb-0 fw-medium fs-18 text-dark">4.5 <span class="text-muted fs-13">(55 Đánh giá)</span></p>
                                     </div>
-                                    <h2 class="fw-medium my-3">${{ $product->base_price }} <span class="fs-16"></span></h2>
+                                    <h2 class="fw-medium my-3">{{ number_format($product->base_price, 0, ',', '.') }} ₫</h2>
 
                                     <!-- Product Info Section -->
                                     <div class="row mb-3">
@@ -93,13 +92,13 @@
                                         </div>
                                     </div>
 
-                                    <h4 class="text-dark fw-medium">Description :</h4>
-                                    <p class="text-muted">{{ $product->description ?? 'No description available.' }}</p>
+                                    <h4 class="text-dark fw-medium">Mô tả:</h4>
+                                    <p class="text-muted">{{ $product->description ?? 'Không có mô tả.' }}</p>
 
                                     <div class="mt-4">
                                         <a href="{{ route('products.edit', $product->id) }}"
-                                            class="btn btn-warning me-2">Edit Product</a>
-                                        <a href="{{ route('products.index') }}" class="btn btn-secondary">Back to List</a>
+                                            class="btn btn-warning me-2">Chỉnh sửa sản phẩm</a>
+                                        <a href="{{ route('products.index') }}" class="btn btn-secondary">Quay lại danh sách</a>
                                     </div>
                                 </div>
                             </div>
@@ -109,27 +108,27 @@
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Items Detail</h4>
+                                    <h4 class="card-title">Chi tiết sản phẩm</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div class="">
+                                    <div class="mb-0">
                                         <ul class="d-flex flex-column gap-2 list-unstyled fs-14 text-muted mb-0">
-                                            <li><span class="fw-medium text-dark">Product ID</span><span
+                                            <li><span class="fw-medium text-dark">Mã sản phẩm</span><span
                                                     class="mx-2">:</span>{{ $product->id }}</li>
-                                            <li><span class="fw-medium text-dark">Category</span><span
+                                            <li><span class="fw-medium text-dark">Danh mục</span><span
                                                     class="mx-2">:</span>{{ $product->category->category_name ?? 'Không có' }} 
                                                     <small class="text-muted">(ID: {{ $product->category_id }})</small></li>
-                                            <li><span class="fw-medium text-dark">Brand</span><span
+                                            <li><span class="fw-medium text-dark">Thương hiệu</span><span
                                                     class="mx-2">:</span>{{ $product->brand->name ?? 'Không có' }}
                                                     @if($product->brand)
                                                         <small class="text-muted">(ID: {{ $product->brand->id }})</small>
                                                     @endif
                                             </li>
-                                            <li><span class="fw-medium text-dark">Price</span><span
-                                                    class="mx-2">:</span>${{ $product->base_price }}</li>
-                                            <li><span class="fw-medium text-dark">Created</span><span
+                                            <li><span class="fw-medium text-dark">Giá</span><span
+                                                    class="mx-2">:</span>{{ number_format($product->base_price, 0, ',', '.') }} ₫</li>
+                                            <li><span class="fw-medium text-dark">Ngày tạo</span><span
                                                     class="mx-2">:</span>{{ $product->created_at->format('d/m/Y H:i') }}</li>
-                                            <li><span class="fw-medium text-dark">Updated</span><span
+                                            <li><span class="fw-medium text-dark">Ngày cập nhật</span><span
                                                     class="mx-2">:</span>{{ $product->updated_at->format('d/m/Y H:i') }}</li>
                                         </ul>
                                     </div>

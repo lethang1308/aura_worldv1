@@ -9,25 +9,25 @@
             <div>
                 <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas">
                     <div class="d-flex align-items-center bg-primary p-3 offcanvas-header">
-                        <h5 class="text-white m-0">Theme Settings</h5>
+                        <h5 class="text-white m-0">Cài đặt giao diện</h5>
                         <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="offcanvas"
-                            aria-label="Close"></button>
+                            aria-label="Đóng"></button>
                     </div>
 
                     <div class="offcanvas-body p-0">
                         <div data-simplebar class="h-100">
                             <div class="p-3 settings-bar">
                                 <div>
-                                    <h5 class="mb-3 font-16 fw-semibold">Color Scheme</h5>
+                                    <h5 class="mb-3 font-16 fw-semibold">Màu sắc giao diện</h5>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="data-bs-theme"
                                             id="layout-color-light" value="light">
-                                        <label class="form-check-label" for="layout-color-light">Light</label>
+                                        <label class="form-check-label" for="layout-color-light">Sáng</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="data-bs-theme"
                                             id="layout-color-dark" value="dark">
-                                        <label class="form-check-label" for="layout-color-dark">Dark</label>
+                                        <label class="form-check-label" for="layout-color-dark">Tối</label>
                                     </div>
                                 </div>
                                 <!-- Các phần theme settings khác giữ nguyên -->
@@ -37,7 +37,7 @@
                     <div class="offcanvas-footer border-top p-3 text-center">
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-danger w-100" id="reset-layout">Reset</button>
+                                <button type="button" class="btn btn-danger w-100" id="reset-layout">Đặt lại</button>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                     @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                         </div>
                     @endif
 
@@ -59,7 +59,7 @@
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                         </div>
                     @endif
 
@@ -68,15 +68,15 @@
                         <div class="card-body">
                             <form method="GET" action="{{ route('products.index') }}" class="row g-3">
                                 <div class="col-md-4">
-                                    <label for="search_name" class="form-label">Product Name</label>
+                                    <label for="search_name" class="form-label">Tên sản phẩm</label>
                                     <input type="text" class="form-control" id="search_name" name="search_name"
-                                        value="{{ request('search_name') }}" placeholder="Search by product name...">
+                                        value="{{ request('search_name') }}" placeholder="Tìm kiếm theo tên sản phẩm...">
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label for="search_brand" class="form-label">Brand</label>
+                                    <label for="search_brand" class="form-label">Thương hiệu</label>
                                     <select class="form-select" id="search_brand" name="search_brand">
-                                        <option value="">All Brands</option>
+                                        <option value="">Tất cả thương hiệu</option>
                                         @if (isset($brands))
                                             @foreach ($brands as $brand)
                                                 <option value="{{ $brand->name }}"
@@ -89,9 +89,9 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label for="search_category" class="form-label">Category</label>
+                                    <label for="search_category" class="form-label">Danh mục</label>
                                     <select class="form-select" id="search_category" name="search_category">
-                                        <option value="">All Categories</option>
+                                        <option value="">Tất cả danh mục</option>
                                         @if (isset($categories))
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->category_name }}"
@@ -107,10 +107,10 @@
                                     <label class="form-label d-block">&nbsp;</label>
                                     <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="bx bx-search me-1"></i>Search
+                                            <i class="bx bx-search me-1"></i>Tìm kiếm
                                         </button>
                                         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">
-                                            <i class="bx bx-refresh me-1"></i>Reset
+                                            <i class="bx bx-refresh me-1"></i>Đặt lại
                                         </a>
                                     </div>
                                 </div>
@@ -120,11 +120,11 @@
                             @if (request()->hasAny(['search_name', 'search_brand', 'search_category']))
                                 <div class="mt-3 pt-3 border-top">
                                     <div class="d-flex flex-wrap align-items-center gap-2">
-                                        <span class="text-muted">Search filters:</span>
+                                        <span class="text-muted">Bộ lọc tìm kiếm:</span>
 
                                         @if (request('search_name'))
                                             <span class="badge bg-primary-subtle text-primary">
-                                                Name: "{{ request('search_name') }}"
+                                                Tên: "{{ request('search_name') }}"
                                                 <a href="{{ route('products.index', request()->except('search_name')) }}"
                                                     class="text-decoration-none ms-1">×</a>
                                             </span>
@@ -132,7 +132,7 @@
 
                                         @if (request('search_brand'))
                                             <span class="badge bg-info-subtle text-info">
-                                                Brand: "{{ request('search_brand') }}"
+                                                Thương hiệu: "{{ request('search_brand') }}"
                                                 <a href="{{ route('products.index', request()->except('search_brand')) }}"
                                                     class="text-decoration-none ms-1">×</a>
                                             </span>
@@ -140,14 +140,14 @@
 
                                         @if (request('search_category'))
                                             <span class="badge bg-success-subtle text-success">
-                                                Category: "{{ request('search_category') }}"
+                                                Danh mục: "{{ request('search_category') }}"
                                                 <a href="{{ route('products.index', request()->except('search_category')) }}"
                                                     class="text-decoration-none ms-1">×</a>
                                             </span>
                                         @endif
 
                                         <a href="{{ route('products.index') }}"
-                                            class="btn btn-sm btn-outline-secondary">Clear all</a>
+                                            class="btn btn-sm btn-outline-secondary">Xóa tất cả</a>
                                     </div>
                                 </div>
                             @endif
@@ -158,7 +158,7 @@
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center gap-1">
-                                    <h4 class="card-title flex-grow-1">All Product List</h4>
+                                    <h4 class="card-title flex-grow-1">Danh sách tất cả sản phẩm</h4>
                                     <div>
                                         @if (!isset($trash) || !$trash)
                                             <a href="{{ route('products.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
@@ -167,7 +167,7 @@
                                         @endif
                                     </div>
                                     <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">
-                                        <i class="bx bx-plus me-1"></i>Add Product
+                                        <i class="bx bx-plus me-1"></i>Thêm sản phẩm
                                     </a>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
@@ -176,13 +176,13 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a href="#!" class="dropdown-item">
-                                                <i class="bx bx-download me-2"></i>Download
+                                                <i class="bx bx-download me-2"></i>Tải xuống
                                             </a>
                                             <a href="#!" class="dropdown-item">
-                                                <i class="bx bx-export me-2"></i>Export
+                                                <i class="bx bx-export me-2"></i>Xuất file
                                             </a>
                                             <a href="#!" class="dropdown-item">
-                                                <i class="bx bx-import me-2"></i>Import
+                                                <i class="bx bx-import me-2"></i>Nhập file
                                             </a>
                                         </div>
                                     </div>
@@ -202,14 +202,14 @@
                                                                     for="customCheckAll"></label>
                                                             </div>
                                                         </th>
-                                                        <th>Product Name</th>
-                                                        <th>Price</th>
-                                                        <th>Category</th>
-                                                        <th>Brand</th>
-                                                        <th>Description</th>
-                                                        <th>Created Date</th>
-                                                        <th>Updated Date</th>
-                                                        <th>Action</th>
+                                                        <th>Tên sản phẩm</th>
+                                                        <th>Giá</th>
+                                                        <th>Danh mục</th>
+                                                        <th>Thương hiệu</th>
+                                                        <th>Mô tả</th>
+                                                        <th>Ngày tạo</th>
+                                                        <th>Ngày cập nhật</th>
+                                                        <th>Thao tác</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -238,14 +238,13 @@
                                                                             {{ Str::limit($product->name, 30) }}
                                                                         </a>
                                                                         <p class="text-muted mb-0 mt-1 fs-13">
-                                                                            <span>ID: </span>#{{ $product->id }}
+                                                                            <span>Mã: </span>#{{ $product->id }}
                                                                         </p>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <span
-                                                                    class="fw-medium text-success">${{ $product->base_price }}</span>
+                                                                <span class="fw-medium text-success">{{ number_format($product->base_price, 0, ',', '.') }}₫</span>
                                                             </td>
                                                             <td>
                                                                 @if ($product->category)
@@ -253,8 +252,7 @@
                                                                         class="badge bg-success-subtle text-success">{{ $product->category->category_name }}</span>
                                                                 @else
                                                                     <span
-                                                                        class="badge bg-secondary-subtle text-secondary">No
-                                                                        Category</span>
+                                                                        class="badge bg-secondary-subtle text-secondary">Chưa có danh mục</span>
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -263,23 +261,22 @@
                                                                         class="badge bg-info-subtle text-info">{{ $product->brand->name }}</span>
                                                                 @else
                                                                     <span
-                                                                        class="badge bg-secondary-subtle text-secondary">No
-                                                                        Brand</span>
+                                                                        class="badge bg-secondary-subtle text-secondary">Chưa có thương hiệu</span>
                                                                 @endif
                                                             </td>
                                                             <td>
                                                                 <span class="text-muted">
-                                                                    {{ $product->description ? Str::limit($product->description, 50) : 'No description' }}
+                                                                    {{ $product->description ? Str::limit($product->description, 50) : 'Chưa có mô tả' }}
                                                                 </span>
                                                             </td>
                                                             <td>
                                                                 <span class="text-muted fs-13">
-                                                                    {{ $product->created_at }}
+                                                                    {{ $product->created_at->format('d/m/Y H:i') }}
                                                                 </span>
                                                             </td>
                                                             <td>
                                                                 <span class="text-muted fs-13">
-                                                                    {{ $product->updated_at }}
+                                                                    {{ $product->updated_at->format('d/m/Y H:i') }}
                                                                 </span>
                                                             </td>
                                                             <td>
@@ -290,8 +287,7 @@
                                                                             @csrf
                                                                             @method('PATCH')
                                                                             <button type="submit"
-                                                                                class="btn btn-success btn-sm">Khôi
-                                                                                phục</button>
+                                                                                class="btn btn-success btn-sm">Khôi phục</button>
                                                                         </form>
                                                                         <form action="{{ route('products.forceDelete', $product->id) }}" method="POST" style="display:inline-block; margin-left: 4px;">
                                                                             @csrf
@@ -301,19 +297,21 @@
                                                                     @else
                                                                         <a href="{{ route('products.edit', $product->id) }}"
                                                                             class="btn btn-soft-primary btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1 mb-2"
-                                                                            style="height: 32px; width: 32px;">
+                                                                            style="height: 32px; width: 32px;"
+                                                                            title="Chỉnh sửa">
                                                                             <iconify-icon icon="solar:pen-2-broken"
                                                                                 class="align-middle fs-18"></iconify-icon>
                                                                         </a>
                                                                         <form
                                                                             action="{{ route('products.destroy', $product->id) }}"
                                                                             method="POST"
-                                                                            onsubmit="return confirm('Bạn có chắc muốn xoá sản phẩm này không?');">
+                                                                            onsubmit="return confirm('Bạn có chắc muốn xoá sản phẩm này không?');">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="submit"
                                                                                 class="btn btn-soft-danger btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1"
-                                                                                style="height: 32px; width: 32px;">
+                                                                                style="height: 32px; width: 32px;"
+                                                                                title="Xóa">
                                                                                 <iconify-icon
                                                                                     icon="solar:trash-bin-minimalistic-2-broken"
                                                                                     class="align-middle fs-18"></iconify-icon>
@@ -330,7 +328,7 @@
                                                                 @if (isset($trash) && $trash)
                                                                     Không có sản phẩm nào trong thùng rác.
                                                                 @else
-                                                                    No Products Found
+                                                                    Không tìm thấy sản phẩm nào
                                                                 @endif
                                                             </td>
                                                         </tr>
@@ -344,17 +342,17 @@
                                             <div class="mb-3 mb-sm-0">
                                                 <p class="text-muted mb-0 fs-13">
                                                     @if(method_exists($products, 'firstItem'))
-                                                        Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
-                                                        {{ $products->total() }} results
+                                                        Hiển thị {{ $products->firstItem() }} đến {{ $products->lastItem() }} trong tổng số
+                                                        {{ $products->total() }} kết quả
                                                     @else
-                                                        Showing {{ $products->count() }} results
+                                                        Hiển thị {{ $products->count() }} kết quả
                                                     @endif
                                                 </p>
                                             </div>
 
                                             <!-- Custom Pagination -->
                                             @if(method_exists($products, 'hasPages') && $products->hasPages())
-                                                <nav aria-label="Page navigation">
+                                                <nav aria-label="Phân trang">
                                                     <ul class="pagination pagination-rounded mb-0">
                                                         {{-- Previous Page Link --}}
                                                         @if(method_exists($products, 'onFirstPage') && $products->onFirstPage())
@@ -367,7 +365,7 @@
                                                             <li class="page-item">
                                                                 <a class="page-link"
                                                                     href="{{ $products->appends(request()->query())->previousPageUrl() }}"
-                                                                    rel="prev" aria-label="Previous">
+                                                                    rel="prev" aria-label="Trang trước">
                                                                     <i class="bx bx-chevron-left"></i>
                                                                 </a>
                                                             </li>
@@ -394,7 +392,7 @@
                                                             <li class="page-item">
                                                                 <a class="page-link"
                                                                     href="{{ $products->appends(request()->query())->nextPageUrl() }}"
-                                                                    rel="next" aria-label="Next">
+                                                                    rel="next" aria-label="Trang sau">
                                                                     <i class="bx bx-chevron-right"></i>
                                                                 </a>
                                                             </li>
@@ -416,21 +414,21 @@
                                             </div>
                                             <h5 class="text-muted">
                                                 @if (isset($trash) && $trash)
-                                                    Không có sản phẩm nào trong thùng rác.
+                                                    Không có sản phẩm nào trong thùng rác
                                                 @else
-                                                    No Products Found
+                                                    Không tìm thấy sản phẩm nào
                                                 @endif
                                             </h5>
                                             <p class="text-muted">
                                                 @if (isset($trash) && $trash)
                                                     Không có sản phẩm nào đã xóa.
                                                 @else
-                                                    There are no products in the system yet.
+                                                    Chưa có sản phẩm nào trong hệ thống.
                                                 @endif
                                             </p>
                                             @if (!isset($trash) || !$trash)
                                                 <a href="{{ route('products.create') }}" class="btn btn-primary">
-                                                    <i class="bx bx-plus me-1"></i>Add First Product
+                                                    <i class="bx bx-plus me-1"></i>Thêm sản phẩm đầu tiên
                                                 </a>
                                             @endif
                                         </div>

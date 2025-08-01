@@ -6,7 +6,7 @@
             <div class="container-xxl">
                 <div class="row">
                     <div class="card-header d-flex justify-content-between align-items-center gap-1">
-                        <h4 class="card-title flex-grow-1">All Product Images</h4>
+                        <h4 class="card-title flex-grow-1">Danh sách ảnh sản phẩm</h4>
 
                         <form action="{{ route('products.images.list') }}" method="GET"
                             class="d-flex gap-2 align-items-center">
@@ -73,8 +73,8 @@
                             <!-- Hiển thị thông tin số lượng -->
                             <div class="mb-3 mb-sm-0">
                                 <p class="text-muted mb-0 fs-13">
-                                    Showing {{ $images->firstItem() }} to {{ $images->lastItem() }} of
-                                    {{ $images->total() }} images
+                                    Trang {{ $images->firstItem() }} / {{ $images->lastItem() }} của
+                                    {{ $images->total() }} ảnh
                                 </p>
                             </div>
 
