@@ -59,15 +59,6 @@
                 </div>
             </div>
             <div class="footer-bottom row align-items-center">
-                <p class="footer-text m-0 col-lg-8 col-md-12">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Bản quyền &copy;
-                    <script>
-                        document.write(new Date().getFullYear());
-                    </script> Tất cả quyền được bảo lưu | Website được thiết kế với <i class="fa fa-heart-o"
-                        aria-hidden="true"></i> bởi <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </p>
                 <div class="col-lg-4 col-md-12 footer-social">
                     <a href="#"><i class="fa fa-facebook"></i></a>
                     <a href="#"><i class="fa fa-twitter"></i></a>
