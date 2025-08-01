@@ -6,7 +6,7 @@
         <div class="page-content">
             <div class="container-xxl">
                 <div class="row">
-                    {{-- Left Column: Action Buttons --}}
+                    {{-- Cột bên trái: Nút thao tác --}}
                     <div class="col-xl-3 col-lg-4">
                         <div class="card">
                             <div class="card-body">
@@ -18,11 +18,11 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Right Column: Form --}}
+                    {{-- Cột bên phải: Biểu mẫu --}}
                     <div class="col-xl-9 col-lg-8 ">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Coupon Information</h4>
+                                <h4 class="card-title">Thông tin phiếu giảm giá</h4>
                             </div>
                             <div class="card-body">
                                 <form id="coupon-form" action="{{ route('coupons.store') }}" method="POST">
@@ -30,13 +30,13 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="code" class="form-label">Coupon Code</label>
-                                                <input type="text" id="code" name="code" class="form-control" placeholder="Coupon code" value="{{ old('code') }}" required>
+                                                <label for="code" class="form-label">Mã giảm giá</label>
+                                                <input type="text" id="code" name="code" class="form-control" placeholder="Nhập mã giảm giá" value="{{ old('code') }}" required>
                                                 @error('code')<div class="text-danger">{{ $message }}</div>@enderror
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <label for="type" class="form-label">Type</label>
+                                            <label for="type" class="form-label">Loại giảm giá</label>
                                             <select class="form-control" id="type" name="type" required>
                                                 <option value="fixed" {{ old('type')=='fixed'?'selected':'' }}>Cố định</option>
                                                 <option value="percent" {{ old('type')=='percent'?'selected':'' }}>Phần trăm</option>
@@ -58,14 +58,14 @@
                                             @error('min_order_value')<div class="text-danger">{{ $message }}</div>@enderror
                                         </div>
                                         <div class="col-lg-4">
-                                            <label for="max_discount" class="form-label">Giảm tối đa (nếu %)</label>
+                                            <label for="max_discount" class="form-label">Giảm tối đa (nếu là %)</label>
                                             <input type="number" id="max_discount" name="max_discount" class="form-control" value="{{ old('max_discount') }}" min="0">
                                             @error('max_discount')<div class="text-danger">{{ $message }}</div>@enderror
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <label for="usage_limit" class="form-label">Giới hạn lượt dùng</label>
+                                            <label for="usage_limit" class="form-label">Giới hạn lượt sử dụng</label>
                                             <input type="number" id="usage_limit" name="usage_limit" class="form-control" value="{{ old('usage_limit') }}" min="1">
                                             @error('usage_limit')<div class="text-danger">{{ $message }}</div>@enderror
                                         </div>
@@ -94,7 +94,7 @@
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Mô tả</label>
-                                                <textarea class="form-control bg-light-subtle" id="description" name="description" rows="5" placeholder="Short description about the coupon">{{ old('description') }}</textarea>
+                                                <textarea class="form-control bg-light-subtle" id="description" name="description" rows="5" placeholder="Nhập mô tả ngắn gọn về phiếu giảm giá">{{ old('description') }}</textarea>
                                                 @error('description')<div class="text-danger">{{ $message }}</div>@enderror
                                             </div>
                                         </div>
@@ -108,4 +108,4 @@
         </div> <!-- .page-content -->
     </div> <!-- .wrapper -->
 </body>
-@endsection 
+@endsection

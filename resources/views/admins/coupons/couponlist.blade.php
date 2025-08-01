@@ -21,14 +21,14 @@
                     <div class="card-body">
                         <form method="GET" action="{{ route('coupons.index') }}" class="row g-3">
                             <div class="col-md-4">
-                                <label for="search_code" class="form-label">Coupon Code</label>
-                                <input type="text" class="form-control" id="search_code" name="search_code" value="{{ request('search_code') }}" placeholder="Search by coupon code...">
+                                <label for="search_code" class="form-label">Mã giảm giá</label>
+                                <input type="text" class="form-control" id="search_code" name="search_code" value="{{ request('search_code') }}" placeholder="Tìm theo mã giảm giá...">
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100"><i class="bx bx-search me-1"></i>Search</button>
+                                <button type="submit" class="btn btn-primary w-100"><i class="bx bx-search me-1"></i>Tìm kiếm</button>
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
-                                <a href="{{ route('coupons.index') }}" class="btn btn-outline-secondary w-100"><i class="bx bx-refresh me-1"></i>Reset</a>
+                                <a href="{{ route('coupons.index') }}" class="btn btn-outline-secondary w-100"><i class="bx bx-refresh me-1"></i>Đặt lại</a>
                             </div>
                         </form>
                     </div>
@@ -37,7 +37,7 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center gap-1">
-                                <h4 class="card-title flex-grow-1">All Coupon List</h4>
+                                <h4 class="card-title flex-grow-1">Danh sách tất cả phiếu giảm giá</h4>
                                 <div>
                                     @if (!isset($trash) || !$trash)
                                         <a href="{{ route('coupons.trash') }}" class="btn btn-outline-danger btn-sm">Thùng rác</a>
@@ -46,7 +46,7 @@
                                     @endif
                                 </div>
                                 <a href="{{ route('coupons.create') }}" class="btn btn-sm btn-primary">
-                                    <i class="bx bx-plus me-1"></i>Add Coupon
+                                    <i class="bx bx-plus me-1"></i>Thêm phiếu giảm giá
                                 </a>
                             </div>
                             <div class="card-body">
@@ -56,17 +56,17 @@
                                             <thead class="bg-light-subtle">
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Code</th>
-                                                    <th>Type</th>
-                                                    <th>Value</th>
-                                                    <th>Min Order</th>
-                                                    <th>Max Discount</th>
-                                                    <th>Start</th>
-                                                    <th>End</th>
-                                                    <th>Used</th>
-                                                    <th>Limit</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th>Mã</th>
+                                                    <th>Loại</th>
+                                                    <th>Giá trị</th>
+                                                    <th>Đơn tối thiểu</th>
+                                                    <th>Giảm tối đa</th>
+                                                    <th>Ngày bắt đầu</th>
+                                                    <th>Ngày kết thúc</th>
+                                                    <th>Đã dùng</th>
+                                                    <th>Giới hạn</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Hành động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -74,7 +74,7 @@
                                                     <tr>
                                                         <td>{{ $coupon->id }}</td>
                                                         <td><span class="fw-bold">{{ $coupon->code }}</span></td>
-                                                        <td><span class="badge bg-{{ $coupon->type == 'percent' ? 'info' : 'primary' }}">{{ ucfirst($coupon->type) }}</span></td>
+                                                        <td><span class="badge bg-{{ $coupon->type == 'percent' ? 'info' : 'primary' }}">{{ $coupon->type == 'percent' ? 'Phần trăm' : 'Cố định' }}</span></td>
                                                         <td>{{ $coupon->type == 'percent' ? $coupon->value.'%' : number_format($coupon->value) }}</td>
                                                         <td>{{ number_format($coupon->min_order_value) }}</td>
                                                         <td>{{ $coupon->max_discount ? number_format($coupon->max_discount) : '-' }}</td>
@@ -83,7 +83,7 @@
                                                         <td>{{ $coupon->used }}</td>
                                                         <td>{{ $coupon->usage_limit ?? '-' }}</td>
                                                         <td>
-                                                            <span class="badge bg-{{ $coupon->status == 'active' ? 'success' : 'secondary' }}">{{ $coupon->status == 'active' ? 'Active' : 'Inactive' }}</span>
+                                                            <span class="badge bg-{{ $coupon->status == 'active' ? 'success' : 'secondary' }}">{{ $coupon->status == 'active' ? 'Kích hoạt' : 'Ẩn' }}</span>
                                                         </td>
                                                         <td>
                                                             <div class="d-flex gap-2 align-items-center">
@@ -116,9 +116,9 @@
                                         <div class="mb-3 mb-sm-0">
                                             <p class="text-muted mb-0 fs-13">
                                                 @if(method_exists($coupons, 'firstItem'))
-                                                    Showing {{ $coupons->firstItem() }} to {{ $coupons->lastItem() }} of {{ $coupons->total() }} results
+                                                    Hiển thị từ {{ $coupons->firstItem() }} đến {{ $coupons->lastItem() }} trên tổng số {{ $coupons->total() }} kết quả
                                                 @else
-                                                    Showing {{ $coupons->count() }} results
+                                                    Hiển thị {{ $coupons->count() }} kết quả
                                                 @endif
                                             </p>
                                         </div>
@@ -137,21 +137,21 @@
                                         </div>
                                         <h5 class="text-muted">
                                             @if (isset($trash) && $trash)
-                                                Không có coupon nào trong thùng rác.
+                                                Không có phiếu giảm giá nào trong thùng rác.
                                             @else
-                                                No Coupons Found
+                                                Không tìm thấy phiếu giảm giá nào.
                                             @endif
                                         </h5>
                                         <p class="text-muted">
                                             @if (isset($trash) && $trash)
-                                                Không có coupon nào đã xóa.
+                                                Không có phiếu giảm giá nào đã bị xóa.
                                             @else
-                                                There are no coupons in the system yet.
+                                                Hiện chưa có phiếu giảm giá trong hệ thống.
                                             @endif
                                         </p>
                                         @if (!isset($trash) || !$trash)
                                             <a href="{{ route('coupons.create') }}" class="btn btn-primary">
-                                                <i class="bx bx-plus me-1"></i>Add First Coupon
+                                                <i class="bx bx-plus me-1"></i>Thêm phiếu đầu tiên
                                             </a>
                                         @endif
                                     </div>
@@ -164,4 +164,4 @@
         </div>
     </div>
 </body>
-@endsection 
+@endsection
