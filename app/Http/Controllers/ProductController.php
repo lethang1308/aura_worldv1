@@ -93,6 +93,40 @@ class ProductController extends Controller
             }
         }
 
+        // Xử lý lưu biến thể (variants)
+        if ($request->has('variants')) {
+            $attributes = $request->input('variants.attribute', []);
+            $values = $request->input('variants.value', []);
+            $prices = $request->input('variants.price', []);
+            $stocks = $request->input('variants.stock', []);
+
+            foreach ($attributes as $i => $attributeName) {
+                $value = $values[$i] ?? null;
+                $price = $prices[$i] ?? null;
+                $stock = $stocks[$i] ?? null;
+                if (!$attributeName || !$value) continue;
+
+                // Tìm hoặc tạo attribute
+                $attributeModel = \App\Models\Attribute::firstOrCreate(['name' => $attributeName]);
+                // Tìm hoặc tạo attribute_value
+                $attributeValueModel = \App\Models\AttributeValue::firstOrCreate([
+                    'attribute_id' => $attributeModel->id,
+                    'value' => $value
+                ]);
+
+                // Tạo variant
+                $variant = \App\Models\Variant::create([
+                    'product_id' => $product->id,
+                    'price' => $price ?? $product->base_price,
+                    'stock_quantity' => $stock ?? 0,
+                    'status' => 'active',
+                ]);
+
+                // Gán attribute_value cho variant
+                $variant->attributeValues()->attach($attributeValueModel->id);
+            }
+        }
+
         return redirect()->route('products.index')->with('success', 'Tạo sản phẩm thành công!');
     }
 

@@ -133,6 +133,17 @@
                                             </div>
                                         </div>
 
+                                        {{-- Biến thể sản phẩm --}}
+                                        <div class="row mt-4">
+                                            <div class="col-lg-12">
+                                                <label class="form-label">Biến thể sản phẩm</label>
+                                                <div id="variants-container">
+                                                    <!-- Các dòng biến thể sẽ được thêm ở đây -->
+                                                </div>
+                                                <button type="button" class="btn btn-outline-primary mt-2" id="add-variant-btn">Thêm biến thể</button>
+                                            </div>
+                                        </div>
+
                                         {{-- Input File Ẩn --}}
                                         <div class="row">
                                             <div class="col-lg-12">
@@ -183,6 +194,46 @@
                         reader.readAsDataURL(file);
                     }
                 });
+            });
+
+            // Script thêm biến thể động
+            const variantsContainer = document.getElementById('variants-container');
+            const addVariantBtn = document.getElementById('add-variant-btn');
+
+            function createVariantRow(index = null) {
+                // index: nếu cần, có thể dùng để đặt tên input dạng variants[index][field]
+                const div = document.createElement('div');
+                div.className = 'row align-items-end mb-2 variant-row';
+                div.innerHTML = `
+                    <div class="col-md-3">
+                        <input type="text" name="variants[attribute][]" class="form-control" placeholder="Tên thuộc tính (VD: Màu, Size)" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="variants[value][]" class="form-control" placeholder="Giá trị (VD: Đỏ, L, XL)" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="variants[price][]" class="form-control" placeholder="Giá riêng (VND)">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="variants[stock][]" class="form-control" placeholder="Tồn kho">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-variant-btn">Xóa</button>
+                    </div>
+                `;
+                return div;
+            }
+
+            addVariantBtn.addEventListener('click', function() {
+                const row = createVariantRow();
+                variantsContainer.appendChild(row);
+            });
+
+            // Xóa biến thể
+            variantsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-variant-btn')) {
+                    e.target.closest('.variant-row').remove();
+                }
             });
         </script>
 
