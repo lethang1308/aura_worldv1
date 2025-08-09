@@ -89,22 +89,23 @@
                                     </ul>
                                 </li>
                                 <li class="nav-item submenu dropdown">
+                                    <a href="{{ route('client.knowledge') }}" class="nav-link">Kiến thức</a>
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                        role="button" aria-haspopup="true" aria-expanded="false">Kiến thức</a>
+                                        role="button" aria-haspopup="true" aria-expanded="false"></a>
                                     <ul class="dropdown-menu">
-                                        <li class="nav-item">
+                                        {{-- <li class="nav-item">
                                             <a class="nav-link" href="#">Cách chọn</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#">Cách bảo quản</a>
-                                        </li>
-                                        <li class="nav-item">
+                                        </li> --}}
+                                        {{-- <li class="nav-item">
                                             <a class="nav-link" href="#">Xu hướng</a>
-                                        </li>
+                                        </li> --}}
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Liên hệ</a>
+                                    <a class="nav-link" href="{{ route('client.contact') }}">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>

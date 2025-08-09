@@ -173,7 +173,21 @@ class ClientController extends Controller
         $brands = Brand::all();
         $categories = Category::all();
 
-        return view('clients.brands.brandlist', compact('brands', 'categories'));
+        return view('clients.brands.brandlist', data: compact('brands', 'categories'));
+    }
+    public function knowledge()
+    {
+        $brands = Brand::all();
+        $categories = Category::all();
+         return view('clients.layouts.knowledge', compact('brands', 'categories'));
+       
+    }
+    public function contact()
+    {
+        $brands = Brand::all();
+        $categories = Category::all();
+         return view('clients.layouts.contact', compact('brands', 'categories'));
+       
     }
 
     public function viewCart()

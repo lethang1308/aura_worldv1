@@ -66,6 +66,7 @@
                     <div class="col-lg-8">
                         <h3>Thông tin thanh toán</h3>
                         <div class="col-md-12 form-group p_star">
+                            {{-- <h5>Họ và tên :</h5> --}}
                             <input type="text" class="form-control" name="name" placeholder="Họ và tên *"
                                 value="{{ old('name', $user->name ?? '') }}" />
                         </div>

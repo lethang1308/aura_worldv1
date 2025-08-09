@@ -204,6 +204,11 @@ Route::prefix('clients')->group(function () {
     Route::get('/products/{id}', [ClientController::class, 'showProduct'])->name('client.products.show');
     Route::get('/brands', [ClientController::class, 'showAllBrand'])->name('client.brands');
 
+    Route::get('/knowledge', [ClientController::class, 'knowledge'])
+        ->name('client.knowledge');
+    Route::get('/contact', [ClientController::class, 'contact'])
+        ->name('client.contact');
+
     Route::get('/carts', [ClientController::class, 'viewCart'])->name('client.carts');
     Route::post('/carts/add', [ClientController::class, 'addToCart'])->name('client.carts.add');
 
