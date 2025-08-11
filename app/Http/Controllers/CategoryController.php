@@ -50,6 +50,14 @@ class CategoryController extends Controller
             'parent_category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
+        ], [
+            'category_name.required' => 'Tên danh mục không được để trống.',
+            'category_name.string' => 'Tên danh mục phải là chuỗi ký tự.',
+            'category_name.max' => 'Tên danh mục tối đa 255 ký tự.',
+            'parent_category_id.exists' => 'Danh mục cha không hợp lệ.',
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+            'status.required' => 'Trạng thái không được để trống.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
 
         // Tạo danh mục mới
@@ -82,6 +90,15 @@ class CategoryController extends Controller
             'parent_category_id' => 'nullable|exists:categories,id|not_in:' . $id,
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
+        ], [
+            'category_name.required' => 'Tên danh mục không được để trống.',
+            'category_name.string' => 'Tên danh mục phải là chuỗi ký tự.',
+            'category_name.max' => 'Tên danh mục tối đa 255 ký tự.',
+            'parent_category_id.exists' => 'Danh mục cha không hợp lệ.',
+            'parent_category_id.not_in' => 'Không thể chọn chính nó làm danh mục cha.',
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+            'status.required' => 'Trạng thái không được để trống.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
 
         $category = Category::findOrFail($id);

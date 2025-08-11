@@ -36,6 +36,16 @@ class BrandController extends Controller
             'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
+        ], [
+            'name.required' => 'Tên thương hiệu không được để trống.',
+            'name.string' => 'Tên thương hiệu phải là chuỗi ký tự.',
+            'name.max' => 'Tên thương hiệu tối đa 255 ký tự.',
+            'logo_file.image' => 'Logo phải là hình ảnh.',
+            'logo_file.mimes' => 'Logo phải có định dạng jpg, jpeg, png hoặc webp.',
+            'logo_file.max' => 'Dung lượng logo tối đa 2MB.',
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+            'status.required' => 'Trạng thái không được để trống.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
         $data = [
             'name' => $request->name,
@@ -63,6 +73,16 @@ class BrandController extends Controller
             'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
+        ], [
+            'name.required' => 'Tên thương hiệu không được để trống.',
+            'name.string' => 'Tên thương hiệu phải là chuỗi ký tự.',
+            'name.max' => 'Tên thương hiệu tối đa 255 ký tự.',
+            'logo_file.image' => 'Logo phải là hình ảnh.',
+            'logo_file.mimes' => 'Logo phải có định dạng jpg, jpeg, png hoặc webp.',
+            'logo_file.max' => 'Dung lượng logo tối đa 2MB.',
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+            'status.required' => 'Trạng thái không được để trống.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
         $brand = Brand::findOrFail($id);
         $data = [

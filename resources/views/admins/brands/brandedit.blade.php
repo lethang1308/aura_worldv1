@@ -45,8 +45,8 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Tên thương hiệu</label>
-                                                <input type="text" id="name" name="name" class="form-control" placeholder="Nhập tên thương hiệu" value="{{ old('name', $brand->name) }}" required>
+                                                <label for="name" class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
+                                                <input type="text" id="name" name="name" class="form-control" placeholder="Nhập tên thương hiệu" value="{{ old('name', $brand->name) }}">
                                                 @error('name')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -54,7 +54,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Trạng thái</label>
+                                                <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
                                                 <select class="form-control" id="status" name="status">
                                                     <option value="active" {{ old('status', $brand->status) == 'active' ? 'selected' : '' }}>Đang hoạt động</option>
                                                     <option value="inactive" {{ old('status', $brand->status) == 'inactive' ? 'selected' : '' }}>Ngừng hoạt động</option>

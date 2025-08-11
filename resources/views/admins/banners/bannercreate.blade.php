@@ -18,7 +18,7 @@
                                     <div class="mb-3">
                                         <label for="title" class="form-label">Tiêu đề <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                               id="title" name="title" value="{{ old('title') }}" required>
+                                               id="title" name="title" value="{{ old('title') }}">
                                         @error('title')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -48,7 +48,7 @@
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('status') is-invalid @enderror" 
-                                                        id="status" name="status" required>
+                                                        id="status" name="status">
                                                     <option value="">Chọn trạng thái</option>
                                                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Hoạt động</option>
                                                     <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
@@ -62,7 +62,7 @@
                                             <div class="mb-3">
                                                 <label for="type" class="form-label">Loại banner <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('type') is-invalid @enderror" 
-                                                        id="type" name="type" required>
+                                                        id="type" name="type">
                                                     <option value="">Chọn loại banner</option>
                                                     <option value="main" {{ old('type') == 'main' ? 'selected' : '' }}>Banner chính (Carousel)</option>
                                                     <option value="secondary" {{ old('type') == 'secondary' ? 'selected' : '' }}>Banner phụ (Dưới trang)</option>
@@ -90,7 +90,7 @@
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Ảnh banner <span class="text-danger">*</span></label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                                               id="image" name="image" accept="image/*" required>
+                                               id="image" name="image" accept="image/*">
                                         @error('image')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

@@ -34,6 +34,16 @@ class AttributeController extends Controller
             'name' => 'required|string|max:255',
             'values' => 'required|array|min:1',
             'values.*' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Tên thuộc tính không được để trống.',
+            'name.string' => 'Tên thuộc tính phải là chuỗi ký tự.',
+            'name.max' => 'Tên thuộc tính tối đa 255 ký tự.',
+            'values.required' => 'Phải nhập ít nhất một giá trị cho thuộc tính.',
+            'values.array' => 'Giá trị thuộc tính phải là mảng.',
+            'values.min' => 'Phải nhập ít nhất một giá trị cho thuộc tính.',
+            'values.*.required' => 'Giá trị thuộc tính không được để trống.',
+            'values.*.string' => 'Giá trị thuộc tính phải là chuỗi ký tự.',
+            'values.*.max' => 'Giá trị thuộc tính tối đa 255 ký tự.',
         ]);
 
         // Tạo mới thuộc tính
@@ -72,6 +82,10 @@ class AttributeController extends Controller
         // 1. Validate dữ liệu đầu vào
         $request->validate([
             'name' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Tên thuộc tính không được để trống.',
+            'name.string' => 'Tên thuộc tính phải là chuỗi ký tự.',
+            'name.max' => 'Tên thuộc tính tối đa 255 ký tự.',
         ]);
 
         // 2. Tìm attribute theo ID

@@ -19,9 +19,12 @@
 
                                 {{-- Tên danh mục --}}
                                 <div class="col-lg-6">
-                                    <label for="category_name" class="form-label">Tên danh mục</label>
+                                    <label for="category_name" class="form-label">Tên danh mục <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="category_name" id="category_name"
-                                           value="{{ old('category_name', $category->category_name) }}" required>
+                                           value="{{ old('category_name', $category->category_name) }}">
+                                    @error('category_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 {{-- Danh mục cha --}}
@@ -47,8 +50,11 @@
 
                                 {{-- Trạng thái --}}
                                 <div class="col-lg-6">
-                                    <label for="status" class="form-label">Trạng thái</label>
-                                    <select name="status" id="status" class="form-select" required>
+                                    <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                                    <select name="status" id="status" class="form-select">
+                                    @error('status')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                         <option value="1" {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Hoạt động</option>
                                         <option value="0" {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Không hoạt động</option>
                                     </select>

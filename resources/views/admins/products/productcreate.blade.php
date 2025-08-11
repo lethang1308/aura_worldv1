@@ -56,10 +56,10 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label for="product-name" class="form-label">Tên sản phẩm</label>
+                                                    <label for="product-name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                                                     <input type="text" id="product-name" name="name"
                                                         class="form-control" placeholder="Nhập tên sản phẩm"
-                                                        value="{{ old('name') }}" required>
+                                                        value="{{ old('name') }}">
                                                     @error('name')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -68,9 +68,9 @@
 
                                             {{-- Danh mục --}}
                                             <div class="col-lg-6">
-                                                <label for="product-categories" class="form-label">Danh mục sản phẩm</label>
+                                                <label for="product-categories" class="form-label">Danh mục sản phẩm <span class="text-danger">*</span></label>
                                                 <select class="form-control" id="product-categories" name="category_id"
-                                                    required>
+                                                    >
                                                     <option value="">Chọn danh mục</option>
                                                     @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}"
@@ -120,12 +120,12 @@
                                         {{-- Giá --}}
                                         <div class="row">
                                             <div class="col-lg-4">
-                                                <label for="product-price" class="form-label">Giá (VND)</label>
+                                                <label for="product-price" class="form-label">Giá (VND) <span class="text-danger">*</span></label>
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text fs-20">₫</span>
                                                     <input type="number" id="product-price" name="base_price"
                                                         class="form-control" placeholder="Nhập giá"
-                                                        value="{{ old('base_price') }}" required>
+                                                        value="{{ old('base_price') }}">
                                                 </div>
                                                 @error('base_price')
                                                     <div class="text-danger">{{ $message }}</div>

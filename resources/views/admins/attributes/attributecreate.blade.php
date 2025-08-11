@@ -18,20 +18,29 @@
                                     <div class="row">
                                         <!-- Attribute Name -->
                                         <div class="col-md-6 mb-3">
-                                            <label for="attribute-name" class="form-label text-dark">Tên thuộc tính</label>
-                                            <input type="text" name="name" id="attribute-name" class="form-control" placeholder="Nhập tên thuộc tính" required>
+                                            <label for="attribute-name" class="form-label text-dark">Tên thuộc tính <span class="text-danger">*</span></label>
+                                            <input type="text" name="name" id="attribute-name" class="form-control" placeholder="Nhập tên thuộc tính">
+                                            @error('name')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
                                     <!-- Attribute Values -->
                                     <div class="row">
                                         <div class="col-md-8 mb-3">
-                                            <label class="form-label text-dark">Giá trị thuộc tính</label>
+                                            <label class="form-label text-dark">Giá trị thuộc tính <span class="text-danger">*</span></label>
                                             <div id="attribute-values-list">
                                                 <div class="input-group mb-2">
-                                                    <input type="text" name="values[]" class="form-control" placeholder="Nhập giá trị" required>
+                                                    <input type="text" name="values[]" class="form-control" placeholder="Nhập giá trị">
                                                     <button type="button" class="btn btn-danger remove-value" style="display:none;">X</button>
                                                 </div>
+                                                @error('values')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                                @error('values.*')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                             <button type="button" class="btn btn-success btn-sm" id="add-value">+ Thêm giá trị</button>
                                         </div>
@@ -49,7 +58,7 @@
                                     let item = document.createElement('div');
                                     item.className = 'input-group mb-2';
                                     item.innerHTML = `
-                                        <input type="text" name="values[]" class="form-control" placeholder="Nhập giá trị" required>
+                                        <input type="text" name="values[]" class="form-control" placeholder="Nhập giá trị">
                                         <button type="button" class="btn btn-danger remove-value">X</button>
                                     `;
                                     list.appendChild(item);

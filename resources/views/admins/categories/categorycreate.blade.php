@@ -16,8 +16,11 @@
 
                                 <!-- Tên danh mục -->
                                 <div class="mb-3">
-                                    <label for="category_name" class="form-label">Tên danh mục</label>
-                                    <input type="text" name="category_name" class="form-control" placeholder="Nhập tên danh mục" required>
+                                    <label for="category_name" class="form-label">Tên danh mục <span class="text-danger">*</span></label>
+                                    <input type="text" name="category_name" class="form-control" placeholder="Nhập tên danh mục">
+                                    @error('category_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Danh mục cha -->
@@ -39,8 +42,11 @@
 
                                 <!-- Trạng thái -->
                                 <div class="mb-3">
-                                    <label for="status" class="form-label">Trạng thái</label>
-                                    <select name="status" class="form-select" required>
+                                    <label for="status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                                    <select name="status" class="form-select">
+                                    @error('status')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                         <option value="1">Đang hoạt động</option>
                                         <option value="0">Ngừng hoạt động</option>
                                     </select>
