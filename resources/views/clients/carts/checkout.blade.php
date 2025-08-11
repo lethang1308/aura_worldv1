@@ -51,9 +51,14 @@
             <div class="cupon_area mb-4">
                 <form id="coupon-form">
                     @csrf
-                    <input type="text" name="coupon_code" id="coupon_code" placeholder="Nhập mã giảm giá" />
-                    <button type="submit" class="tp_btn ml-2">Áp dụng mã</button>
-                    <button type="button" id="remove-coupon-btn" class="tp_btn ml-2 btn-danger">Huỷ mã</button>
+                    <select name="coupon_code" id="coupon_code">
+                        <option value="">-- Chọn mã giảm giá --</option>
+                        @foreach ($coupons as $coupon)
+                            <option value="{{ $coupon->code }}">{{ $coupon->code }} - {{ $coupon->description }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="tp_btn ml-2 text-success">Áp dụng mã</button>
+                    <button type="button" id="remove-coupon-btn" class="tp_btn ml-2 text-danger">Huỷ mã</button>
                 </form>
                 <div id="coupon-message" class="mt-2"></div>
             </div>
@@ -247,6 +252,11 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+        }
+
+        #coupon_code {
+            width: 250px;
+            max-width: 100%;
         }
 
         .order_box ul.list li a .middle {

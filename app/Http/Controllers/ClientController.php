@@ -13,6 +13,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -369,6 +370,7 @@ class ClientController extends Controller
         $brands = Brand::all();
         $categories = Category::all();
         $user = Auth::user();
+        $coupons = Coupon::all();
 
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
@@ -380,7 +382,7 @@ class ClientController extends Controller
             return redirect()->route('client.carts')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
+        return view('clients.carts.checkout', compact('brands', 'categories', 'cart', 'coupons'));
     }
 
 
@@ -464,6 +466,35 @@ class ClientController extends Controller
 
         return view('clients.orders.orderlist', compact('orders', 'categories', 'brands', 'user'));
     }
+
+
+    public function completeOrder($id)
+    {
+        $user = Auth::user();
+        $order = Order::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+
+        if ($order->status_order !== 'completed') {
+            $order->status_order = 'completed';
+            $order->status_payment = 'paid';
+            $order->save();
+
+            if (!Payment::where('order_id', $order->id)->exists()) {
+                Payment::create([
+                    'order_id'       => $order->id,
+                    'payment_method' => $order->type_payment ?? 'Không xác định',
+                    'amount'         => $order->total_price,
+                    'payment_date'   => now(),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đơn hàng đã được hoàn thành và thanh toán!'
+        ]);
+    }
+
+
 
     public function orderDetail($id)
     {

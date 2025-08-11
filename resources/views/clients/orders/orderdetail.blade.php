@@ -1,95 +1,133 @@
 @extends('clients.layouts.default')
 
 @section('content')
-    <div class="container mt-4">
-        <h2 class="text-center mb-4" style="font-weight:700; font-size:2rem;">Chi tiết đơn hàng</h2>
-
-        {{-- Hiển thị trạng thái thanh toán --}}
-        <div class="mb-3 text-end">
-            @if ($order->status_payment === 'paid')
-                <span class="badge bg-success px-3 py-2" style="font-size:1rem;">
-                    Đã thanh toán
-                </span>
-            @elseif ($order->status_payment === 'unpaid')
-                <span class="badge bg-warning text-dark px-3 py-2" style="font-size:1rem;">
-                    Chưa thanh toán
-                </span>
-            @endif
-        </div>
-
-        {{-- Hiển thị lý do hủy đơn nếu bị hủy --}}
-        @if ($order->status_order === 'cancelled')
-            <div class="alert alert-danger mt-3">
-                <strong>Lý do hủy đơn:</strong> {{ $order->cancel_reason ?? 'Không có lý do' }}
-            </div>
-        @endif
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover shadow-sm rounded" style="background:#fff;">
-                <thead style="background:#4cd964; color:#fff; font-weight:700; text-align:center;">
-                    <tr class="text-center align-middle">
-                        <th>STT</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Hình ảnh</th>
-                        <th>Giá dung tích</th>
-                        <th>Số lượng</th>
-                        <th>Giá sản phẩm</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($order->OrderDetail as $i => $detail)
-                        @php
-                            $product = $detail->variant->product ?? null;
-                            $image = $product ? $product->images->first() : null;
-                            $basePrice = $product ? ($product->base_price ?? 0) : 0;
-                            $variantPrice = $detail->variant_price ?? 0;
-                            $unitPrice = $basePrice + $variantPrice;
-                            $totalPrice = $unitPrice * $detail->quantity;
-                        @endphp
-                        <tr class="text-center align-middle">
-                            <td>{{ $i + 1 }}</td>
-                            <td>{{ $product->name ?? '-' }}</td>
-                            <td>
-                                @if ($image)
-                                    <img src="{{ asset('storage/' . $image->path) }}" alt="Product Image"
-                                        style="width:80px; height:auto;">
+    <div class="container my-4">
+        <h3 class="mb-4">Chi tiết đơn hàng</h3>
+        <div class="row">
+            {{-- Thông tin đơn hàng --}}
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="mb-0">Thông tin đơn hàng</h5>
+                        @if ($order->status_order === 'pending')
+                            <span class="badge text-warning">Chưa xác nhận</span>
+                        @elseif ($order->status_order === 'confirmed')
+                            <span class="badge text-primary">Đã xác nhận</span>
+                        @elseif ($order->status_order === 'shipping')
+                            <span class="badge text-info">Đang giao hàng</span>
+                        @elseif ($order->status_order === 'shipped')
+                            <span class="badge text-secondary">Đã giao hàng</span>
+                        @elseif ($order->status_order === 'received')
+                            <span class="badge text-success">Đã nhận hàng</span>
+                        @elseif ($order->status_order === 'completed')
+                            <span class="badge text-success">Hoàn thành</span>
+                        @elseif ($order->status_order === 'cancelled')
+                            <span class="badge text-danger">Đã huỷ</span>
+                        @else
+                            <span class="badge text-muted">{{ strtoupper($order->status_order) }}</span>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Mã đơn:</strong> #{{ $order->id }}</li>
+                            <li><strong>Ngày tạo:</strong>
+                                {{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : 'N/A' }}</li>
+                            <li>
+                                <strong>Trạng thái thanh toán:</strong>
+                                @if ($order->status_payment === 'paid')
+                                    <span class="text-success fw-bold">Đã thanh toán</span>
+                                @elseif($order->status_payment === 'unpaid')
+                                    <span class="text-warning fw-bold">Chờ xác nhận</span>
                                 @else
-                                    <span>Không có ảnh</span>
+                                    <span class="text-muted">Không xác định</span>
                                 @endif
-                            </td>
-                            <td>{{ number_format($variantPrice, 0, ',', '.') }} đ</td>
-                            <td>{{ $detail->quantity }}</td>
-                            <td>{{ number_format($basePrice, 0, ',', '.') }} đ</td>
-                            <td>{{ number_format($totalPrice, 0, ',', '.') }} đ</td>
+                            </li>
+                            <li><strong>Ghi chú:</strong> {{ $order->user_note ?? 'Không có' }}</li>
+                            @if ($order->status_order === 'cancelled')
+                                <li class="text-danger"><strong>Lý do huỷ:</strong>
+                                    {{ $order->cancel_reason ?? 'Không có' }}</li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Thông tin khách hàng --}}
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin khách hàng</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Tài khoản:</strong> {{ $order->user->name ?? 'N/A' }}</li>
+                            <li><strong>Email:</strong> {{ $order->user_email }}</li>
+                            <li><strong>SĐT:</strong> {{ $order->user_phone }}</li>
+                            <li><strong>Địa chỉ:</strong> {{ $order->user_address }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Danh sách sản phẩm --}}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Danh sách sản phẩm</h5>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Sản phẩm</th>
+                            <th>Biến thể</th>
+                            <th>Giá biến thể</th>
+                            <th>Giá sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($order->OrderDetail as $i => $detail)
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>
+                                    @if ($detail->variant && $detail->variant->product)
+                                        <a href="{{ route('client.products.show', $detail->variant->product->id) }}">
+                                            {{ $detail->variant->product->name }}
+                                        </a>
+                                    @else
+                                        Sản phẩm đã bị xóa
+                                    @endif
+                                </td>
+                                <td>Mã biến thể: {{ $detail->variant_id }}</td>
+                                <td>
+                                    {{ number_format($detail->variant_price, 0, ',', '.') }} đ
+                                    @if ($detail->variant->product && $detail->variant->product->base_price > $detail->variant_price)
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $detail->variant->product ? number_format($detail->variant->product->base_price, 0, ',', '.') . ' đ' : 'N/A' }}
+                                </td>
+                                <td>{{ $detail->quantity }}</td>
+                                <td>{{ number_format($detail->total_price, 0, ',', '.') }} đ</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="text-end mt-3">
+                    <div>Phí ship: <strong>{{ number_format(50000, 0, ',', '.') }} đ</strong></div>
+                    <div>Giảm giá: <strong>-{{ number_format($order->discount ?? 0, 0, ',', '.') }} đ</strong></div>
+                    <h5 class="mt-2">Tổng tiền: <span
+                            class="text-danger">{{ number_format($order->total_price, 0, ',', '.') }} đ</span></h5>
+                </div>
+            </div>
         </div>
 
-        {{-- Tính tổng tiền & phí ship --}}
-        <div class="text-end mt-3">
-            <p><strong>Phí vận chuyển:</strong> {{ number_format(50000, 0, ',', '.') }} đ</p>
-            <p><strong>Giảm giá:</strong> {{ number_format($order->discount ?? 0, 0, ',', '.') }} đ</p>
-            <p><strong>Mã giảm giá:</strong> {{ $order->coupon_code ?? 'Không sử dụng' }}</ p>
-            <h5><strong>Tổng thanh toán:</strong>
-                <span class="text-danger" style="font-weight:700;">
-                    {{ number_format($order->total_price, 0, ',', '.') }} đ
-                </span>
-            </h5>
-            <h5><strong>Phương thức thanh toán:</strong>
-                    @if ($order->type_payment == 'cod')
-                        <span class="text-success" style="font-weight:700;">Thanh toán khi nhận hàng</span>
-                        @elseif($order->type_payment == 'vnpay')
-                        <span class="text-success" style="font-weight:700;">Thanh toán bằng VNPay</span>
-                    @endif
-                    
-            </h5>
-        </div>
-
-        <div class="mt-4 text-center">
-            <a href="{{ route('client.orders') }}" class="btn btn-secondary">Quay lại danh sách đơn hàng</a>
+        {{-- Nút quay lại --}}
+        <div>
+            <a href="{{ route('client.orders') }}" class="btn btn-secondary">Quay lại danh sách</a>
         </div>
     </div>
 @endsection
