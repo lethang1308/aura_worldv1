@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up() {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar')->nullable()->after('address');
-        });
+        if (!Schema::hasColumn('users', 'avatar')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('avatar')->nullable()->after('address');
+            });
+        }
     }
     public function down() {
         Schema::table('users', function (Blueprint $table) {

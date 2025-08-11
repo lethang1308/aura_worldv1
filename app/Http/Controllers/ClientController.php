@@ -335,7 +335,7 @@ class ClientController extends Controller
             $product = $item->variant->product;
             $variantPrice = $item->variant->price ?? 0;
 
-            $price = $product->base_price + $variantPrice;
+                $price = ($product->base_price ?? 0) + $variantPrice;
 
             $totalQuantity += $item->quantity;
             $totalPrice += $price * $item->quantity;
