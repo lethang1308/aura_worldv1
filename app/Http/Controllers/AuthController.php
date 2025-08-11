@@ -28,7 +28,7 @@ class AuthController extends Controller
             'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'phone'    => 'nullable|string',
-            'address'  => 'nullable|string',
+            'address'  => 'nullable|string|max:255',
         ]);
 
         $user = User::create([
@@ -56,7 +56,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         // Lấy user theo email (kể cả đã bị xóa mềm)
-        $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
+        $user = User::withTrashed()->where('email', $credentials['email'])->first();
 
         // Nếu user đã bị xóa mềm (bị khóa)
         if ($user && $user->trashed()) {

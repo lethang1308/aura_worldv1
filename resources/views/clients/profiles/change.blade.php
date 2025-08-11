@@ -23,15 +23,15 @@
                         @csrf
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
                         </div>
                         <div class="mb-3">
                             <label for="new_password" class="form-label">Mật khẩu mới</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                            <input type="password" class="form-control" id="new_password" name="new_password">
                         </div>
                         <div class="mb-3">
                             <label for="new_password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
-                            <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+                            <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
                         </div>
                         <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
                     </form>

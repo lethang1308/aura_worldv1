@@ -10,6 +10,19 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Đóng">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
             {{ session('error') }}
@@ -75,7 +88,8 @@
                                     @foreach ($sortedImages as $index => $image)
                                         <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}"
                                             class="{{ $index === 0 ? 'active' : '' }}">
-                                            <img src="{{ asset('storage/' . $image->path) }}" class="d-block" width="60">
+                                            <img src="{{ asset('storage/' . $image->path) }}" class="d-block"
+                                                width="60">
                                         </li>
                                     @endforeach
                                 </ol>
@@ -111,7 +125,8 @@
                                             @endphp
                                             <button type="button"
                                                 class="btn btn-outline-success attribute-button {{ $loop->first ? 'btn-success' : '' }} px-3 py-2 fw-semibold rounded-2"
-                                                data-variant-id="{{ $attr['variant_id'] }}" data-price="{{ $variantPrice }}"
+                                                data-variant-id="{{ $attr['variant_id'] }}"
+                                                data-price="{{ $variantPrice }}"
                                                 data-stock="{{ $variant->stock_quantity ?? 0 }}">
                                                 {{ $attr['value'] ?? 'Không rõ' }} -
                                                 {{ number_format($variantPrice, 0, ',', '.') }}₫
@@ -142,7 +157,8 @@
                                     </div>
                                     <input type="hidden" name="variant_id" id="variant_id_hidden" value="">
                                     <input type="hidden" name="product_name" value="{{ $product->name }}">
-                                    <button type="submit" id="add-to-cart-button" class="main_btn">Thêm vào giỏ hàng</button>
+                                    <button type="submit" id="add-to-cart-button" class="main_btn">Thêm vào giỏ
+                                        hàng</button>
                                 </form>
                             </div>
                         </div>
@@ -224,14 +240,17 @@
                                 <div class="review_box">
                                     <h4>Thêm đánh giá</h4>
                                     @auth
-                                        <form class="row contact_form" action="{{ route('review.add', $product->id) }}"
-                                            method="POST">
+                                        <form id="review-form" class="row contact_form"
+                                            action="{{ route('review.add', $product->id) }}" method="POST">
                                             @csrf
+                                            <div id="review-alert"></div>
                                             <div class="col-md-12 mb-2">
-                                                <select name="rating" class="form-control" required>
+                                                <select name="rating" class="form-control">
                                                     <option value="">Chọn số sao</option>
                                                     @for ($i = 5; $i >= 1; $i--)
-                                                        <option value="{{ $i }}">{{ $i }} sao</option>
+                                                        <option value="{{ $i }}">
+                                                            {!! str_repeat('&#9733;', $i) !!}
+                                                        </option>
                                                     @endfor
                                                 </select>
                                             </div>
@@ -252,7 +271,6 @@
                 </div>
             </div>
         </section>
-
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -325,6 +343,53 @@
                         return;
                     }
                 });
+
+                // Ajax submit form đánh giá
+                const reviewForm = document.getElementById('review-form');
+                if (reviewForm) {
+                    reviewForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const alertBox = document.getElementById('review-alert');
+                        alertBox.innerHTML = '';
+
+                        const formData = new FormData(reviewForm);
+                        fetch(reviewForm.action, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': formData.get('_token'),
+                                    'Accept': 'application/json'
+                                },
+                                body: formData
+                            })
+                            .then(response => response.json().then(data => ({
+                                status: response.status,
+                                body: data
+                            })))
+                            .then(({
+                                status,
+                                body
+                            }) => {
+                                if (status === 422) {
+                                    // Validation errors
+                                    const errors = Object.values(body.errors).flat();
+                                    alertBox.innerHTML =
+                                        `<div class="alert alert-danger">${errors.join('<br>')}</div>`;
+                                } else if (status !== 200) {
+                                    alertBox.innerHTML =
+                                        `<div class="alert alert-danger">${body.message || 'Có lỗi xảy ra.'}</div>`;
+                                } else {
+                                    alertBox.innerHTML =
+                                        `<div class="alert alert-success">${body.message}</div>`;
+                                    reviewForm.reset();
+                                    // Optional: reload danh sách đánh giá qua AJAX ở đây
+                                }
+                            })
+                            .catch(() => {
+                                alertBox.innerHTML =
+                                    `<div class="alert alert-danger">Lỗi kết nối máy chủ.</div>`;
+                            });
+                    });
+                }
             });
         </script>
     @endif
