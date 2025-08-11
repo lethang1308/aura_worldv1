@@ -207,6 +207,8 @@ Route::prefix('clients')->group(function () {
 
 
     Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
+    Route::post('/orders/{id}/complete', [ClientController::class, 'completeOrder'])
+    ->name('client.orders.complete');
 
     Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
 });
