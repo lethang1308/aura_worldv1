@@ -40,7 +40,7 @@
                                             <div class="mb-3">
                                                 <label for="product_id" class="form-label">Sản Phẩm <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('product_id') is-invalid @enderror" 
-                                                        id="product_id" name="product_id" required>
+                                                        id="product_id" name="product_id">
                                                     <option value="">Chọn Sản Phẩm</option>
                                                     @foreach($products as $product)
                                                         <option value="{{ $product->id }}" 
@@ -64,7 +64,7 @@
                                                     <input type="number" step="0.01" min="0" 
                                                            class="form-control @error('price') is-invalid @enderror" 
                                                            id="price" name="price" value="{{ old('price') }}" 
-                                                           placeholder="0.00" required>
+                                                           placeholder="0.00">
                                                 </div>
                                                 @error('price')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -79,7 +79,7 @@
                                                 <input type="number" min="0" 
                                                        class="form-control @error('stock_quantity') is-invalid @enderror" 
                                                        id="stock_quantity" name="stock_quantity" 
-                                                       value="{{ old('stock_quantity') }}" placeholder="0" required>
+                                                       value="{{ old('stock_quantity') }}" placeholder="0">
                                                 @error('stock_quantity')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -91,7 +91,7 @@
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Trạng Thái <span class="text-danger">*</span></label>
                                                 <select class="form-select @error('status') is-invalid @enderror" 
-                                                        id="status" name="status" required>
+                                                        id="status" name="status">
                                                     <option value="">Chọn Trạng Thái</option>
                                                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Hoạt Động</option>
                                                     <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Không Hoạt Động</option>

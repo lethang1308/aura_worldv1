@@ -31,13 +31,13 @@
                                         <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="code" class="form-label">Mã giảm giá</label>
-                                                <input type="text" id="code" name="code" class="form-control" placeholder="Nhập mã giảm giá" value="{{ old('code') }}" required>
+                                                <input type="text" id="code" name="code" class="form-control" placeholder="Nhập mã giảm giá" value="{{ old('code') }}" >
                                                 @error('code')<div class="text-danger">{{ $message }}</div>@enderror
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <label for="type" class="form-label">Loại giảm giá</label>
-                                            <select class="form-control" id="type" name="type" required>
+                                            <select class="form-control" id="type" name="type" >
                                                 <option value="fixed" {{ old('type')=='fixed'?'selected':'' }}>Cố định</option>
                                                 <option value="percent" {{ old('type')=='percent'?'selected':'' }}>Phần trăm</option>
                                             </select>
@@ -48,7 +48,7 @@
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="value" class="form-label">Giá trị giảm</label>
-                                                <input type="number" id="value" name="value" class="form-control" value="{{ old('value') }}" required min="0">
+                                                <input type="number" id="value" name="value" class="form-control" value="{{ old('value') }}"  min="0">
                                                 @error('value')<div class="text-danger">{{ $message }}</div>@enderror
                                             </div>
                                         </div>
@@ -83,7 +83,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="status" class="form-label">Trạng thái</label>
-                                            <select class="form-control" id="status" name="status" required>
+                                            <select class="form-control" id="status" name="status" >
                                                 <option value="active" {{ old('status')=='active'?'selected':'' }}>Kích hoạt</option>
                                                 <option value="inactive" {{ old('status')=='inactive'?'selected':'' }}>Ẩn</option>
                                             </select>

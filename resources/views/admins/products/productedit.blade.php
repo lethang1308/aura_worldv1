@@ -86,18 +86,20 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="product-name" class="form-label">Tên sản phẩm</label>
+                                                <label for="product-name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                                                 <input type="text" id="product-name" name="name"
                                                     class="form-control"
-                                                    value="{{ old('name', $product->name) }}" required>
+                                                    value="{{ old('name', $product->name) }}">
+                                                @error('name')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
                                         {{-- Danh mục --}}
                                         <div class="col-lg-6">
-                                            <label for="product-categories" class="form-label">Danh mục</label>
-                                            <select class="form-control" id="product-categories" name="category_id"
-                                                required>
+                                            <label for="product-categories" class="form-label">Danh mục <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="product-categories" name="category_id">
                                                 <option value="">-- Chọn danh mục --</option>
                                                 @foreach ($categories as $category)
                                                     <option value="{{ $category->id }}"
@@ -106,6 +108,9 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            @error('category_id')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -142,17 +147,49 @@
                                     {{-- Giá --}}
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <label for="product-price" class="form-label">Giá</label>
+                                            <label for="product-price" class="form-label">Giá <span class="text-danger">*</span></label>
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text fs-20"><i class='bx bx-dollar'></i></span>
                                                 <input type="number" id="product-price" name="base_price"
                                                     class="form-control"
-                                                    value="{{ old('base_price', $product->base_price) }}"
-                                                    required>
+                                                    value="{{ old('base_price', $product->base_price) }}">
+                                                @error('base_price')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                     </div>
 
+                                    {{-- Biến thể sản phẩm --}}
+                                    <div class="row mt-4">
+                                        <div class="col-lg-12">
+                                            <label class="form-label">Biến thể sản phẩm</label>
+                                            <div id="variants-container">
+                                                @if($product->variants && count($product->variants))
+                                                    @foreach($product->variants as $i => $variant)
+                                                        <div class="row align-items-end mb-2 variant-row">
+                                                            <div class="col-md-3">
+                                                                <input type="text" name="variants[attribute][]" class="form-control" placeholder="Tên thuộc tính" value="{{ ($variant->attributes && $variant->attributes->first()) ? $variant->attributes->first()->name : '' }}" required>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" name="variants[value][]" class="form-control" placeholder="Giá trị" value="{{ ($variant->attributeValues && $variant->attributeValues->first()) ? $variant->attributeValues->first()->value : '' }}" required>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="number" name="variants[price][]" class="form-control" placeholder="Giá riêng (VND)" value="{{ $variant->price }}">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="number" name="variants[stock][]" class="form-control" placeholder="Tồn kho" value="{{ $variant->stock_quantity }}">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-danger btn-sm remove-variant-btn">Xóa</button>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                            <button type="button" class="btn btn-outline-primary mt-2" id="add-variant-btn">Thêm biến thể</button>
+                                        </div>
+                                    </div>
                                     {{-- Input ẩn để upload ảnh mới --}}
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -177,8 +214,7 @@
         // Tự động cập nhật hình ảnh xem trước khi chọn ảnh mới
         document.getElementById('product-images').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('image-preview');
-            previewContainer.innerHTML = '';  // Xoá các ảnh cũ trong preview
-
+            previewContainer.innerHTML = '';
             const files = event.target.files;
             Array.from(files).forEach(file => {
                 if (file.type.startsWith('image/')) {
@@ -195,6 +231,42 @@
                     reader.readAsDataURL(file);
                 }
             });
+        });
+
+        // Script thêm biến thể động
+        const variantsContainer = document.getElementById('variants-container');
+        const addVariantBtn = document.getElementById('add-variant-btn');
+        function createVariantRow(index = null) {
+            const div = document.createElement('div');
+            div.className = 'row align-items-end mb-2 variant-row';
+            div.innerHTML = `
+                <div class="col-md-3">
+                    <input type="text" name="variants[attribute][]" class="form-control" placeholder="Tên thuộc tính (VD: Màu, Size)" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="variants[value][]" class="form-control" placeholder="Giá trị (VD: Đỏ, L, XL)" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="variants[price][]" class="form-control" placeholder="Giá riêng (VND)">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="variants[stock][]" class="form-control" placeholder="Tồn kho">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm remove-variant-btn">Xóa</button>
+                </div>
+            `;
+            return div;
+        }
+        addVariantBtn.addEventListener('click', function() {
+            const row = createVariantRow();
+            variantsContainer.appendChild(row);
+        });
+        // Xóa biến thể
+        variantsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-variant-btn')) {
+                e.target.closest('.variant-row').remove();
+            }
         });
     </script>
 

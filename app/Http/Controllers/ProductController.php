@@ -65,9 +65,22 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
-            'base_price' => 'required|numeric',
+            'base_price' => 'required|numeric|min:0',
             'brand_id' => 'nullable|exists:brands,id',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.required' => 'Tên sản phẩm không được để trống.',
+            'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
+            'name.max' => 'Tên sản phẩm tối đa 255 ký tự.',
+            'category_id.required' => 'Danh mục sản phẩm không được để trống.',
+            'category_id.exists' => 'Danh mục sản phẩm không hợp lệ.',
+            'base_price.required' => 'Giá sản phẩm không được để trống.',
+            'base_price.numeric' => 'Giá sản phẩm phải là số.',
+            'base_price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'brand_id.exists' => 'Thương hiệu không hợp lệ.',
+            'images.*.image' => 'File tải lên phải là hình ảnh.',
+            'images.*.mimes' => 'Ảnh phải có định dạng jpg, jpeg, png hoặc webp.',
+            'images.*.max' => 'Dung lượng ảnh tối đa 2MB.',
         ]);
 
         // Tạo sản phẩm
@@ -145,10 +158,23 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category_id' => 'required|integer',
-            'base_price' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'base_price' => 'required|numeric|min:0',
             'brand_id' => 'nullable|exists:brands,id',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.required' => 'Tên sản phẩm không được để trống.',
+            'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
+            'name.max' => 'Tên sản phẩm tối đa 255 ký tự.',
+            'category_id.required' => 'Danh mục sản phẩm không được để trống.',
+            'category_id.exists' => 'Danh mục sản phẩm không hợp lệ.',
+            'base_price.required' => 'Giá sản phẩm không được để trống.',
+            'base_price.numeric' => 'Giá sản phẩm phải là số.',
+            'base_price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'brand_id.exists' => 'Thương hiệu không hợp lệ.',
+            'images.*.image' => 'File tải lên phải là hình ảnh.',
+            'images.*.mimes' => 'Ảnh phải có định dạng jpg, jpeg, png hoặc webp.',
+            'images.*.max' => 'Dung lượng ảnh tối đa 2MB.',
         ]);
 
         $product = Product::findOrFail($id);
