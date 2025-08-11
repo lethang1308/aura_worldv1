@@ -191,12 +191,6 @@ Route::get('/clients', function () {
     return view('clients.layouts.home');
 })->name('clients.home');
 
-Route::get('/shippers', [ShipperController::class, 'home'])->name('shipper.home');
-Route::post('/shippers/orders/{order}/accept', [ShipperController::class, 'acceptOrder'])->name('shipper.order');
-Route::post('/shippers/orders/{order}/complete', [ShipperController::class, 'completeOrder'])->name('shipper.order.complete');
-
-
-
 Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'home'])->name('client.home');
 
@@ -213,6 +207,8 @@ Route::prefix('clients')->group(function () {
 
 
     Route::get('/orders', [ClientController::class, 'orderList'])->name('client.orders');
+    Route::post('/orders/{id}/complete', [ClientController::class, 'completeOrder'])
+    ->name('client.orders.complete');
 
     Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
 });
