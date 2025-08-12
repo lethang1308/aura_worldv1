@@ -67,11 +67,12 @@ class AttributeController extends Controller
     // 4. Hiển thị form chỉnh sửa thuộc tính
     public function edit($id)
     {
-        // Tìm attribute theo id (hoặc trả về 404 nếu không tồn tại)
-        $attribute = Attribute::findOrFail($id);
-
-        // Trả về view chỉnh sửa và truyền dữ liệu attribute vào
-        return view('admins.attributes.attributeedit', compact('attribute'));
+    // Tìm attribute theo id (hoặc trả về 404 nếu không tồn tại)
+    $attribute = Attribute::findOrFail($id);
+    // Lấy các giá trị thuộc tính liên quan
+    $attributeValues = $attribute->attributeValues()->get();
+    // Trả về view chỉnh sửa và truyền dữ liệu attribute, attributeValues vào
+    return view('admins.attributes.attributeedit', compact('attribute', 'attributeValues'));
     }
 
 
@@ -82,10 +83,16 @@ class AttributeController extends Controller
         // 1. Validate dữ liệu đầu vào
         $request->validate([
             'name' => 'required|string|max:255',
+            'values' => 'array',
+            'values.*' => 'nullable|string|max:255',
+            'new_values' => 'array',
+            'new_values.*' => 'nullable|string|max:255',
         ], [
             'name.required' => 'Tên thuộc tính không được để trống.',
             'name.string' => 'Tên thuộc tính phải là chuỗi ký tự.',
             'name.max' => 'Tên thuộc tính tối đa 255 ký tự.',
+            'values.*.max' => 'Giá trị thuộc tính tối đa 255 ký tự.',
+            'new_values.*.max' => 'Giá trị thuộc tính tối đa 255 ký tự.',
         ]);
 
         // 2. Tìm attribute theo ID
@@ -96,7 +103,33 @@ class AttributeController extends Controller
             'name' => $request->name,
         ]);
 
-        // 4. Redirect kèm thông báo
+        // 4. Cập nhật các giá trị thuộc tính hiện có
+        $currentValueIds = $attribute->attributeValues()->pluck('id')->toArray();
+        $requestValueIds = $request->has('values') ? array_keys($request->values) : [];
+
+        // Sửa giá trị
+        if ($request->has('values')) {
+            foreach ($request->values as $id => $value) {
+                $attribute->attributeValues()->where('id', $id)->update(['value' => $value]);
+            }
+        }
+
+        // Xóa giá trị bị xóa (nếu id không còn trong request)
+        $idsToDelete = array_diff($currentValueIds, $requestValueIds);
+        if (!empty($idsToDelete)) {
+            $attribute->attributeValues()->whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Thêm giá trị mới
+        if ($request->has('new_values')) {
+            foreach ($request->new_values as $newValue) {
+                if ($newValue !== null && $newValue !== '') {
+                    $attribute->attributeValues()->create(['value' => $newValue]);
+                }
+            }
+        }
+
+        // 5. Redirect kèm thông báo
         return redirect()->route('attributes.index')->with('success', 'Thuộc tính đã được cập nhật thành công!');
     }
 
