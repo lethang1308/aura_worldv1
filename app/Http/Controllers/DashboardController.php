@@ -32,11 +32,11 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
         // Top 5 sản phẩm bán chạy nhất
-        $topProducts = OrderDetail::whereHas('order', function($q) use ($from, $to) {
-                $q->where('status_order', 'completed')
-                  ->whereDate('created_at', '>=', $from)
-                  ->whereDate('created_at', '<=', $to);
-            })
+        $topProducts = OrderDetail::whereHas('order', function ($q) use ($from, $to) {
+            $q->where('status_order', 'completed')
+                ->whereDate('created_at', '>=', $from)
+                ->whereDate('created_at', '<=', $to);
+        })
             ->selectRaw('variant_id, SUM(quantity) as total_sold')
             ->groupBy('variant_id')
             ->orderByDesc('total_sold')
@@ -44,17 +44,57 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
         // Top 5 sản phẩm bán ít nhất (có bán ra)
-        $bottomProducts = OrderDetail::whereHas('order', function($q) use ($from, $to) {
-                $q->where('status_order', 'completed')
-                  ->whereDate('created_at', '>=', $from)
-                  ->whereDate('created_at', '<=', $to);
-            })
+        $bottomProducts = OrderDetail::whereHas('order', function ($q) use ($from, $to) {
+            $q->where('status_order', 'completed')
+                ->whereDate('created_at', '>=', $from)
+                ->whereDate('created_at', '<=', $to);
+        })
             ->selectRaw('variant_id, SUM(quantity) as total_sold')
             ->groupBy('variant_id')
             ->orderBy('total_sold', 'asc')
             ->with(['variant.product'])
             ->take(5)
             ->get();
-        return view('admins.dashboard.index', compact('totalRevenue', 'topUsers', 'topProducts', 'bottomProducts', 'from', 'to'));
+
+        // === Thêm dữ liệu biểu đồ (KHÔNG xóa code cũ) ===
+        $topProductsChartLabels = $topProducts->map(function ($item) {
+            return $item->variant && $item->variant->product ? $item->variant->product->name : 'N/A';
+        });
+        $topProductsChartData = $topProducts->pluck('total_sold');
+
+        $bottomProductsChartLabels = $bottomProducts->map(function ($item) {
+            return $item->variant && $item->variant->product ? $item->variant->product->name : 'N/A';
+        });
+        $bottomProductsChartData = $bottomProducts->pluck('total_sold');
+        // === Hết phần thêm ===
+
+        // === Thêm dữ liệu biểu đồ doanh thu theo ngày ===
+        $revenueByDate = Order::where('status_order', 'completed')
+            ->whereDate('created_at', '>=', $from)
+            ->whereDate('created_at', '<=', $to)
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        $revenueChartLabels = $revenueByDate->pluck('date');
+        $revenueChartData = $revenueByDate->pluck('total');
+
+
+        return view('admins.dashboard.index', compact(
+            'totalRevenue',
+            'topUsers',
+            'topProducts',
+            'bottomProducts',
+            'from',
+            'to',
+            // === Thêm vào compact ===
+            'topProductsChartLabels',
+            'topProductsChartData',
+            'bottomProductsChartLabels',
+            'revenueChartLabels',
+            'revenueChartData',
+            'bottomProductsChartData'
+        ));
     }
-} 
+}
