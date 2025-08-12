@@ -19,6 +19,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
@@ -716,36 +717,54 @@ class ClientController extends Controller
     }
 
 
-    public function addReview(Request $request, $id) // $id là product_id
+    public function addReview(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'rating'  => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
+            'comment' => 'required|string|max:1000',
+        ], [
+            'rating.required' => 'Vui lòng chọn số sao.',
+            'comment.required' => 'Vui lòng nhập nội dung đánh giá.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $user = Auth::user();
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới được bình luận');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bạn phải đăng nhập mới được bình luận'
+            ], 403);
         }
-        // Kiểm tra xem user đã từng mua sản phẩm chưa
+
         $hasPurchased = Order::where('user_id', $user->id)
-            ->whereIn('status_order', ['completed', 'received']) // các trạng thái đã nhận hàng
+            ->whereIn('status_order', ['completed', 'received'])
             ->whereHas('orderDetail.variant', function ($q) use ($id) {
                 $q->where('product_id', $id);
             })
             ->exists();
 
         if (!$hasPurchased) {
-            return back()->with('error', 'Bạn chỉ có thể đánh giá sau khi đã mua sản phẩm.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bạn chỉ có thể đánh giá sau khi đã mua sản phẩm.'
+            ], 403);
         }
 
-        // Kiểm tra nếu user đã đánh giá rồi thì không cho đánh giá lại (nếu muốn)
         $alreadyReviewed = Review::where('user_id', $user->id)
             ->where('product_id', $id)
             ->exists();
 
         if ($alreadyReviewed) {
-            return back()->with('error', 'Bạn đã đánh giá sản phẩm này rồi.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bạn đã đánh giá sản phẩm này rồi.'
+            ], 403);
         }
 
         Review::create([
@@ -755,6 +774,9 @@ class ClientController extends Controller
             'comment'    => $request->comment,
         ]);
 
-        return back()->with('success', 'Đánh giá của bạn đã được gửi.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Đánh giá của bạn đã được gửi.'
+        ]);
     }
 }
