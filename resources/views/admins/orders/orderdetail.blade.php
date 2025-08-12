@@ -1,6 +1,18 @@
 @extends('admins.layouts.default')
 
 @section('content')
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show mx-auto mb-3" role="alert" style="max-width: 700px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 16px 24px; text-align: center; font-size: 17px;">
+        {{ session('error') }}
+        <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mx-auto mb-3" role="alert" style="max-width: 700px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 16px 24px; text-align: center; font-size: 17px;">
+        {{ session('success') }}
+        <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <div class="wrapper">
     <div class="page-content">
         <div class="container-xxl">
@@ -93,11 +105,11 @@
                 </div>
             </div>
             <div class="mt-3">
-                <a href="{{ route('orders.index') }}" class="btn btn-secondary">Quay lại danh sách</a>
-                @if(!in_array($order->status_order, ['cancelled', 'completed']))
+                    <a href="{{ route('orders.index') }}" class="btn btn-secondary">Quay lại danh sách</a>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal">Cập nhật trạng thái</button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">Huỷ đơn</button>
-                @endif
+                    @if($order->status_order === 'pending')
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">Huỷ đơn</button>
+                    @endif
             </div>
         </div>
     </div>

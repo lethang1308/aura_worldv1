@@ -85,7 +85,12 @@ class OrderController extends Controller
         $nextIndex = $currentIndex !== false ? $currentIndex + 1 : false;
         $nextStatus = $nextIndex !== false && isset($statusSteps[$nextIndex]) ? $statusSteps[$nextIndex] : null;
         if ($request->status_order !== $nextStatus) {
-            return redirect()->back()->with('error', 'Chỉ được chuyển sang trạng thái tiếp theo, không được nhảy cóc.');
+            // Thông báo lỗi rõ ràng
+            $message = 'Chỉ được chuyển sang trạng thái tiếp theo, không được nhảy cóc.';
+            if ($order->status_order === 'confirmed' && $request->status_order === 'completed') {
+                $message = 'Bạn phải chuyển qua các bước giao hàng trước khi hoàn thành đơn hàng.';
+            }
+            return redirect()->back()->with('error', $message);
         }
         $order->status_order = $request->status_order;
 
