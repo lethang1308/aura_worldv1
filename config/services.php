@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -49,4 +48,7 @@ return [
         'api_url' => env('VNPAY_API_URL'),
     ],
 
+    'ghtk' => [
+        'token' => env('GHTK_TOKEN'),
+    ],
 ];

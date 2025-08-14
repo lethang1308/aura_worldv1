@@ -13,6 +13,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -366,21 +367,26 @@ class ClientController extends Controller
 
     public function viewCheckOut()
     {
-        $brands = Brand::all();
-        $categories = Category::all();
-        $user = Auth::user();
+        try {
+            $brands = Brand::all();
+            $categories = Category::all();
+            $user = Auth::user();
 
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
+            if (!$user) {
+                return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán');
+            }
+
+            $cart = Cart::where('user_id', $user->id)->with('cartItem.variant.product')->first();
+
+            if (!$cart || $cart->cartItem->isEmpty()) {
+                return redirect()->route('client.carts')->with('error', 'Giỏ hàng của bạn đang trống!');
+            }
+
+            return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
+        } catch (\Exception $e) {
+            \Log::error('Checkout error: ' . $e->getMessage());
+            return redirect()->route('client.carts')->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
-
-        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant.product')->first();
-
-        if (!$cart || $cart->cartItem->isEmpty()) {
-            return redirect()->route('client.carts')->with('error', 'Giỏ hàng của bạn đang trống!');
-        }
-
-        return view('clients.carts.checkout', compact('brands', 'categories', 'cart'));
     }
 
 
@@ -462,7 +468,38 @@ class ClientController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
 
-        return view('clients.orders.orderlist', compact('orders', 'categories', 'brands', 'user'));
+        // Thống kê cho client
+        $totalOrders = $orders->count();
+        $totalSpent = $orders->sum('total_price');
+        $completedOrders = $orders->where('status_order', 'completed')->count();
+        $pendingOrders = $orders->where('status_order', 'pending')->count();
+
+        // Thống kê theo tháng (6 tháng gần nhất)
+        $monthlyStats = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthOrders = $orders->filter(function ($order) use ($month) {
+                return $order->created_at->format('Y-m') === $month->format('Y-m');
+            });
+            
+            $monthlyStats[] = [
+                'month' => $month->format('M Y'),
+                'orders' => $monthOrders->count(),
+                'total' => $monthOrders->sum('total_price')
+            ];
+        }
+
+        return view('clients.orders.orderlist', compact(
+            'orders', 
+            'categories', 
+            'brands', 
+            'user',
+            'totalOrders',
+            'totalSpent',
+            'completedOrders',
+            'pendingOrders',
+            'monthlyStats'
+        ));
     }
 
     public function orderDetail($id)
@@ -482,135 +519,169 @@ class ClientController extends Controller
 
     public function cancelOrder(Request $request)
     {
-        $user = Auth::user();
-        $order = Order::where('id', $request->order_id)->where('user_id', $user->id)->firstOrFail();
-        if ($order->status_order !== 'pending') {
-            return redirect()->route('client.orders')->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'cancel_reason' => 'required|string|max:500',
+        ]);
+
+        $order = Order::findOrFail($request->order_id);
+        
+        // Kiểm tra xem đơn hàng có thuộc về user hiện tại không
+        if ($order->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Bạn không có quyền hủy đơn hàng này.');
         }
-        $order->status_order = 'cancelled';
-        $order->cancel_reason = $request->cancel_reason;
-        $order->save();
-        return redirect()->route('client.orders')->with('success', 'Đã hủy đơn hàng thành công.');
+
+        // Chỉ cho phép hủy đơn hàng khi đang ở trạng thái pending
+        if ($order->status_order !== 'pending') {
+            return redirect()->back()->with('error', 'Chỉ có thể hủy đơn hàng khi đang chờ xác nhận.');
+        }
+
+        $order->update([
+            'status_order' => 'cancelled',
+            'cancel_reason' => $request->cancel_reason,
+        ]);
+
+        return redirect()->back()->with('success', 'Đơn hàng đã được hủy thành công.');
+    }
+
+    public function completeOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        // Kiểm tra xem đơn hàng có thuộc về user hiện tại không
+        if ($order->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền hoàn thành đơn hàng này.'
+            ], 403);
+        }
+
+        // Chỉ cho phép hoàn thành đơn hàng khi đã nhận hàng
+        if ($order->status_order !== 'received') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chỉ có thể hoàn thành đơn hàng khi đã nhận hàng.'
+            ], 400);
+        }
+
+        $order->update([
+            'status_order' => 'completed',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đơn hàng đã được hoàn thành thành công.'
+        ]);
     }
 
     public function placeOrder(Request $request)
     {
-        $request->validate([
+        // Laravel validation thay vì HTML validation
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'number' => 'required|string|max:20',
-            'email' => 'required|email',
-            'add1' => 'required|string|max:255',
+            'add1' => 'required|string|max:500',
             'city' => 'required|string|max:255',
+            'message' => 'nullable|string|max:1000',
             'payment_method' => 'required|in:cod,vnpay',
-            'accept_terms' => 'accepted',
+            'accept_terms' => 'required|accepted',
         ], [
-            'accept_terms.accepted' => 'Bạn phải đồng ý với điều khoản dịch vụ.'
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'number.required' => 'Vui lòng nhập số điện thoại.',
+            'number.max' => 'Số điện thoại không được vượt quá 20 ký tự.',
+            'add1.required' => 'Vui lòng nhập địa chỉ giao hàng.',
+            'add1.max' => 'Địa chỉ không được vượt quá 500 ký tự.',
+            'city.required' => 'Vui lòng nhập tỉnh/thành phố.',
+            'city.max' => 'Tỉnh/thành phố không được vượt quá 255 ký tự.',
+            'message.max' => 'Ghi chú không được vượt quá 1000 ký tự.',
+            'payment_method.required' => 'Vui lòng chọn phương thức thanh toán.',
+            'payment_method.in' => 'Phương thức thanh toán không hợp lệ.',
+            'accept_terms.required' => 'Vui lòng đồng ý với điều khoản & chính sách.',
+            'accept_terms.accepted' => 'Vui lòng đồng ý với điều khoản & chính sách.',
         ]);
 
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
-        }
-        // Kiểm tra nếu tài khoản bị khóa thì không cho đặt hàng
-        if (!$user->is_active) {
-            return redirect()->route('client.carts.checkout')->with('error', 'Tài khoản của bạn đã bị khóa, không thể mua hàng nữa.');
-        }
-
-        $cart = Cart::where('user_id', $user->id)->with('cartItem.variant')->first();
-        if (!$cart || $cart->cartItem->isEmpty()) {
-            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
-        }
-
-        // Kiểm tra tồn kho
-        foreach ($cart->cartItem as $item) {
-            $variant = $item->variant;
-            if (!$variant || !$variant->product || $variant->trashed() || $variant->product->trashed()) {
-                return redirect()->route('client.carts')->with('error', 'Một số sản phẩm không tồn tại hoặc đã bị xoá.');
+        try {
+            $user = Auth::user();
+            
+            if (!$user) {
+                return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để đặt hàng.');
             }
-            if ($variant->stock_quantity < $item->quantity) {
-                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ tồn kho.');
+
+            // Kiểm tra tài khoản có bị khóa không
+            if (!$user->is_active) {
+                return redirect()->route('client.carts.checkout')->with('error', 'Tài khoản của bạn đã bị khóa, không thể mua hàng nữa.');
             }
-        }
 
-        // Tính tổng tiền
-        $subtotal = 0;
-        foreach ($cart->cartItem as $item) {
-            $variant = $item->variant;
-            $product = $variant->product;
-            $price = ($product->base_price ?? 0) + ($variant->price ?? 0);
-            $subtotal += $price * $item->quantity;
-        }
+            $cart = Cart::where('user_id', $user->id)->with('cartItem.variant.product')->first();
 
-        $shipping = 50000;
-        $appliedCoupon = session('applied_coupon');
-        $discount = $appliedCoupon['discount'] ?? 0;
-        $couponCode = $appliedCoupon['code'] ?? null;
-        $totalPrice = $subtotal + $shipping - $discount;
+            if (!$cart || $cart->cartItem->isEmpty()) {
+                return redirect()->route('client.carts')->with('error', 'Giỏ hàng của bạn đang trống!');
+            }
 
-        // Tạo đơn hàng
-        $order = Order::create([
-            'user_id' => $user->id,
-            'user_email' => $request->email,
-            'user_phone' => $request->number,
-            'user_address' => $request->add1 . ', ' . $request->city,
-            'user_note' => $request->message,
-            'status_order' => 'pending',
-            'status_payment' => $request->payment_method === 'cod' ? 'unpaid' : 'pending',
-            'type_payment' => $request->payment_method,
-            'discount' => $discount,
-            'coupon_code' => $couponCode,
-            'total_price' => $totalPrice,
-        ]);
+            // Tính toán tổng tiền
+            $cartTotal = $cart->total_price ?? 0;
+            $shipping = 50000;
+            $coupon = session('applied_coupon');
+            $discount = $coupon['discount'] ?? 0;
+            $finalTotal = $cartTotal + $shipping - $discount;
 
-        // Lưu chi tiết đơn hàng
-        foreach ($cart->cartItem as $item) {
-            $variant = $item->variant;
-            $product = $variant->product;
-            $basePrice = $product->base_price ?? 0;
-            $variantPrice = $variant->price ?? 0;
-            $price = $basePrice + $variantPrice;
-
-            \App\Models\OrderDetail::create([
-                'order_id' => $order->id,
-                'variant_id' => $variant->id,
-                'variant_price' => $variantPrice,
-                'quantity' => $item->quantity,
-                'total_price' => $price * $item->quantity,
+            // Tạo đơn hàng
+            $order = Order::create([
+                'user_id' => $user->id,
+                'user_name' => $validated['name'],
+                'user_email' => $validated['email'],
+                'user_phone' => $validated['number'],
+                'user_address' => $validated['add1'],
+                'user_city' => $validated['city'],
+                'user_note' => $validated['message'],
+                'total_price' => $finalTotal,
+                'discount' => $discount,
+                'coupon_code' => $coupon['code'] ?? null,
+                'type_payment' => $validated['payment_method'],
+                'status_order' => 'pending',
+                'status_payment' => $validated['payment_method'] === 'vnpay' ? 'unpaid' : 'unpaid',
             ]);
-        }
 
-        // Xử lý theo loại thanh toán
-        if ($request->payment_method === 'cod') {
-            // Trừ tồn kho
+            // Tạo chi tiết đơn hàng
             foreach ($cart->cartItem as $item) {
-                $variant = $item->variant;
-                $variant->stock_quantity -= $item->quantity;
-                $variant->save();
+                $product = $item->variant->product;
+                $basePrice = $product ? ($product->base_price ?? 0) : 0;
+                $variantPrice = $item->variant->price ?? 0;
+                $unitPrice = $basePrice + $variantPrice;
+                $totalPrice = $unitPrice * $item->quantity;
 
-                app(\App\Http\Controllers\ProductController::class)->autoTrashIfOutOfStock($variant->product_id);
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'variant_id' => $item->variant_id,
+                    'quantity' => $item->quantity,
+                    'variant_price' => $variantPrice,
+                    'total_price' => $totalPrice,
+                ]);
             }
 
-            // Xóa giỏ hàng và mã giảm giá
+            // Xóa giỏ hàng
             $cart->cartItem()->delete();
             $cart->delete();
+
+            // Xóa coupon session
             session()->forget('applied_coupon');
 
-            return redirect()->route('client.carts')->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đang chờ xác nhận.');
-        }
+            // Xử lý thanh toán
+            if ($validated['payment_method'] === 'vnpay') {
+                return redirect()->route('vnpay.payment', ['order_id' => $order->id]);
+            } else {
+                return redirect()->route('client.orders')->with('success', 'Đặt hàng thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.');
+            }
 
-        // Nếu là VNPay thì chuyển hướng mà không xoá giỏ hàng
-        if ($request->payment_method === 'vnpay') {
-            $vnpayService = new \App\Services\VNPayService();
-            $paymentUrl = $vnpayService->createPaymentUrl(
-                $order->id,
-                $totalPrice,
-                "Thanh toán đơn hàng #" . $order->id,
-                $request->ip()
-            );
-            return redirect($paymentUrl);
+        } catch (\Exception $e) {
+            \Log::error('Place order error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
         }
-
-        return redirect()->route('client.carts')->with('error', 'Phương thức thanh toán không hợp lệ.');
     }
 
 

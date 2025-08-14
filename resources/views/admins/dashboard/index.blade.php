@@ -38,31 +38,35 @@
                     const today = new Date();
                     let from = '';
                     let to = '';
-                    if(val === 'today') {
-                        from = to = today.toISOString().slice(0,10);
-                    } else if(val === 'yesterday') {
-                        const yest = new Date(today); yest.setDate(today.getDate()-1);
-                        from = to = yest.toISOString().slice(0,10);
-                    } else if(val === 'this_week') {
-                        const first = new Date(today); first.setDate(today.getDate() - today.getDay() + 1);
-                        from = first.toISOString().slice(0,10);
-                        to = today.toISOString().slice(0,10);
-                    } else if(val === 'last_week') {
-                        const first = new Date(today); first.setDate(today.getDate() - today.getDay() - 6);
-                        const last = new Date(today); last.setDate(today.getDate() - today.getDay());
-                        from = first.toISOString().slice(0,10);
-                        to = last.toISOString().slice(0,10);
-                    } else if(val === 'this_month') {
+                    if (val === 'today') {
+                        from = to = today.toISOString().slice(0, 10);
+                    } else if (val === 'yesterday') {
+                        const yest = new Date(today);
+                        yest.setDate(today.getDate() - 1);
+                        from = to = yest.toISOString().slice(0, 10);
+                    } else if (val === 'this_week') {
+                        const first = new Date(today);
+                        first.setDate(today.getDate() - today.getDay() + 1);
+                        from = first.toISOString().slice(0, 10);
+                        to = today.toISOString().slice(0, 10);
+                    } else if (val === 'last_week') {
+                        const first = new Date(today);
+                        first.setDate(today.getDate() - today.getDay() - 6);
+                        const last = new Date(today);
+                        last.setDate(today.getDate() - today.getDay());
+                        from = first.toISOString().slice(0, 10);
+                        to = last.toISOString().slice(0, 10);
+                    } else if (val === 'this_month') {
                         const first = new Date(today.getFullYear(), today.getMonth(), 1);
-                        from = first.toISOString().slice(0,10);
-                        to = today.toISOString().slice(0,10);
-                    } else if(val === 'last_month') {
-                        const first = new Date(today.getFullYear(), today.getMonth()-1, 1);
+                        from = first.toISOString().slice(0, 10);
+                        to = today.toISOString().slice(0, 10);
+                    } else if (val === 'last_month') {
+                        const first = new Date(today.getFullYear(), today.getMonth() - 1, 1);
                         const last = new Date(today.getFullYear(), today.getMonth(), 0);
-                        from = first.toISOString().slice(0,10);
-                        to = last.toISOString().slice(0,10);
+                        from = first.toISOString().slice(0, 10);
+                        to = last.toISOString().slice(0, 10);
                     }
-                    if(from && to) {
+                    if (from && to) {
                         document.getElementById('from_date').value = from;
                         document.getElementById('to_date').value = to;
                     }
@@ -78,6 +82,96 @@
                             <div class="card-body">
                                 <h6 class="card-title">Tổng doanh thu</h6>
                                 <h4 class="card-text">{{ number_format($totalRevenue, 0, ',', '.') }} đ</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-bg-primary mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Tổng đơn hàng</h6>
+                                <h4 class="card-text">{{ $totalOrders }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-bg-info mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Đơn hoàn tất</h6>
+                                <h4 class="card-text">{{ $completedOrders }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-bg-warning mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Đơn đang chờ</h6>
+                                <h4 class="card-text">{{ $pendingOrders }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <div class="card text-bg-secondary mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Đơn đã nhận</h6>
+                                <h4 class="card-text">{{ $receivedOrders }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-bg-danger mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Đơn huỷ</h6>
+                                <h4 class="card-text">{{ $cancelledOrders }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Khách hàng mới</h6>
+                                <h4 class="card-text">{{ $newCustomers }}</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-bg-light mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Giá trị đơn TB</h6>
+                                <h4 class="card-text">{{ number_format($averageOrderValue, 0, ',', '.') }} đ</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Doanh thu theo ngày</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueChart" height="120"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Đơn theo trạng thái</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="statusChart" height="260"></canvas>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Theo phương thức thanh toán</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="paymentChart" height="260"></canvas>
                             </div>
                         </div>
                     </div>
@@ -147,6 +241,37 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="card mb-3">
+                            <div class="card-header bg-success-subtle">
+                                <h6 class="mb-0">Top danh mục theo doanh thu</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="bg-light-subtle">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Danh mục</th>
+                                                <th>Số lượng bán</th>
+                                                <th>Doanh thu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($topCategories as $i => $cat)
+                                            <tr>
+                                                <td>{{ $i+1 }}</td>
+                                                <td>{{ $cat->category_name }}</td>
+                                                <td>{{ $cat->total_quantity }}</td>
+                                                <td>{{ number_format($cat->revenue, 0, ',', '.') }} đ</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
                             <div class="card-header bg-warning-subtle">
                                 <h6 class="mb-0">Top sản phẩm bán ít nhất</h6>
                             </div>
@@ -180,4 +305,64 @@
         </div>
     </div>
 </div>
-@endsection 
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: @json($revenueLabels ?? []),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: @json($revenueSeries ?? []),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59,130,246,0.15)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    const statusCtx = document.getElementById('statusChart');
+    if (statusCtx) {
+        const statusData = @json($ordersByStatus ?? []);
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(statusData),
+                datasets: [{
+                    data: Object.values(statusData),
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6366f1']
+                }]
+            }
+        });
+    }
+
+    const payCtx = document.getElementById('paymentChart');
+    if (payCtx) {
+        const payData = @json($ordersByPayment ?? []);
+        new Chart(payCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(payData),
+                datasets: [{
+                    data: Object.values(payData),
+                    backgroundColor: ['#0ea5e9', '#22c55e']
+                }]
+            }
+        });
+    }
+</script>
+@endpush
+@endsection

@@ -4,7 +4,7 @@
 <head>
     <!-- Title Meta -->
     <meta charset="utf-8">
-    <title>Dashboard | Larkon - Responsive Admin Dashboard Template</title>
+    <title>Dashboard | Aura World - Responsive Admin Dashboard Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A fully responsive premium admin dashboard template">
     <meta name="author" content="Techzaa">
@@ -49,7 +49,7 @@
         <!-- Start right Content here -->
         <!-- ==================================================== -->
 
-          @yield('content')
+        @yield('content')
         <!-- ==================================================== -->
         <!-- End Page Content -->
         <!-- ==================================================== -->
@@ -62,7 +62,7 @@
 
     <!-- App Javascript (Require in all Page) -->
     <script src="{{ asset('admin/assets/js/app.js') }}"></script>
-    
+
     <svg id="SvgjsSvg1158" width="2" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1"
         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev"
         style="overflow: hidden; top: -100%; left: -100%; position: absolute; opacity: 0;">

@@ -23,7 +23,7 @@ use App\Http\Controllers\VariantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ShipperController;
+use App\Http\Controllers\ShippingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -178,6 +178,9 @@ Route::middleware(['checklogin'])->prefix('admin')->group(function () {
 
     Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
     Route::get('/purchases/{id}', [PurchaseController::class, 'show'])->name('purchases.show');
+
+    // Route cho tích hợp Giao Hàng Tiết Kiệm (GHTK)
+    Route::post('/shipping/ghtk/create-order', [ShippingController::class, 'createGHTKOrder'])->name('shipping.ghtk.createOrder');
 });
 
 // Forgot password routes (nên không bọc auth)
@@ -191,9 +194,14 @@ Route::get('/clients', function () {
     return view('clients.layouts.home');
 })->name('clients.home');
 
-Route::get('/shippers', [ShipperController::class, 'home'])->name('shipper.home');
-Route::post('/shippers/orders/{order}/accept', [ShipperController::class, 'acceptOrder'])->name('shipper.order');
-Route::post('/shippers/orders/{order}/complete', [ShipperController::class, 'completeOrder'])->name('shipper.order.complete');
+// Test route để kiểm tra
+Route::get('/test-checkout', function () {
+    return response()->json([
+        'message' => 'Test checkout route works!',
+        'auth_check' => Auth::check(),
+        'user' => Auth::user() ? Auth::user()->name : 'Not logged in'
+    ]);
+})->name('test.checkout');
 
 
 
@@ -217,7 +225,7 @@ Route::prefix('clients')->group(function () {
     Route::post('/products/{id}/reviews', [ClientController::class, 'addReview'])->name('review.add');
 });
 
-Route::prefix('clients')->middleware('auth')->group(function () {
+Route::prefix('clients')->middleware('checkcustomer')->group(function () {
 
     Route::get('/cart/recalculate', [ClientController::class, 'recalculate'])->name('client.carts.recalculate');
     Route::put('/carts/update/{item}', [ClientController::class, 'updateQuantity'])->name('client.carts.update');
@@ -227,12 +235,27 @@ Route::prefix('clients')->middleware('auth')->group(function () {
     Route::post('/carts/checkout', [ClientController::class, 'placeOrder'])->name('client.carts.placeOrder');
     Route::get('/checkout/vnpay-return', [ClientController::class, 'handleReturn']);
 
+    // Test route để kiểm tra authentication
+    Route::get('/test-auth', function () {
+        if (Auth::check()) {
+            return response()->json([
+                'authenticated' => true,
+                'user' => Auth::user()->name,
+                'user_id' => Auth::user()->id
+            ]);
+        } else {
+            return response()->json([
+                'authenticated' => false
+            ]);
+        }
+    })->name('client.test.auth');
 
     Route::post('/profiles/update', [ClientController::class, 'updateProfile'])->name('client.profiles.update');
     Route::post('/profiles/change', [ClientController::class, 'changePassword'])->name('password.change.post');
 
     Route::get('/orders/{id}', [ClientController::class, 'orderDetail'])->name('client.orders.detail');
     Route::post('/orders/cancel', [ClientController::class, 'cancelOrder'])->name('client.orders.cancel');
+    Route::post('/orders/{id}/complete', [ClientController::class, 'completeOrder'])->name('client.orders.complete');
 
     Route::post('/coupon/use-coupon', [ClientController::class, 'useCoupon'])->name('client.carts.useCoupon');
     Route::post('/coupon/remove-coupon', [ClientController::class, 'removeCoupon'])->name('client.carts.removeCoupon');
@@ -241,3 +264,5 @@ Route::prefix('clients')->middleware('auth')->group(function () {
 Route::get('/orders/success', [VNPayController::class, 'paymentSuccess'])->name('client.orders.success');
 Route::get('/orders/failed', [VNPayController::class, 'paymentFailed'])->name('client.orders.failed');
 Route::get('/vnpay/return', [VNPayController::class, 'return'])->name('vnpay.return');
+
+Route::get('/shipping/ghtk/track/{label}', [ShippingController::class, 'trackGHTKOrder'])->name('shipping.ghtk.track');

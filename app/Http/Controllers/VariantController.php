@@ -82,16 +82,44 @@ class VariantController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
+            'product_id' => 'required|integer|exists:products,id',
+            'price' => 'required|numeric|min:0|max:999999999',
+            'stock_quantity' => 'required|integer|min:0|max:999999',
             'status' => 'required|in:active,inactive',
             'attribute_values' => 'required|array|min:1',
-            'attribute_values.*' => 'exists:attributes_values,id',
+            'attribute_values.*' => 'integer|exists:attributes_values,id',
+        ], [
+            'product_id.required' => 'Sản phẩm là bắt buộc.',
+            'product_id.exists' => 'Sản phẩm không tồn tại.',
+            'price.required' => 'Giá là bắt buộc.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+            'price.max' => 'Giá quá lớn.',
+            'stock_quantity.required' => 'Số lượng tồn kho là bắt buộc.',
+            'stock_quantity.integer' => 'Số lượng tồn kho phải là số nguyên.',
+            'stock_quantity.min' => 'Số lượng tồn kho không được âm.',
+            'stock_quantity.max' => 'Số lượng tồn kho quá lớn.',
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
+            'attribute_values.required' => 'Thuộc tính là bắt buộc.',
+            'attribute_values.array' => 'Thuộc tính phải là mảng.',
+            'attribute_values.min' => 'Phải chọn ít nhất 1 thuộc tính.',
+            'attribute_values.*.exists' => 'Thuộc tính không tồn tại.',
         ]);
 
         try {
             DB::beginTransaction();
+
+            // Kiểm tra xem variant đã tồn tại chưa
+            $existingVariant = Variant::where('product_id', $validated['product_id'])
+                ->whereHas('attributesValue', function($query) use ($validated) {
+                    $query->whereIn('attribute_values.id', $validated['attribute_values']);
+                }, '=', count($validated['attribute_values']))
+                ->first();
+
+            if ($existingVariant) {
+                return back()->with('error', 'Variant với các thuộc tính này đã tồn tại.')->withInput();
+            }
 
             // Tạo variant
             $variant = Variant::create([
@@ -114,7 +142,8 @@ class VariantController extends Controller
             return redirect()->route('variants.index')->with('success', 'Tạo variant thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Không thể tạo variant: ' . $e->getMessage());
+            \Log::error('Variant creation error: ' . $e->getMessage());
+            return back()->with('error', 'Không thể tạo variant: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -139,18 +168,47 @@ class VariantController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
+            'product_id' => 'required|integer|exists:products,id',
+            'price' => 'required|numeric|min:0|max:999999999',
+            'stock_quantity' => 'required|integer|min:0|max:999999',
             'status' => 'required|in:active,inactive',
             'attribute_values' => 'required|array|min:1',
-            'attribute_values.*' => 'exists:attributes_values,id',
+            'attribute_values.*' => 'integer|exists:attributes_values,id',
+        ], [
+            'product_id.required' => 'Sản phẩm là bắt buộc.',
+            'product_id.exists' => 'Sản phẩm không tồn tại.',
+            'price.required' => 'Giá là bắt buộc.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+            'price.max' => 'Giá quá lớn.',
+            'stock_quantity.required' => 'Số lượng tồn kho là bắt buộc.',
+            'stock_quantity.integer' => 'Số lượng tồn kho phải là số nguyên.',
+            'stock_quantity.min' => 'Số lượng tồn kho không được âm.',
+            'stock_quantity.max' => 'Số lượng tồn kho quá lớn.',
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
+            'attribute_values.required' => 'Thuộc tính là bắt buộc.',
+            'attribute_values.array' => 'Thuộc tính phải là mảng.',
+            'attribute_values.min' => 'Phải chọn ít nhất 1 thuộc tính.',
+            'attribute_values.*.exists' => 'Thuộc tính không tồn tại.',
         ]);
 
         try {
             DB::beginTransaction();
 
             $variant = Variant::findOrFail($id);
+            
+            // Kiểm tra xem variant khác đã có thuộc tính này chưa (trừ variant hiện tại)
+            $existingVariant = Variant::where('product_id', $validated['product_id'])
+                ->where('id', '!=', $variant->id)
+                ->whereHas('attributesValue', function($query) use ($validated) {
+                    $query->whereIn('attribute_values.id', $validated['attribute_values']);
+                }, '=', count($validated['attribute_values']))
+                ->first();
+
+            if ($existingVariant) {
+                return back()->with('error', 'Variant khác với các thuộc tính này đã tồn tại.')->withInput();
+            }
             
             // Cập nhật thông tin variant
             $variant->update([
@@ -176,7 +234,8 @@ class VariantController extends Controller
             return redirect()->route('variants.index')->with('success', 'Cập nhật variant thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Không thể cập nhật variant: ' . $e->getMessage());
+            \Log::error('Variant update error: ' . $e->getMessage());
+            return back()->with('error', 'Không thể cập nhật variant: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -188,11 +247,26 @@ class VariantController extends Controller
         try {
             $variant = Variant::findOrFail($id);
             
-            // Soft delete variant (không xóa variant attributes vì sẽ được khôi phục cùng)
+            // Kiểm tra xem variant có đơn hàng nào không
+            $hasOrders = \App\Models\OrderDetail::where('variant_id', $variant->id)->exists();
+            
+            if ($hasOrders) {
+                return redirect()->route('variants.index')->with('error', 'Không thể xóa variant vì đã có đơn hàng liên quan.');
+            }
+            
+            // Kiểm tra xem variant có trong giỏ hàng không
+            $hasCartItems = \App\Models\CartItem::where('variant_id', $variant->id)->exists();
+            
+            if ($hasCartItems) {
+                return redirect()->route('variants.index')->with('error', 'Không thể xóa variant vì đã có trong giỏ hàng.');
+            }
+            
+            // Soft delete variant
             $variant->delete();
             
             return redirect()->route('variants.index')->with('success', 'Xóa variant thành công! Variant đã được chuyển vào thùng rác.');
         } catch (\Exception $e) {
+            \Log::error('Variant deletion error: ' . $e->getMessage());
             return back()->with('error', 'Không thể xóa variant: ' . $e->getMessage());
         }
     }

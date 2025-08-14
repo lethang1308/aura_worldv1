@@ -47,22 +47,43 @@ class CategoryController extends Controller
         // Validate dữ liệu đầu vào
         $validated = $request->validate([
             'category_name' => 'required|string|max:255',
-            'parent_category_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string',
+            'parent_category_id' => 'nullable|integer|exists:categories,id',
+            'description' => 'nullable|string|max:1000',
             'status' => 'required|in:0,1',
+        ], [
+            'category_name.required' => 'Tên danh mục là bắt buộc.',
+            'category_name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
+            'parent_category_id.exists' => 'Danh mục cha không tồn tại.',
+            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
 
-        // Tạo danh mục mới
-        Category::create([
-            'category_name' => $validated['category_name'],
-            'parent_category_id' => $validated['parent_category_id'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'status' => $validated['status'],
-        ]);
+        try {
+            // Kiểm tra xem tên danh mục đã tồn tại chưa
+            $existingCategory = Category::where('category_name', $validated['category_name'])
+                ->where('parent_category_id', $validated['parent_category_id'])
+                ->first();
 
-        // Redirect với thông báo thành công
-        return redirect()->route('categories.index')
-            ->with('success', 'Tạo danh mục mới thành công!');
+            if ($existingCategory) {
+                return back()->with('error', 'Tên danh mục đã tồn tại trong cùng cấp.')->withInput();
+            }
+
+            // Tạo danh mục mới
+            Category::create([
+                'category_name' => $validated['category_name'],
+                'parent_category_id' => $validated['parent_category_id'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'status' => $validated['status'],
+            ]);
+
+            // Redirect với thông báo thành công
+            return redirect()->route('categories.index')
+                ->with('success', 'Tạo danh mục mới thành công!');
+        } catch (\Exception $e) {
+            \Log::error('Category creation error: ' . $e->getMessage());
+            return back()->with('error', 'Có lỗi xảy ra khi tạo danh mục: ' . $e->getMessage())->withInput();
+        }
     }
 
 
@@ -79,33 +100,95 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'category_name' => 'required|string|max:255',
-            'parent_category_id' => 'nullable|exists:categories,id|not_in:' . $id,
-            'description' => 'nullable|string',
+            'parent_category_id' => 'nullable|integer|exists:categories,id|not_in:' . $id,
+            'description' => 'nullable|string|max:1000',
             'status' => 'required|in:0,1',
+        ], [
+            'category_name.required' => 'Tên danh mục là bắt buộc.',
+            'category_name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
+            'parent_category_id.exists' => 'Danh mục cha không tồn tại.',
+            'parent_category_id.not_in' => 'Không thể chọn chính mình làm danh mục cha.',
+            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
         ]);
 
-        $category = Category::findOrFail($id);
+        try {
+            $category = Category::findOrFail($id);
 
-        $category->update([
-            'category_name' => $validated['category_name'],
-            'parent_category_id' => $validated['parent_category_id'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'status' => $validated['status'],
-        ]);
+            // Kiểm tra xem tên danh mục đã tồn tại chưa (trừ danh mục hiện tại)
+            $existingCategory = Category::where('category_name', $validated['category_name'])
+                ->where('parent_category_id', $validated['parent_category_id'])
+                ->where('id', '!=', $id)
+                ->first();
 
-        return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công!');
+            if ($existingCategory) {
+                return back()->with('error', 'Tên danh mục đã tồn tại trong cùng cấp.')->withInput();
+            }
+
+            // Kiểm tra xem có tạo vòng lặp không
+            if ($validated['parent_category_id']) {
+                $parentId = $validated['parent_category_id'];
+                $currentId = $id;
+                
+                // Kiểm tra xem parent có phải là con của current không
+                $parent = Category::find($parentId);
+                while ($parent && $parent->parent_category_id) {
+                    if ($parent->parent_category_id == $currentId) {
+                        return back()->with('error', 'Không thể tạo vòng lặp trong cấu trúc danh mục.')->withInput();
+                    }
+                    $parent = Category::find($parent->parent_category_id);
+                }
+            }
+
+            $category->update([
+                'category_name' => $validated['category_name'],
+                'parent_category_id' => $validated['parent_category_id'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'status' => $validated['status'],
+            ]);
+
+            return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công!');
+        } catch (\Exception $e) {
+            \Log::error('Category update error: ' . $e->getMessage());
+            return back()->with('error', 'Có lỗi xảy ra khi cập nhật danh mục: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        if ($category->children()->count() > 0) {
-            return redirect()->back()->with('error', 'Không thể xóa danh mục cha đang có danh mục con!');
+        try {
+            $category = Category::findOrFail($id);
+            
+            // Kiểm tra xem có danh mục con không
+            if ($category->children()->count() > 0) {
+                return redirect()->back()->with('error', 'Không thể xóa danh mục cha đang có danh mục con!');
+            }
+            
+            // Kiểm tra xem có sản phẩm nào thuộc danh mục này không
+            $hasProducts = \App\Models\Product::where('category_id', $category->id)->exists();
+            
+            if ($hasProducts) {
+                return redirect()->back()->with('error', 'Không thể xóa danh mục vì đã có sản phẩm thuộc danh mục này!');
+            }
+            
+            // Kiểm tra xem có sản phẩm nào thuộc danh mục con không
+            $childCategoryIds = $category->children()->pluck('id')->toArray();
+            $hasProductsInChildren = \App\Models\Product::whereIn('category_id', $childCategoryIds)->exists();
+            
+            if ($hasProductsInChildren) {
+                return redirect()->back()->with('error', 'Không thể xóa danh mục vì đã có sản phẩm thuộc danh mục con!');
+            }
+            
+            $category->status = 'inactive';
+            $category->save();
+            $category->delete();
+            
+            return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
+        } catch (\Exception $e) {
+            \Log::error('Category deletion error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa danh mục: ' . $e->getMessage());
         }
-        $category->status = 'inactive';
-        $category->save();
-        $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
     }
 
     public function restore($id)

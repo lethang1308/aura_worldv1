@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckLogin;
+use App\Http\Middleware\CheckCustomerLogin;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'checklogin' => CheckLogin::class,
+            'checkcustomer' => CheckCustomerLogin::class,
             'redirect.authenticated' => RedirectIfAuthenticated::class,
         ]);
     })

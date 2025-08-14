@@ -2,13 +2,15 @@
     <!-- Sidebar Logo -->
     <div class="logo-box">
         <a href="{{ route('admin') }}" class="logo-dark">
-            <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
-            <img src="{{ asset('admin/assets/images/logo-dark.png') }}" class="logo-lg" alt="logo dark">
+            {{-- <img src="{{ asset('admin/assets/images/logo-image.png') }}" class="logo-sm" alt="logo sm"> --}}
+            {{-- <img src="{{ asset('admin/assets/images/logo-image.png') }}" class="logo-lg" alt="logo dark"> --}}
+            <span class="logo-lg fw-bold" style="font-size: 2rem; color: #2a3042;">Aura World</span>
         </a>
 
         <a href="{{ route('admin') }}" class="logo-light mt-3">
-            <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
-            <img src="{{ asset('admin/assets/images/logo-light.png') }}" class="logo-lg" alt="logo light">
+            {{-- <img src="{{ asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm"> --}}
+            {{-- <img src="{{ asset('admin/assets/images/logo-light.png') }}" class="logo-lg" alt="logo light"> --}}
+            <span class="logo-lg fw-bold" style="font-size: 2rem; color: #fff;">Aura World</span>
         </a>
     </div>
 

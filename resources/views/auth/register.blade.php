@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi" class="h-100" data-bs-theme="light" data-topbar-color="light" data-menu-color="dark"
     data-menu-size="sm-hover-active">
+
 <head>
     <meta charset="utf-8">
-    <title>Đăng Ký | Larkon - Bảng Điều Khiển Quản Trị</title>
+    <title>Đăng Ký | Aura World - Bảng Điều Khiển Quản Trị</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mẫu bảng điều khiển quản trị cao cấp, phản hồi đầy đủ">
     <meta name="author" content="Techzaa">
@@ -38,19 +39,19 @@
                                 <div>
                                     {{-- Hiển thị lỗi --}}
                                     @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                     @endif
 
                                     @if (session('error'))
-                                        <div class="alert alert-danger">
-                                            {{ session('error') }}
-                                        </div>
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
                                     @endif
 
                                     <form method="POST" action="{{ route('register') }}">
@@ -62,7 +63,7 @@
                                             <input type="text" name="name" id="example-name" class="form-control"
                                                 placeholder="Nhập họ tên" required value="{{ old('name') }}">
                                             @error('name')
-                                                <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
 
@@ -72,7 +73,7 @@
                                             <input type="email" name="email" id="example-email" class="form-control"
                                                 placeholder="Nhập email" required value="{{ old('email') }}">
                                             @error('email')
-                                                <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
 
@@ -82,7 +83,7 @@
                                             <input type="tel" name="phone" id="example-phone" class="form-control"
                                                 placeholder="Nhập số điện thoại" required value="{{ old('phone') }}">
                                             @error('phone')
-                                                <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
 
@@ -92,7 +93,7 @@
                                             <input type="text" name="address" id="example-address" class="form-control"
                                                 placeholder="Nhập địa chỉ" required value="{{ old('address') }}">
                                             @error('address')
-                                                <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
 
@@ -102,7 +103,7 @@
                                             <input type="password" name="password" id="example-password"
                                                 class="form-control" placeholder="Nhập mật khẩu" required>
                                             @error('password')
-                                                <small class="text-danger">{{ $message }}</small>
+                                            <small class="text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
 
@@ -154,4 +155,5 @@
     <script src="{{ asset('admin/assets/js/vendor.js') }}"></script>
     <script src="{{ asset('admin/assets/js/app.js') }}"></script>
 </body>
+
 </html>

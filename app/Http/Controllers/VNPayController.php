@@ -29,15 +29,20 @@ class VNPayController extends Controller
         try {
             $inputData = $request->all();
 
+            // Log toàn bộ dữ liệu callback từ VNPAY để kiểm tra
+            Log::info('VNPay return callback data', $inputData);
+
             $responseCode = $inputData['vnp_ResponseCode'] ?? null;
 
             if ($responseCode === '504') {
+                Log::warning('VNPay gateway timeout', $inputData);
                 return redirect()->route('client.orders.failed')
                     ->with('error', 'VNPay hiện không phản hồi. Tạm thời không thể thanh toán bằng phương thức này.');
             }
 
             // Validate response
             if (!$this->vnpayService->validateResponse($inputData)) {
+                Log::warning('VNPay signature invalid', $inputData);
                 return redirect()->route('client.orders.failed')
                     ->with('error', 'Chữ ký không hợp lệ!');
             }
@@ -61,6 +66,7 @@ class VNPayController extends Controller
 
             // Kiểm tra nếu đã xử lý rồi
             if ($order->status_payment === 'paid') {
+                Log::info('Order already paid', ['order_id' => $order->id]);
                 return redirect()->route('client.orders.success')
                     ->with([
                         'success' => 'Đơn hàng đã được thanh toán!',
@@ -143,7 +149,8 @@ class VNPayController extends Controller
             } else {
                 Log::warning('VNPay payment failed', [
                     'order_id' => $orderId,
-                    'response_code' => $responseCode
+                    'response_code' => $responseCode,
+                    'inputData' => $inputData
                 ]);
 
                 return redirect()->route('client.orders.failed')->with([
