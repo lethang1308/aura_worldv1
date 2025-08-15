@@ -93,15 +93,15 @@
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
                                         role="button" aria-haspopup="true" aria-expanded="false"></a>
                                     <ul class="dropdown-menu">
-                                        {{-- <li class="nav-item">
+                                         <li class="nav-item">
                                             <a class="nav-link" href="#">Cách chọn</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#">Cách bảo quản</a>
-                                        </li> --}}
-                                        {{-- <li class="nav-item">
+                                        </li> 
+                                        <li class="nav-item">
                                             <a class="nav-link" href="#">Xu hướng</a>
-                                        </li> --}}
+                                        </li> 
                                     </ul>
                                 </li>
                                 <li class="nav-item">
