@@ -106,6 +106,52 @@
                                     <li><span class="fw-medium text-dark">Ngày tạo</span><span class="mx-2">:</span>{{ $product->created_at->format('d/m/Y H:i') }}</li>
                                     <li><span class="fw-medium text-dark">Ngày cập nhật</span><span class="mx-2">:</span>{{ $product->updated_at->format('d/m/Y H:i') }}</li>
                                 </ul>
+
+                                <!-- Hiển thị thông tin biến thể -->
+                                <hr>
+                                <h5 class="text-dark fw-semibold mt-3">Biến thể sản phẩm:</h5>
+                                @if($product->variants && count($product->variants))
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Thuộc tính</th>
+                                                    <th>Giá trị</th>
+                                                    <th>Giá bán</th>
+                                                    <th>Tồn kho</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($product->variants as $i => $variant)
+                                                    <tr>
+                                                        <td>{{ $i + 1 }}</td>
+                                                        <td>
+                                                            @foreach($variant->attributeValues as $attr)
+                                                                <span class="badge bg-info me-1">{{ $attr->attribute->name ?? '' }}</span>
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            @foreach($variant->attributeValues as $attr)
+                                                                <span class="badge bg-secondary me-1">{{ $attr->value ?? '' }}</span>
+                                                            @endforeach
+                                                        </td>
+                                                        <td>{{ number_format($variant->price, 0, ',', '.') }} ₫</td>
+                                                        <td>{{ $variant->stock_quantity }}</td>
+                                                        <td>
+                                                            <span class="badge {{ $variant->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                                                                {{ $variant->status == 'active' ? 'Hoạt động' : 'Không hoạt động' }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <p class="text-muted">Sản phẩm chưa có biến thể.</p>
+                                @endif
                             </div>
                         </div>
 

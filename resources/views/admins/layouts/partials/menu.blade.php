@@ -45,7 +45,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Thống kê</span>
+                                        <span class="nav-text">Quản Lý Thống Kê</span>
                                     </a>
                                 </li>
 
@@ -55,7 +55,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:t-shirt-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Sản phẩm</span>
+                                        <span class="nav-text">Quản Lý Sản Phẩm</span>
                                     </a>
                                     <div class="collapse" id="sidebarProducts">
                                         <ul class="nav sub-navbar-nav">
@@ -79,7 +79,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Thương hiệu</span>
+                                        <span class="nav-text">Quản Lý Thương Hiệu</span>
                                     </a>
                                     <div class="collapse" id="sidebarSellers">
                                         <ul class="nav sub-navbar-nav">
@@ -99,7 +99,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:clipboard-list-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Danh mục</span>
+                                        <span class="nav-text">Quản Lý Danh Mục</span>
                                     </a>
                                     <div class="collapse" id="sidebarCategory">
                                         <ul class="nav sub-navbar-nav">
@@ -121,7 +121,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:bag-smile-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Đơn hàng</span>
+                                        <span class="nav-text">Quản Lý Đơn Hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarOrders">
                                         <ul class="nav sub-navbar-nav">
@@ -141,7 +141,7 @@
                                             <iconify-icon
                                                 icon="solar:confetti-minimalistic-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Thuộc tính</span>
+                                        <span class="nav-text">Quản Lý Thuộc Tính</span>
                                     </a>
                                     <div class="collapse" id="sidebarAttributes">
                                         <ul class="nav sub-navbar-nav">
@@ -167,7 +167,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Mua hàng</span>
+                                        <span class="nav-text">Quản Lý Mua Hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarPurchases">
                                         <ul class="nav sub-navbar-nav">
@@ -184,7 +184,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:ufo-2-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Biến thể</span>
+                                        <span class="nav-text">Quản Lý Biến Thể</span>
                                     </a>
                                     <div class="collapse" id="sidebarVariants">
                                         <ul class="nav sub-navbar-nav">
@@ -206,7 +206,7 @@
                                             <iconify-icon
                                                 icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Khách hàng</span>
+                                        <span class="nav-text">Quản Lý Khách Hàng</span>
                                     </a>
                                     <div class="collapse" id="sidebarCustomers">
                                         <ul class="nav sub-navbar-nav">
@@ -219,7 +219,7 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a class="nav-link menu-arrow" href="#sidebarRoles" data-bs-toggle="collapse"
                                         role="button" aria-expanded="false" aria-controls="sidebarRoles">
                                         <span class="nav-icon">
@@ -235,7 +235,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </li>
+                                </li> --}}
 
                                 <li class="nav-item">
                                     <a class="nav-link menu-arrow" href="#sidebarBanners" data-bs-toggle="collapse"
@@ -243,7 +243,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:shop-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Banner</span>
+                                        <span class="nav-text">Quản Lý Banner</span>
                                     </a>
                                     <div class="collapse" id="sidebarBanners">
                                         <ul class="nav sub-navbar-nav">
@@ -265,7 +265,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:leaf-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Mã giảm giá</span>
+                                        <span class="nav-text">Quản Lý Mã Giảm Giá</span>
                                     </a>
                                     <div class="collapse" id="sidebarCoupons">
                                         <ul class="nav sub-navbar-nav">
@@ -284,7 +284,7 @@
                                         <span class="nav-icon">
                                             <iconify-icon icon="solar:chat-square-like-bold-duotone"></iconify-icon>
                                         </span>
-                                        <span class="nav-text">Đánh giá</span>
+                                        <span class="nav-text">Quản Lý Đánh Giá</span>
                                     </a>
                                 </li>
                             </ul>

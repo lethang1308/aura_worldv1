@@ -80,14 +80,38 @@
                     <div class="mb-4">
                         <h5>Thống kê từ <b>{{ $from }}</b> đến <b>{{ $to }}</b></h5>
                         <div class="row g-3 mb-3">
-                            <div class="col-md-3">
-                                <div class="card text-bg-success mb-3">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Tổng doanh thu</h6>
-                                        <h4 class="card-text">{{ number_format($totalRevenue, 0, ',', '.') }} đ</h4>
+                                <div class="col-md-3">
+                                    <div class="card text-bg-success mb-3">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Tổng doanh thu</h6>
+                                            <h4 class="card-text">{{ number_format($totalRevenue, 0, ',', '.') }} đ</h4>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="col-md-3">
+                                    <div class="card text-bg-primary mb-3">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Tổng số sản phẩm</h6>
+                                            <h4 class="card-text">{{ number_format($totalProducts, 0, ',', '.') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-bg-info mb-3">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Tổng số đơn hàng</h6>
+                                            <h4 class="card-text">{{ number_format($totalOrders, 0, ',', '.') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-bg-danger mb-3">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">Số đơn bị hủy</h6>
+                                            <h4 class="card-text">{{ number_format($cancelledOrders, 0, ',', '.') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -192,8 +216,8 @@
                                     <div class="card-header bg-info">
                                         <h6 class="mb-0 text-white">Biểu đồ Top sản phẩm bán chạy</h6>
                                     </div>
-                                    <div class="card-body">
-                                        <canvas id="topProductsChart"></canvas>
+                                    <div class="card-body text-center">
+                                        <img src="{{ $topProductsChartUrl }}" alt="Top sản phẩm bán chạy" style="max-width:100%;height:auto;">
                                     </div>
                                 </div>
                             </div>
@@ -202,14 +226,14 @@
                                     <div class="card-header bg-warning">
                                         <h6 class="mb-0 text-white">Biểu đồ Top sản phẩm bán ít nhất</h6>
                                     </div>
-                                    <div class="card-body">
-                                        <canvas id="bottomProductsChart"></canvas>
+                                    <div class="card-body text-center">
+                                        <img src="{{ $bottomProductsChartUrl }}" alt="Top sản phẩm bán ít nhất" style="max-width:100%;height:auto;">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {{-- === Hết phần thêm === --}}
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <div class="card mb-3">
                                 <div class="card-header bg-success">
                                     <h6 class="mb-0 text-white">Biểu đồ Doanh thu theo ngày</h6>
@@ -218,90 +242,11 @@
                                     <canvas id="revenueChart"></canvas>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 @endif
             </div>
         </div>
     </div>
 
-    {{-- Thêm thư viện Chart.js --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
-        new Chart(topProductsCtx, {
-            type: 'bar',
-            data: {
-                labels: @json($topProductsChartLabels),
-                datasets: [{
-                    label: 'Số lượng bán',
-                    data: @json($topProductsChartData),
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        const bottomProductsCtx = document.getElementById('bottomProductsChart').getContext('2d');
-        new Chart(bottomProductsCtx, {
-            type: 'bar',
-            data: {
-                labels: @json($bottomProductsChartLabels),
-                datasets: [{
-                    label: 'Số lượng bán',
-                    data: @json($bottomProductsChartData),
-                    backgroundColor: 'rgba(255, 206, 86, 0.6)',
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(revenueCtx, {
-            type: 'line',
-            data: {
-                labels: @json($revenueChartLabels),
-                datasets: [{
-                    label: 'Doanh thu (VNĐ)',
-                    data: @json($revenueChartData),
-                    backgroundColor: 'rgba(75, 192, 192, 0.4)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true,
-                    pointBackgroundColor: 'rgba(75, 192, 192, 1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('vi-VN') + ' đ';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 @endsection
