@@ -13,6 +13,19 @@ use Illuminate\Support\Facades\DB;
 class VariantController extends Controller
 {
     /**
+     * Đổi trạng thái hoạt động/không hoạt động cho variant (AJAX)
+     */
+    public function toggleStatus(Request $request, $id)
+    {
+        $variant = Variant::findOrFail($id);
+        $variant->status = $variant->status === 'active' ? 'inactive' : 'active';
+        $variant->save();
+        return response()->json([
+            'success' => true,
+            'status' => $variant->status
+        ]);
+    }
+    /**
      * Hiển thị danh sách variants
      */
     public function index(Request $request)

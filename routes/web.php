@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\Admin\PurchaseController;
@@ -51,6 +52,8 @@ Route::get('/logout', function () {
 
 // Bọc tất cả route trong middleware 'auth' và prefix 'admin'
 Route::middleware(['checklogin'])->prefix('admin')->group(function () {
+    // Ajax: Đổi trạng thái hoạt động/không hoạt động cho variant
+    Route::post('/variants/{id}/toggle-status', [VariantController::class, 'toggleStatus']);
 
     // Product routes
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');

@@ -161,7 +161,7 @@
                                     </div>
 
                                     {{-- Biến thể sản phẩm --}}
-                                    <div class="row mt-4">
+                                    {{-- <div class="row mt-4">
                                         <div class="col-lg-12">
                                             <label class="form-label">Biến thể sản phẩm</label>
                                             <div id="variants-container">
@@ -169,7 +169,8 @@
                                                     @foreach($product->variants as $i => $variant)
                                                         <div class="row align-items-end mb-2 variant-row">
                                                             <div class="col-md-3">
-                                                                <input type="text" name="variants[attribute][]" class="form-control" placeholder="Tên thuộc tính" value="{{ ($variant->attributes && $variant->attributes->first()) ? $variant->attributes->first()->name : '' }}" required>
+                                                                <input type="text" name="variants[attribute][]" class="form-control" placeholder="Tên thuộc tính" value="{{ ($variant->attributes && $variant->attributes->first()) ? $variant->attributes->first()->name : '' }}" required readonly>
+                                                                <small class="text-muted">{{ ($variant->attributes && $variant->attributes->first()) ? $variant->attributes->first()->name : '' }}</small>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <input type="text" name="variants[value][]" class="form-control" placeholder="Giá trị" value="{{ ($variant->attributeValues && $variant->attributeValues->first()) ? $variant->attributeValues->first()->value : '' }}" required>
@@ -180,8 +181,11 @@
                                                             <div class="col-md-2">
                                                                 <input type="number" name="variants[stock][]" class="form-control" placeholder="Tồn kho" value="{{ $variant->stock_quantity }}">
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <button type="button" class="btn btn-danger btn-sm remove-variant-btn">Xóa</button>
+                                                            <div class="col-md-2 d-flex align-items-center gap-2">
+                                                                <span class="badge {{ $variant->status == 'active' ? 'bg-success' : 'bg-secondary' }}">{{ $variant->status == 'active' ? 'Hoạt động' : 'Không hoạt động' }}</span>
+                                                                <button type="button" class="btn btn-outline-{{ $variant->status == 'active' ? 'secondary' : 'success' }} btn-sm toggle-variant-status-btn" data-variant-id="{{ $variant->id }}">
+                                                                    {{ $variant->status == 'active' ? 'Đổi trạng thái' : 'Kích hoạt' }}
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     @endforeach
@@ -189,7 +193,7 @@
                                             </div>
                                             <button type="button" class="btn btn-outline-primary mt-2" id="add-variant-btn">Thêm biến thể</button>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- Input ẩn để upload ảnh mới --}}
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -268,6 +272,47 @@
                 e.target.closest('.variant-row').remove();
             }
         });
+
+            // Đổi trạng thái hoạt động/không hoạt động cho biến thể
+            document.querySelectorAll('.toggle-variant-status-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var variantId = btn.getAttribute('data-variant-id');
+                    var token = document.querySelector('input[name="_token"]').value;
+                    fetch('/admin/variants/' + variantId + '/toggle-status', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Đổi màu badge và nút
+                            const badge = btn.parentElement.querySelector('.badge');
+                            if (data.status === 'active') {
+                                badge.classList.remove('bg-secondary');
+                                badge.classList.add('bg-success');
+                                badge.textContent = 'Hoạt động';
+                                btn.classList.remove('btn-outline-success');
+                                btn.classList.add('btn-outline-secondary');
+                                btn.textContent = 'Đổi trạng thái';
+                            } else {
+                                badge.classList.remove('bg-success');
+                                badge.classList.add('bg-secondary');
+                                badge.textContent = 'Không hoạt động';
+                                btn.classList.remove('btn-outline-secondary');
+                                btn.classList.add('btn-outline-success');
+                                btn.textContent = 'Kích hoạt';
+                            }
+                        } else {
+                            alert('Đổi trạng thái thất bại!');
+                        }
+                    })
+                    .catch(() => alert('Có lỗi xảy ra!'));
+                });
+            });
     </script>
 
 </body>

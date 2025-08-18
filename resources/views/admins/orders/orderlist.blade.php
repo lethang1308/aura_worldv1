@@ -56,7 +56,7 @@
                                     <th>Tài khoản</th>
                                     <th>Email</th>
                                     <th>SĐT</th>
-                                    <th>Địa chỉ</th>
+                                    {{-- <th>Địa chỉ</th> --}}
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái đơn</th>
                                     <th>Thanh toán</th>
@@ -71,7 +71,7 @@
                                         <td>{{ $order->user->name ?? 'N/A' }}</td>
                                         <td>{{ $order->user_email }}</td>
                                         <td>{{ $order->user_phone }}</td>
-                                        <td>{{ $order->user_address }}</td>
+                                        {{-- <td>{{ $order->user_address }}</td> --}}
                                         <td>{{ number_format($order->total_price, 0, ',', '.') }} đ</td>
                                         <td>
                                             <span class="badge bg-info">{{ $statusList[$order->status_order] ?? $order->status_order }}</span>
@@ -103,7 +103,7 @@
                         </table>
                     </div>
                     <div class="mt-3">
-                        {{ $orders->withQueryString()->links() }}
+                        {{ $orders->withQueryString()->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

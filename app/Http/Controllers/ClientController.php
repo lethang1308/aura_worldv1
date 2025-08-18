@@ -203,8 +203,16 @@ class ClientController extends Controller
             return redirect()->route('login')->with('error', 'Bạn phải đăng nhập mới thêm được vào giỏ hàng');
         }
 
-        $variant = Variant::with('product')->findOrFail($request->variant_id);
+        $variant = Variant::withTrashed()->with('product')->findOrFail($request->variant_id);
         $product = $variant->product;
+        // Kiểm tra biến thể đã bị xóa (soft delete) chưa
+        if ($variant->trashed()) {
+            return redirect()->back()->with('error', 'Biến thể này đã bị xóa bởi quản trị viên, không thể thêm vào giỏ hàng.');
+        }
+        // Kiểm tra trạng thái biến thể
+        if ($variant->status !== 'active') {
+            return redirect()->back()->with('error', 'Biến thể này hiện không hoạt động, không thể thêm vào giỏ hàng.');
+        }
         // Kiểm tra sản phẩm đã bị xóa (soft delete) chưa
         if (!$product || $product->trashed()) {
             return redirect()->back()->with('error', 'Sản phẩm này đã bị xóa, không thể thêm vào giỏ hàng.');
