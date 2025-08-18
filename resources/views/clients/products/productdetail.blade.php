@@ -117,14 +117,28 @@
                                 <li class="mb-4">
                                     <span class="fw-bold text-dark fs-6 d-block mb-2">Dung tích:</span>
                                     <div class="d-flex flex-wrap gap-2" id="attribute-buttons">
+                                        @php
+                                            // Tìm dung tích có giá thấp nhất
+                                            $lowestPriceAttr = null;
+                                            $lowestPrice = PHP_INT_MAX;
+                                            
+                                            foreach ($attributeValues as $attr) {
+                                                $price = $attr['price'] ?? 0;
+                                                if ($price < $lowestPrice) {
+                                                    $lowestPrice = $price;
+                                                    $lowestPriceAttr = $attr;
+                                                }
+                                            }
+                                        @endphp
                                         @foreach ($attributeValues as $attr)
                                             @php
                                                 $variant = \App\Models\Variant::find($attr['variant_id']);
                                                 $variantPrice = $attr['price'] ?? 0;
                                                 $isOutOfStock = ($variant->stock_quantity ?? 0) <= 0;
+                                                $isLowestPrice = $attr === $lowestPriceAttr;
                                             @endphp
                                             <button type="button"
-                                                class="btn btn-outline-success attribute-button {{ $loop->first ? 'btn-success' : '' }} px-3 py-2 fw-semibold rounded-2"
+                                                class="btn attribute-button {{ $isLowestPrice ? 'btn-success' : 'btn-outline-success' }} px-3 py-2 fw-semibold rounded-2"
                                                 data-variant-id="{{ $attr['variant_id'] }}"
                                                 data-price="{{ $variantPrice }}"
                                                 data-stock="{{ $variant->stock_quantity ?? 0 }}">
@@ -286,37 +300,47 @@
                     return new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
                 }
 
+                function selectVariant(btn) {
+                    const price = parseFloat(btn.dataset.price || 0);
+                    const basePrice = parseFloat(defaultPrice);
+                    const totalPrice = basePrice + price;
+
+                    const variantId = btn.dataset.variantId;
+                    const stock = parseInt(btn.dataset.stock || 0);
+
+                    priceDisplay.innerText = formatCurrency(totalPrice);
+                    variantInput.value = variantId;
+                    stockDisplay.innerText = 'Số lượng còn lại: ' + stock;
+
+                    // Style selected button
+                    buttons.forEach(b => {
+                        b.classList.remove('btn-success');
+                        b.classList.add('btn-outline-success');
+                    });
+                    btn.classList.remove('btn-outline-success');
+                    btn.classList.add('btn-success');
+
+                    // Disable "Thêm vào giỏ hàng" nếu hết hàng
+                    if (stock <= 0) {
+                        addToCartBtn.disabled = true;
+                        addToCartBtn.innerText = 'Hết hàng';
+                        addToCartBtn.classList.add('disabled', 'btn-secondary');
+                    } else {
+                        addToCartBtn.disabled = false;
+                        addToCartBtn.innerText = 'Thêm vào giỏ hàng';
+                        addToCartBtn.classList.remove('disabled', 'btn-secondary');
+                    }
+                }
+
+                // Tự động chọn dung tích có giá thấp nhất khi trang load
+                const selectedButton = document.querySelector('.attribute-button.btn-success');
+                if (selectedButton) {
+                    selectVariant(selectedButton);
+                }
+
                 buttons.forEach(btn => {
                     btn.addEventListener('click', () => {
-                        const price = parseFloat(btn.dataset.price || 0);
-                        const basePrice = parseFloat(defaultPrice);
-                        const totalPrice = basePrice + price;
-
-                        const variantId = btn.dataset.variantId;
-                        const stock = parseInt(btn.dataset.stock || 0);
-
-                        priceDisplay.innerText = formatCurrency(totalPrice);
-                        variantInput.value = variantId;
-                        stockDisplay.innerText = 'Số lượng còn lại: ' + stock;
-
-                        // Style selected button
-                        buttons.forEach(b => {
-                            b.classList.remove('btn-primary');
-                            b.classList.add('btn-outline-secondary');
-                        });
-                        btn.classList.remove('btn-outline-secondary');
-                        btn.classList.add('btn-primary');
-
-                        // Disable "Thêm vào giỏ hàng" nếu hết hàng
-                        if (stock <= 0) {
-                            addToCartBtn.disabled = true;
-                            addToCartBtn.innerText = 'Hết hàng';
-                            addToCartBtn.classList.add('disabled', 'btn-secondary');
-                        } else {
-                            addToCartBtn.disabled = false;
-                            addToCartBtn.innerText = 'Thêm vào giỏ hàng';
-                            addToCartBtn.classList.remove('disabled', 'btn-secondary');
-                        }
+                        selectVariant(btn);
                     });
                 });
 
@@ -327,7 +351,7 @@
                         return;
                     }
 
-                    const selectedBtn = document.querySelector('.attribute-button.btn-primary');
+                    const selectedBtn = document.querySelector('.attribute-button.btn-success');
                     const stock = parseInt(selectedBtn?.dataset.stock || 0);
                     const quantity = parseInt(document.getElementById('sst').value || 1);
 

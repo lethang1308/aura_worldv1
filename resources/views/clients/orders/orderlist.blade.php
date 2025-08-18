@@ -146,7 +146,25 @@
                             </td>
                             <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                             <td class="action-cell">
-                                @if ($order->status_order === 'shipped')
+                                @if ($order->status_order === 'pending')
+                                    <!-- Nút Huỷ ban đầu -->
+                                    <button type="button" class="btn btn-danger btn-sm btn-show-cancel"
+                                        data-id="{{ $order->id }}">
+                                        Huỷ đơn
+                                    </button>
+
+                                    <!-- Form nhập lý do (ẩn lúc đầu) -->
+                                    <form action="{{ route('client.orders.cancel') }}" method="POST"
+                                        class="cancel-form mt-2 d-none" id="cancel-form-{{ $order->id }}">
+                                        @csrf
+                                        <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                        <input type="text" name="cancel_reason" class="form-control form-control-sm mb-2"
+                                            placeholder="Nhập lý do huỷ..." required>
+                                        <button type="submit" class="btn btn-danger btn-sm">Xác nhận huỷ</button>
+                                        <button type="button" class="btn btn-secondary btn-sm btn-cancel-close"
+                                            data-id="{{ $order->id }}">Đóng</button>
+                                    </form>
+                                @elseif ($order->status_order === 'shipped')
                                     <button type="button" class="btn btn-success btn-sm btn-complete"
                                         data-id="{{ $order->id }}">
                                         Hoàn thành
@@ -196,6 +214,24 @@
                             console.error(err);
                             alert("Có lỗi xảy ra khi hoàn thành đơn hàng!");
                         });
+                });
+            });
+            // Hiện form nhập lý do
+            document.querySelectorAll('.btn-show-cancel').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let id = this.getAttribute('data-id');
+                    document.getElementById('cancel-form-' + id).classList.remove('d-none');
+                    this.classList.add('d-none'); // Ẩn nút Huỷ
+                });
+            });
+
+            // Đóng form huỷ
+            document.querySelectorAll('.btn-cancel-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let id = this.getAttribute('data-id');
+                    document.getElementById('cancel-form-' + id).classList.add('d-none');
+                    document.querySelector('.btn-show-cancel[data-id="' + id + '"]').classList
+                        .remove('d-none');
                 });
             });
         });
