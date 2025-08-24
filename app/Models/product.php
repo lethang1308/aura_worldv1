@@ -44,4 +44,10 @@ class Product extends Model
     {
         return $this->hasMany(Review::class, 'product_id');
     }
+
+    public function finalMinPrice()
+    {
+        $minVariant = $this->variants()->min('price');
+        return $this->base_price + ($minVariant ?? 0);
+    }
 }

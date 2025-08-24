@@ -47,7 +47,7 @@ class ClientController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
-        $products = Product::all();
+        $products = Product::with('variants')->get();
         $banners = Banner::active()->main()->ordered()->get();
         $secondaryBanners = Banner::active()->secondary()->ordered()->limit(1)->get();
         return view('clients.layouts.home', compact('brands', 'categories', 'products', 'banners', 'secondaryBanners'));
@@ -568,7 +568,7 @@ class ClientController extends Controller
                 return redirect()->route('client.carts')->with('error', 'Một số sản phẩm không tồn tại hoặc đã bị xoá.');
             }
             if ($variant->stock_quantity < $item->quantity) {
-                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->name ?? 'N/A') . '" không đủ tồn kho.');
+                return redirect()->back()->with('error', 'Sản phẩm "' . ($variant->product->name ?? 'N/A') . '" không đủ tồn kho.');
             }
         }
 

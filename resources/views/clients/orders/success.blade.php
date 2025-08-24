@@ -21,7 +21,7 @@
                         <h2 class="mb-3"><i class="bi bi-check-circle-fill text-success"></i> {{ session('success') }}</h2>
                         <p class="mb-2"><strong>Mã đơn hàng:</strong> {{ session('order_id') }}</p>
                         <p class="mb-2"><strong>Mã giao dịch VNPay:</strong> {{ session('transaction_id') }}</p>
-                        <a href="{{ route('client.home') }}" class="btn btn-primary mt-3">Về trang chủ</a>
+                        <a href="http://localhost:8000/clients" class="btn btn-primary mt-3">Về trang chủ</a>
                     </div>
                 @else
                     <div class="alert alert-warning text-center">

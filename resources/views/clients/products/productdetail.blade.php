@@ -142,8 +142,7 @@
                                                 data-variant-id="{{ $attr['variant_id'] }}"
                                                 data-price="{{ $variantPrice }}"
                                                 data-stock="{{ $variant->stock_quantity ?? 0 }}">
-                                                {{ $attr['value'] ?? 'Không rõ' }} -
-                                                {{ number_format($variantPrice, 0, ',', '.') }}₫
+                                                {{ $attr['value'] ?? 'Không rõ' }}
                                                 @if ($isOutOfStock)
                                                     <span class="badge badge-danger ml-2">Hết hàng</span>
                                                 @endif
