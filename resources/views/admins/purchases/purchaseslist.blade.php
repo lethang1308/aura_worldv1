@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="mt-3">
-                        {{ $orders->links() }}
+                        {{ $orders->withQueryString()->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

@@ -116,20 +116,20 @@
         @if($banners->count() > 0)
             @include('clients.components.secondary-banner')
         @else
-        <section class="offer_area" style="height: 750px">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="offset-lg-4 col-lg-6 text-center">
-                        <div class="offer_content">
-                            <h3 class="text-uppercase mb-40">nước hoa cao cấp</h3>
-                            <h2 class="text-uppercase">Giảm 50%</h2>
-                            <a href="{{ route('client.products')}}" class="main_btn mb-20 mt-5">Khám phá ngay</a>
-                            <p>Ưu đãi có hạn – chỉ trong tuần này</p>
+            <section class="home_banner_area mb-40">
+                <div class="banner_inner d-flex align-items-center">
+                    <div class="container">
+                        <div class="banner_content row">
+                            <div class="col-lg-12">
+                                <p class="sub text-uppercase">Bộ Sưu Tập Nước Hoa</p>
+                                <h3><span>Khám Phá</span> Mùi Hương <br />Đặc Trưng <span>Của Riêng Bạn</span></h3>
+                                <h4>Gợi mở cảm xúc. Lưu giữ phong cách.<br> Hương thơm của bạn, câu chuyện của riêng bạn.</h4>
+                                <a class="main_btn mt-40" href="{{ route('client.products')}}">Khám phá bộ sưu tập</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
         @endif
         <!--================ End Secondary Banner Area =================-->
 
