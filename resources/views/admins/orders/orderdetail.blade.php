@@ -40,6 +40,15 @@
                                         <span class="badge bg-warning text-dark">Chưa thanh toán</span>
                                     @endif
                                 </span></li>
+                                    <li><span class="fw-medium text-dark">Phương thức thanh toán:</span> <span class="mx-2">
+                                        @if(($order->type_payment ?? $order->payment_method) === 'vnpay')
+                                            VNPay
+                                        @elseif(($order->type_payment ?? $order->payment_method) === 'cod')
+                                            Thanh toán khi nhận hàng
+                                        @else
+                                            {{ $order->type_payment ?? $order->payment_method ?? 'N/A' }}
+                                        @endif
+                                    </span></li>
                                 <li><span class="fw-medium text-dark">Ghi chú:</span> <span class="mx-2">{{ $order->user_note }}</span></li>
                                 @if($order->status_order === 'cancelled')
                                     <li><span class="fw-medium text-danger">Lý do huỷ:</span> <span class="mx-2">{{ $order->cancel_reason ?? 'Không có' }}</span></li>

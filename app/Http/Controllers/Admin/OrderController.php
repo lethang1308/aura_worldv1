@@ -118,6 +118,16 @@ class OrderController extends Controller
         $order->cancel_reason = $request->cancel_reason;
         $order->cancelled_by_admin_id = Auth::id();
         $order->save();
+
+        // Trả lại tồn kho cho các biến thể
+        foreach ($order->orderDetail as $detail) {
+            $variant = $detail->variant;
+            if ($variant) {
+                $variant->stock_quantity += $detail->quantity;
+                $variant->save();
+            }
+        }
+
         // TODO: Lưu lịch sử huỷ đơn nếu cần
         return redirect()->route('orders.show', $order->id)->with('success', 'Đã huỷ đơn hàng thành công!');
     }

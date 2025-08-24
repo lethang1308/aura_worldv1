@@ -21,28 +21,28 @@
                                 <div class="col-lg-6">
                                     <label for="name" class="form-label">Tên khách hàng</label>
                                     <input type="text" class="form-control" name="name" id="name"
-                                           value="{{ old('name', $customer->name) }}" required>
+                                           value="{{ $customer->name }}" readonly>
                                 </div>
 
                                 {{-- Email --}}
                                 <div class="col-lg-6">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" name="email" id="email"
-                                           value="{{ old('email', $customer->email) }}" required>
+                                           value="{{ $customer->email }}" readonly>
                                 </div>
 
                                 {{-- Số điện thoại --}}
                                 <div class="col-lg-6">
                                     <label for="phone" class="form-label">Số điện thoại</label>
                                     <input type="text" class="form-control" name="phone" id="phone"
-                                           value="{{ old('phone', $customer->phone) }}">
+                                           value="{{ $customer->phone }}" readonly>
                                 </div>
 
                                 {{-- Địa chỉ --}}
                                 <div class="col-lg-6">
                                     <label for="address" class="form-label">Địa chỉ</label>
                                     <input type="text" class="form-control" name="address" id="address"
-                                           value="{{ old('address', $customer->address) }}">
+                                           value="{{ $customer->address }}" readonly>
                                 </div>
 
                                 {{-- Trạng thái --}}

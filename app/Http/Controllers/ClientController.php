@@ -530,6 +530,16 @@ class ClientController extends Controller
         $order->status_order = 'cancelled';
         $order->cancel_reason = $request->cancel_reason;
         $order->save();
+
+        // Trả lại tồn kho cho các biến thể
+        foreach ($order->orderDetail as $detail) {
+            $variant = $detail->variant;
+            if ($variant) {
+                $variant->stock_quantity += $detail->quantity;
+                $variant->save();
+            }
+        }
+
         return redirect()->route('client.orders')->with('success', 'Đã hủy đơn hàng thành công.');
     }
 
