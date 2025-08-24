@@ -8,6 +8,11 @@
         border: 1px solid transparent;
     }
 
+    .action-cell .d-flex {
+        justify-content: flex-end;
+        /* mặc định icon/nút nằm bên phải */
+    }
+
     /* Trạng thái đơn */
     .status-pending {
         background-color: #fff8e1;
@@ -167,12 +172,24 @@
                                 @elseif ($order->status_order === 'shipped')
                                     <button type="button" class="btn btn-success btn-sm btn-complete"
                                         data-id="{{ $order->id }}">
-                                        Hoàn thành
+                                        Đã nhận hàng
                                     </button>
                                 @elseif ($order->status_order === 'completed')
                                     <button class="btn btn-secondary btn-sm" disabled>Đã hoàn thành</button>
                                 @else
-                                    <button class="btn btn-light btn-sm" disabled>Không khả dụng</button>
+                                @endif
+                                @if ($order->status_order === 'pending' || $order->status_order === 'shipped' || $order->status_order === 'completed')
+                                    <div class="p_icon mt-1" style="float: right">
+                                        <a href="{{ route('client.orders.detail', $order->id) }}">
+                                            <i class="ti-eye"></i>
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="p_icon mt-1">
+                                        <a href="{{ route('client.orders.detail', $order->id) }}">
+                                            <i class="ti-eye"></i>
+                                        </a>
+                                    </div>
                                 @endif
                             </td>
                         </tr>

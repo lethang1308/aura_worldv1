@@ -101,7 +101,7 @@
                                         <h4>{{ $product_featured->name }}</h4>
                                     </a>
                                     <div class="mt-3">
-                                        <span class="mr-4">{{ number_format($product_featured->base_price, 0, ',', '.') }}₫</span>
+                                        <span class="mr-4">{{ number_format($product_featured->finalMinPrice(), 0, ',', '.') }} đ</span>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@
                                             src="{{ $product->featuredImage ? asset('storage/' . $product->featuredImage->path) : asset('admin/assets/images/product/placeholder.png') }}"
                                             alt="{{ $product->name }}" />
                                     </div>
-                                    <h4>{{ number_format($product->base_price, 0, ',', '.') }}₫</h4>
+                                    <h4>{{ number_format($product->finalMinPrice(), 0, ',', '.') }} đ</h4>
                                     <a href="{{ route('client.products.show', $product->id) }}" class="main_btn">Xem chi tiết</a>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                                                     <h4>{{ $product->name }}</h4>
                                                 </a>
                                                 <div class="mt-3">
-                                                    <span class="mr-4">{{ number_format($product->base_price, 0, ',', '.') }}₫</span>
+                                                    <span class="mr-4">{{ number_format($product->finalMinPrice(), 0, ',', '.') }} đ</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -227,7 +227,7 @@
                                         <h4>{{ $product_inspired->name }}</h4>
                                     </a>
                                     <div class="mt-3">
-                                        <span class="mr-4">{{ number_format($product_inspired->base_price, 0, ',', '.') }}₫</span>
+                                        <span class="mr-4">{{ number_format($product_inspired->finalMinPrice(), 0, ',', '.') }} đ</span>
                                     </div>
                                 </div>
                             </div>
