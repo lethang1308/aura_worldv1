@@ -47,6 +47,13 @@
                                 <li class="text-danger"><strong>Lý do huỷ:</strong>
                                     {{ $order->cancel_reason ?? 'Không có' }}</li>
                             @endif
+                            <li><strong>Phương thức thanh toán:</strong>
+                                @if ( $order->type_payment === 'cod')
+                                Thanh toán khi nhận hàng
+                                @elseif ( $order->type_payment === 'vnpay')
+                                Thanh toán bằng VNPAY
+                                @endif
+                            </li>
                         </ul>
                     </div>
                 </div>
